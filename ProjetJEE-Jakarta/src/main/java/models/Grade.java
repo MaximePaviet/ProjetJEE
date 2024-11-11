@@ -2,65 +2,67 @@ package models;
 
 import jakarta.persistence.*;
 
+import java.beans.ConstructorProperties;
+
 @Entity
 @Table(name = "grade")
 public class Grade {
     @Id
-    @Column(name = "idGrade", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idGrade")
+    private int idGrade;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idStudent")
-    private models.Student idStudent;
+    @Column(name = "idStudent")
+    private int idStudent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idAssessment")
-    private Assessment idAssessment;
+    @Column(name = "idAssessment")
+    private int idAssessment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCourse")
-    private Course idCourse;
+    @Column(name = "idCourse")
+    private int idCourse;
 
     @Column(name = "grade")
-    private Float grade;
+    private double grade;
 
-    public Integer getId() {
-        return id;
+    // Getters et Setters
+
+    public int getIdGrade() {
+        return idGrade;
     }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public models.Student getIdStudent() {
+    public int getIdStudent() {
         return idStudent;
     }
 
-    public void setIdStudent(models.Student idStudent) {
+    public void setIdStudent(int idStudent) {
         this.idStudent = idStudent;
     }
 
-    public Assessment getIdAssessment() {
+    public int getIdAssessment() {
         return idAssessment;
     }
 
-    public void setIdAssessment(Assessment idAssessment) {
+    public void setIdAssessment(int idAssessment) {
         this.idAssessment = idAssessment;
     }
 
-    public Course getIdCourse() {
+    public int getIdCourse() {
         return idCourse;
     }
 
-    public void setIdCourse(Course idCourse) {
+    public void setIdCourse(int idCourse) {
         this.idCourse = idCourse;
     }
 
-    public Float getGrade() {
+    public double getGrade() {
         return grade;
     }
 
-    public void setGrade(Float grade) {
+    public void setGrade(double grade) {
         this.grade = grade;
     }
 

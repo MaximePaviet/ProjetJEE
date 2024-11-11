@@ -1,10 +1,9 @@
 package models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
@@ -14,36 +13,39 @@ import java.util.Map;
 @Table(name = "student")
 public class Student {
     @Id
-    @Column(name = "idStudent", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idStudent")
+    private int idStudent;
 
-    @Column(name = "name", length = 50)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "surname", length = 50)
+    @Column(name = "surname")
     private String surname;
 
     @Column(name = "dateBirth")
     private LocalDate dateBirth;
 
-    @Column(name = "contact", length = 50)
+    @Column(name = "contact")
     private String contact;
 
-    @Column(name = "schoolYear", length = 50)
+    @Column(name = "schoolYear")
     private String schoolYear;
 
-    @Column(name = "login", length = 50)
+    @Column(name = "login")
     private String login;
 
-    @Column(name = "password", length = 50)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "courseList")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> courseList;
+    @Column(name = "courseList", columnDefinition = "json")
+    @Type(JsonStringType.class)
+    private String courseList;
 
-    public Integer getId() {
-        return id;
+    // Getters et Setters
+
+    public Integer getIdStudent() {
+        return idStudent;
     }
 
     public void setId(Integer id) {
@@ -106,11 +108,11 @@ public class Student {
         this.password = password;
     }
 
-    public Map<String, Object> getCourseList() {
+    public String getCourseList() {
         return courseList;
     }
 
-    public void setCourseList(Map<String, Object> courseList) {
+    public void setCourseList(String courseList) {
         this.courseList = courseList;
     }
 

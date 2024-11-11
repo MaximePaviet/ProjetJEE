@@ -1,28 +1,29 @@
 package models;
 
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
-import java.util.Map;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.*;
 
 @Entity
 @Table(name = "course")
 public class Course {
     @Id
-    @Column(name = "idCourse", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idCourse")
+    private int idCourse;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idTeacher")
-    private models.Teacher idTeacher;
+    @Column(name = "idTeacher")
+    private int idTeacher;
 
-    @Column(name = "name", length = 50)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "studentList")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> studentList;
+    @Column(name = "studentList", columnDefinition= "json")
+    @Type(JsonStringType.class)
+    private String studentList;
+
+    // Getters et Setters
 
     public Integer getId() {
         return id;
@@ -32,11 +33,9 @@ public class Course {
         this.id = id;
     }
 
-    public models.Teacher getIdTeacher() {
-        return idTeacher;
-    }
+    public int getIdTeacher() { return idTeacher; }
 
-    public void setIdTeacher(models.Teacher idTeacher) {
+    public void setIdTeacher(int idTeacher) {
         this.idTeacher = idTeacher;
     }
 
@@ -48,11 +47,11 @@ public class Course {
         this.name = name;
     }
 
-    public Map<String, Object> getStudentList() {
+    public String getStudentList() {
         return studentList;
     }
 
-    public void setStudentList(Map<String, Object> studentList) {
+    public void setStudentList(String studentList) {
         this.studentList = studentList;
     }
 

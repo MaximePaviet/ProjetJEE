@@ -1,45 +1,46 @@
 package models;
 
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.*;
 
-import java.util.Map;
 
 @Entity
-@Table(name = "assessment")
+@Table(name="assessment")
 public class Assessment {
     @Id
-    @Column(name = "idAssessment", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idAssessment")
+    private int idAssessment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCourse")
-    private models.Course idCourse;
+    @Column(name = "idCourse")
+    private int idCourse;
 
-    @Column(name = "name", length = 50)
+    @Column(name = "name")
     private String name;
 
     @Column(name = "average")
-    private Float average;
+    private double average;
 
-    @Column(name = "gradeList")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> gradeList;
+    @Column(name = "gradeList", columnDefinition = "json")
+    @Type(JsonStringType.class)
+    private String gradeList;
 
-    public Integer getId() {
-        return id;
+    // Getters et Setters
+    public int getIdAssessment() {
+        return idAssessment;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdAssessment(int idAssessment) {
+        this.idAssessment = idAssessment;
     }
 
-    public models.Course getIdCourse() {
+    public int getIdCourse() {
         return idCourse;
     }
 
-    public void setIdCourse(models.Course idCourse) {
+    public void setIdCourse(int idCourse) {
         this.idCourse = idCourse;
     }
 
@@ -51,20 +52,20 @@ public class Assessment {
         this.name = name;
     }
 
-    public Float getAverage() {
+    public double getAverage() {
         return average;
     }
 
-    public void setAverage(Float average) {
+    public void setAverage(double average) {
         this.average = average;
     }
 
-    public Map<String, Object> getGradeList() {
+    public String getGradeList() {
         return gradeList;
     }
 
-    public void setGradeList(Map<String, Object> gradeList) {
+    public void setGradeList(String gradeList) {
         this.gradeList = gradeList;
     }
-
 }
+

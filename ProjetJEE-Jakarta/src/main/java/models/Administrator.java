@@ -1,29 +1,28 @@
 package models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "administrator")
 public class Administrator {
     @Id
-    @Column(name = "idAdministrator", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idAdministrator")
+    private int idAdministrator;
 
-    @Column(name = "login", length = 50)
+    @Column(name = "login")
     private String login;
 
-    @Column(name = "password", length = 50)
+    @Column(name = "password")
     private String password;
 
-    public Integer getId() {
-        return id;
+    // Getters et Setters
+    public int getIdAdministrator() {
+        return idAdministrator;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdAdministrator(int idAdministrator) {
+        this.idAdministrator = idAdministrator;
     }
 
     public String getLogin() {
@@ -41,5 +40,4 @@ public class Administrator {
     public void setPassword(String password) {
         this.password = password;
     }
-
 }

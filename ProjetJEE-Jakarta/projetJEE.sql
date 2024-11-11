@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS administrator;
 
 -- Créer la table 'teacher'
 CREATE TABLE teacher (
-                         idTeacher INT PRIMARY KEY,
+                         idTeacher INT AUTO_INCREMENT PRIMARY KEY,
                          name VARCHAR(50),
                          surname VARCHAR(50),
                          contact VARCHAR(50),
@@ -19,7 +19,7 @@ CREATE TABLE teacher (
 
 -- Créer la table 'student'
 CREATE TABLE student (
-                         idStudent INT PRIMARY KEY,
+                         idStudent INT AUTO_INCREMENT PRIMARY KEY,
                          name VARCHAR(50),
                          surname VARCHAR(50),
                          dateBirth DATE,
@@ -32,14 +32,14 @@ CREATE TABLE student (
 
 -- Créer la table 'administrator'
 CREATE TABLE administrator (
-                               idAdministrator INT PRIMARY KEY,
-                               login VARCHAR(50),
-                               password VARCHAR(50)
+                        idAdministrator INT AUTO_INCREMENT PRIMARY KEY,
+                        login VARCHAR(50),
+                        password VARCHAR(50)
 );
 
 -- Créer la table 'course'
 CREATE TABLE course (
-                        idCourse INT PRIMARY KEY,
+                        idCourse INT AUTO_INCREMENT PRIMARY KEY ,
                         idTeacher INT,
                         name VARCHAR(50),
                         studentList JSON,
@@ -48,7 +48,7 @@ CREATE TABLE course (
 
 -- Créer la table 'assessment'
 CREATE TABLE assessment (
-                            idAssessment INT PRIMARY KEY,
+                            idAssessment INT AUTO_INCREMENT PRIMARY KEY ,
                             idCourse INT,
                             name VARCHAR(50),
                             average FLOAT,
@@ -58,7 +58,7 @@ CREATE TABLE assessment (
 
 -- Créer la table 'grade'
 CREATE TABLE grade (
-                       idGrade INT PRIMARY KEY,
+                       idGrade INT AUTO_INCREMENT PRIMARY KEY,
                        idStudent INT,
                        idAssessment INT,
                        idCourse INT,
