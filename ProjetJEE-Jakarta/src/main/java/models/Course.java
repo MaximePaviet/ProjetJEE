@@ -25,13 +25,11 @@ public class Course {
 
     // Getters et Setters
 
-    public Integer getId() {
-        return id;
+    public int getIdCourse() {
+        return idCourse;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public void setIdCourse(int id) { this.idCourse = id; }
 
     public int getIdTeacher() { return idTeacher; }
 

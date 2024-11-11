@@ -48,9 +48,7 @@ public class Student {
         return idStudent;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public void setId(Integer id) { this.idStudent  = id; }
 
     public String getName() {
         return name;

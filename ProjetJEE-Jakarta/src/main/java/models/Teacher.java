@@ -41,8 +41,8 @@ public class Teacher {
         return idTeacher;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdTeacher(int id) {
+        this.idTeacher = id;
     }
 
     public String getName() {

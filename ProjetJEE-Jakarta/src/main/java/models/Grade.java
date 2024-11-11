@@ -30,9 +30,7 @@ public class Grade {
         return idGrade;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public void setIdGrade(int id) { this.idGrade = id; }
 
     public int getIdStudent() {
         return idStudent;
