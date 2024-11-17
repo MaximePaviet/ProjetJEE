@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.*;
 
+import java.util.List;
+
+
 @Entity
 @Table(name = "course")
 public class Course {
@@ -18,10 +21,15 @@ public class Course {
     @Column(name = "name")
     private String name;
 
-    // Si vous souhaitez garder `studentList` comme JSON
-    @Column(name = "studentList", columnDefinition = "json")
-    @Type(JsonStringType.class)
-    private String studentList;
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_course",
+            joinColumns = @JoinColumn(name = "idStudent"),
+            inverseJoinColumns = @JoinColumn(name = "idCourse")
+    )
+    private List<Student> studentList;
+
 
     @ManyToOne
     @JoinColumn(name = "idTeacher", nullable = false) // Clé étrangère vers Teacher
@@ -44,11 +52,11 @@ public class Course {
         this.name = name;
     }
 
-    public String getStudentList() {
+    public List<Student> getStudentList() {
         return studentList;
     }
 
-    public void setStudentList(String studentList) {
+    public void setStudentList(List<Student> studentList) {
         this.studentList = studentList;
     }
 

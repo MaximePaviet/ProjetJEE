@@ -2,6 +2,7 @@ package controller;
 
 import jakarta.persistence.*;
 import models.Course;
+import models.Student;
 import models.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -111,6 +112,59 @@ public class CourseController{
         }
         return courses;
     }
+    public void assignmentStudentToCourse(Course course, Student student) {
+        if (course == null || student == null) {
+            throw new IllegalArgumentException("Course and Student cannot be null");
+        }
+
+        // Ouvrir une session Hibernate
+        Session session = sessionFactory.openSession();
+        Transaction transaction = null;
+
+        try {
+            // Commencer une transaction
+            transaction = session.beginTransaction();
+
+            // Récupérer l'étudiant et le cours depuis la base de données
+            Student existingStudent = session.get(Student.class, student.getIdStudent());
+            if (existingStudent == null) {
+                throw new IllegalArgumentException("Student not found with ID: " + student.getIdStudent());
+            }
+
+            Course existingCourse = session.get(Course.class, course.getIdCourse());
+            if (existingCourse == null) {
+                throw new IllegalArgumentException("Course not found with ID: " + course.getIdCourse());
+            }
+
+            // Vérifier si l'étudiant est déjà inscrit à ce cours
+            if (!existingStudent.getCourseList().contains(existingCourse)) {
+                // Ajouter le cours à la liste des cours de l'étudiant
+                existingStudent.getCourseList().add(existingCourse);
+
+                // Ajouter l'étudiant à la liste des étudiants du cours
+                existingCourse.getStudentList().add(existingStudent);
+
+                // Mettre à jour les entités dans la base de données
+                session.update(existingStudent);
+                session.update(existingCourse);
+            } else {
+                System.out.println("Student is already assigned to the course.");
+            }
+
+            // Commit de la transaction
+            transaction.commit();
+        } catch (Exception e) {
+            // Si une erreur survient, rollback la transaction
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            // Fermer la session
+            session.close();
+        }
+    }
+
 
 
 
