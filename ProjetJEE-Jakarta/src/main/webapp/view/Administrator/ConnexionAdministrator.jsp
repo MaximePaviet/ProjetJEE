@@ -126,11 +126,11 @@
     </style>
 </head>
 <body>
-    <a href="view/index.jsp"><</a>
+    <a href="${pageContext.request.contextPath}/view/index.jsp"><</a>
     <h1>CYSCOLARITÉ</h1>
     <h2>Espace Administrateur</h2>
     <hr>
-    <form action="validateLogin" method="POST">
+    <form action="${pageContext.request.contextPath}/validateLogin" method="POST">
         <label>Email<span class="asterisque">*</span><br>
             <input type="text" name="login" placeholder="mail@exemple.com" required>
         </label> <br>
@@ -140,7 +140,6 @@
                 <span class="toggle-password" onclick="togglePassword()">👁</span>
             </div>
         </label> <br>
-        <input type="hidden" name="role" value="admin">
         <button type="submit">Connexion</button>
     </form>
 

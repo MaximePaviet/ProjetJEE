@@ -69,7 +69,7 @@
   </style>
 </head>
 <body>
-<a href="view/Administrateur/ConnexionAdministrateur.jsp"><</a>
+<a href="view/Administrator/ConnexionAdministrator.jsp"><</a>
 <h1>Accueil Administrateur</h1>
 <div class="container">
   <a href="teacherAdmin" class="button">Enseignants</a>

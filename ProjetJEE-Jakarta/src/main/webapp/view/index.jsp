@@ -59,9 +59,9 @@
 <body>
     <h1>CYSCOLARITÉ</h1>
     <div class="container">
-        <a href="loginTeacher" class="button">Enseignants</a>
-        <a href="loginStudent" class="button">Étudiants</a>
-        <a href="loginAdmin" class="button">Administrateur</a>
+        <a href="${pageContext.request.contextPath}/view/Teacher/ConnexionTeacher.jsp" class="button">Enseignants</a>
+        <a href="${pageContext.request.contextPath}/view/Student/ConnexionStudent.jsp" class="button">Étudiants</a>
+        <a href="${pageContext.request.contextPath}/view/Administrator/ConnexionAdministrator.jsp" class="button">Administrateur</a>
     </div>
 </body>
 </html>
