@@ -17,7 +17,7 @@ public class CourseController{
 
     // Constructeur pour initialiser l'EntityManagerFactory
     public CourseController() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("myPersistenceUnit"); // à modifier par le nom de la mappe
+        entityManagerFactory = Persistence.createEntityManagerFactory("models.Course");
     }
     public void createCourse(String name) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -111,49 +111,9 @@ public class CourseController{
         }
         return courses;
     }
-    public void assignmentTeacher(Teacher teacher, Course course) {
-        // Assurez-vous que 'teacher' et 'course' ne sont pas null
-        if (teacher == null || course == null) {
-            throw new IllegalArgumentException("Teacher and Course cannot be null");
-        }
-        // Ouvrir une session avec une SessionFactory (supposée être injectée ou définie)
-        Session session = sessionFactory.openSession(); // sessionFactory est supposé être déjà défini dans ta classe
-        Transaction transaction = null;
-
-        try {
-            // Commencer une transaction
-            transaction = session.beginTransaction();
-
-            // Récupérer l'enseignant en utilisant son idTeacher
-            Teacher existingTeacher = session.get(Teacher.class, teacher.getIdTeacher());
-            if (existingTeacher == null) {
-                throw new IllegalArgumentException("Teacher not found with ID: " + teacher.getIdTeacher());
-            }
-
-            // Ajouter le cours à la liste des cours de l'enseignant
-            if (existingTeacher.getCourseList() == null) {
-                existingTeacher.setCourseList(String.valueOf(new HashMap<>()));
-            }
-
-            // Ajouter le cours dans la map (le nom de la matière comme clé et l'objet Course comme valeur)
-            //existingTeacher.getCourseList().put(course.getName(), course);
 
 
-            // Sauvegarder l'enseignant avec les cours mis à jour
-            session.update(existingTeacher);
 
-            // Commit de la transaction
-            transaction.commit();
-        } catch (Exception e) {
-            // Si une erreur survient, rollback la transaction
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            // Fermer la session
-            session.close();
-        }
-    }
+
 
 }

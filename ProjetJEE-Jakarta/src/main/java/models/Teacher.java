@@ -6,11 +6,14 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Entity
 @Table(name = "teacher")
 public class Teacher {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idTeacher")
@@ -31,12 +34,10 @@ public class Teacher {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "courseList", columnDefinition = "json")
-    @Type(JsonStringType.class)
-    private String courseList;
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Course> courseList = new ArrayList<>();
 
     // Getters et Setters
-
     public int getIdTeacher() {
         return idTeacher;
     }
@@ -85,12 +86,11 @@ public class Teacher {
         this.password = password;
     }
 
-    public String getCourseList() {
+    public List<Course> getCourseList() {
         return courseList;
     }
 
-    public void setCourseList(String courseList) {
+    public void setCourseList(List<Course> courseList) {
         this.courseList = courseList;
     }
-
 }
