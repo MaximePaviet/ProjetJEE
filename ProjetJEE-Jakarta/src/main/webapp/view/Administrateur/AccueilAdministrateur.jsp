@@ -14,6 +14,17 @@
       background-color: #f5f5f5;
     }
 
+    a {
+      color: #4F2BEC;
+      font-family: "DM Sans", sans-serif;
+      font-size: 50px;
+      font-weight: bold;
+      margin: 20px;
+      cursor: pointer;
+      text-decoration: none;
+
+    }
+
     h1 {
       font-size: 36px;
       color: #4F2BEC;
@@ -21,7 +32,7 @@
       font-weight: bold;
       font-style: normal;
       text-align: center;
-      margin-top: 110px;
+      margin-top: 100px;
       margin-bottom: 40px;
     }
 
@@ -58,11 +69,12 @@
   </style>
 </head>
 <body>
+<a href="view/Administrateur/ConnexionAdministrateur.jsp"><</a>
 <h1>Accueil Administrateur</h1>
 <div class="container">
-  <a href="login?role=teacher" class="button">Enseignants</a>
-  <a href="login?role=student" class="button">Étudiants</a>
-  <a href="login?role=admin" class="button">Administrateur</a>
+  <a href="teacherAdmin" class="button">Enseignants</a>
+  <a href="studentAdmin" class="button">Étudiants</a>
+  <a href="courseAdmin" class="button">Cours</a>
 </div>
 </body>
 </html>

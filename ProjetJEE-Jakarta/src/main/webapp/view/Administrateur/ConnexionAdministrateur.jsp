@@ -5,12 +5,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #f5f5f5;
+        }
+
+        a {
+            color: #4F2BEC;
+            font-family: "DM Sans", sans-serif;
+            font-size: 50px;
+            font-weight: bold;
+            margin: 20px;
+            cursor: pointer;
+            text-decoration: none;
+
         }
 
         h1 {
@@ -20,7 +29,7 @@
             font-weight: 400;
             font-style: normal;
             text-align: center;
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         h2 {
@@ -84,7 +93,7 @@
 
         .toggle-password {
             position: absolute;
-            top: 57%;
+            top: 65.65%;
             right: 36%;
             cursor: pointer;
             color: #A3AED0;
@@ -117,10 +126,11 @@
     </style>
 </head>
 <body>
+    <a href="view/index.jsp"><</a>
     <h1>CYSCOLARITÉ</h1>
     <h2>Espace Administrateur</h2>
     <hr>
-    <form action="" method="POST">
+    <form action="validateLogin" method="POST">
         <label>Email<span class="asterisque">*</span><br>
             <input type="text" name="login" placeholder="mail@exemple.com" required>
         </label> <br>
@@ -129,8 +139,8 @@
                 <input type="password" name="password" placeholder="Min. 8 caractères" required>
                 <span class="toggle-password" onclick="togglePassword()">👁</span>
             </div>
-
         </label> <br>
+        <input type="hidden" name="role" value="admin">
         <button type="submit">Connexion</button>
     </form>
 

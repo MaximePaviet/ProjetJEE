@@ -59,9 +59,9 @@
 <body>
     <h1>CYSCOLARITÉ</h1>
     <div class="container">
-        <a href="login?role=teacher" class="button">Enseignants</a>
-        <a href="login?role=student" class="button">Étudiants</a>
-        <a href="login?role=admin" class="button">Administrateur</a>
+        <a href="loginTeacher" class="button">Enseignants</a>
+        <a href="loginStudent" class="button">Étudiants</a>
+        <a href="loginAdmin" class="button">Administrateur</a>
     </div>
 </body>
 </html>
