@@ -99,7 +99,7 @@
 <body>
 <a href="${pageContext.request.contextPath}/view/Administrator/StudentPageAdmin.jsp"><</a>
 <h1>Ajouter enseignant</h1>
-<form  action="" method="POST">
+<form  action="${pageContext.request.contextPath}/addTeacher" method="POST">
     <div class="container">
         <label>Nom :<input type="text" name="surname" placeholder="Doe" required></label><br>
         <label>Prénom :<input type="text" name="name" placeholder="John" required></label>

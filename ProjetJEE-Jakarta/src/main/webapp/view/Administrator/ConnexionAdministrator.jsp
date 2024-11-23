@@ -146,8 +146,8 @@
             ${errorMessage}
         </div>
 
-        <label>Email<span class="asterisque">*</span><br>
-            <input type="text" name="login" placeholder="mail@exemple.com" required>
+        <label>Login<span class="asterisque">*</span><br>
+            <input type="text" name="login" placeholder="jdoe" required>
         </label> <br>
         <label>Password*<br>
             <div class="password-container">

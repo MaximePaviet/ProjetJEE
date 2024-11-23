@@ -1,10 +1,9 @@
-package controller;
+package services;
 
 import jakarta.persistence.*;
 import models.Course;
 import models.Student;
 import org.hibernate.Session;
-import org.hibernate.SessionBuilder;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
@@ -16,12 +15,12 @@ import java.util.List;
 
 
 
-public class StudentController {
+public class StudentService {
 
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
     // Constructeur pour initialiser l'EntityManagerFactory
-    public StudentController() {
+    public StudentService() {
         entityManagerFactory = Persistence.createEntityManagerFactory("default");
     }
     public void createStudent(String name, String surname, Date dateBirth, String contact) {
@@ -246,52 +245,52 @@ public class StudentController {
         return courses; // Retourne la liste des cours
     }
     public static void main(String[] args) {
-        // Initialisation du StudentController
-        StudentController studentController = new StudentController();
+        // Initialisation du StudentService
+        StudentService studentService = new StudentService();
 
         // Test de la création d'un étudiant
         System.out.println("### Test de création d'un étudiant ###");
-        studentController.createStudent("John", "Doe", java.sql.Date.valueOf(LocalDate.of(2000, 1, 1)), "john.doe@example.com");
-        List<Student> students = studentController.readStudentList();
+        studentService.createStudent("John", "Doe", java.sql.Date.valueOf(LocalDate.of(2000, 1, 1)), "john.doe@example.com");
+        List<Student> students = studentService.readStudentList();
         System.out.println("Étudiants après création : " + students);
 
         // Test de mise à jour d'un étudiant
         System.out.println("\n### Test de mise à jour d'un étudiant ###");
         Student studentToUpdate = students.get(0);
-        studentController.updateStudent(studentToUpdate.getIdStudent(), "John", "Smith", java.sql.Date.valueOf(LocalDate.of(2000, 1, 1)), "john.smith@example.com");
-        Student updatedStudent = studentController.readStudent(studentToUpdate.getIdStudent());
+        studentService.updateStudent(studentToUpdate.getIdStudent(), "John", "Smith", java.sql.Date.valueOf(LocalDate.of(2000, 1, 1)), "john.smith@example.com");
+        Student updatedStudent = studentService.readStudent(studentToUpdate.getIdStudent());
         System.out.println("Étudiant mis à jour : " + updatedStudent);
 
         // Test de suppression d'un étudiant
         System.out.println("\n### Test de suppression d'un étudiant ###");
-        studentController.deleteStudent(studentToUpdate.getIdStudent());
-        Student deletedStudent = studentController.readStudent(studentToUpdate.getIdStudent());
+        studentService.deleteStudent(studentToUpdate.getIdStudent());
+        Student deletedStudent = studentService.readStudent(studentToUpdate.getIdStudent());
         System.out.println("Étudiant après suppression : " + deletedStudent);
 
         // Test de recherche d'étudiant
         System.out.println("\n### Test de recherche d'un étudiant ###");
-        studentController.createStudent("Jane", "Doe", java.sql.Date.valueOf(LocalDate.of(2001, 5, 15)), "jane.doe@example.com");
-        List<Student> searchResults = studentController.searchStudent("Jane");
+        studentService.createStudent("Jane", "Doe", java.sql.Date.valueOf(LocalDate.of(2001, 5, 15)), "jane.doe@example.com");
+        List<Student> searchResults = studentService.searchStudent("Jane");
         System.out.println("Résultats de la recherche : " + searchResults);
 
         // Test du filtrage des étudiants inscrits à un cours
         System.out.println("\n### Test du filtrage des étudiants par cours ###");
         Course course = new Course();  // Créez un cours ou récupérez-le de la base
-        studentController.createStudent("Tom", "Riddle", java.sql.Date.valueOf(LocalDate.of(1997, 12, 5)), "tom.riddle@example.com");
-        Student student = studentController.readStudentList().get(0);
-        studentController.registrationCourse(student.getIdStudent(), course.getIdCourse());
-        List<Student> studentsInCourse = studentController.filtering(course);
+        studentService.createStudent("Tom", "Riddle", java.sql.Date.valueOf(LocalDate.of(1997, 12, 5)), "tom.riddle@example.com");
+        Student student = studentService.readStudentList().get(0);
+        studentService.registrationCourse(student.getIdStudent(), course.getIdCourse());
+        List<Student> studentsInCourse = studentService.filtering(course);
         System.out.println("Étudiants inscrits au cours : " + studentsInCourse);
 
         // Test de la récupération des cours d'un étudiant
         System.out.println("\n### Test de la récupération des cours d'un étudiant ###");
-        List<Course> courses = studentController.readCourse(student.getIdStudent());
+        List<Course> courses = studentService.readCourse(student.getIdStudent());
         System.out.println("Cours de l'étudiant : " + courses);
 
         // Test de l'inscription d'un étudiant à un cours
         System.out.println("\n### Test de l'inscription d'un étudiant à un cours ###");
-        studentController.registrationCourse(student.getIdStudent(), course.getIdCourse());
-        List<Student> studentsInCourseAfterRegistration = studentController.filtering(course);
+        studentService.registrationCourse(student.getIdStudent(), course.getIdCourse());
+        List<Student> studentsInCourseAfterRegistration = studentService.filtering(course);
         System.out.println("Étudiants inscrits au cours après inscription : " + studentsInCourseAfterRegistration);
     }
 

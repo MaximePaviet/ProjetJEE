@@ -1,23 +1,22 @@
-package controller;
+package services;
 
 import jakarta.persistence.*;
 import models.Course;
 import models.Student;
-import models.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import java.util.HashMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class CourseController{
+public class CourseService {
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
 
     // Constructeur pour initialiser l'EntityManagerFactory
-    public CourseController() {
+    public CourseService() {
         entityManagerFactory = Persistence.createEntityManagerFactory("models.Course");
     }
     public void createCourse(String name) {

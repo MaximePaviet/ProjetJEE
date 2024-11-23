@@ -1,21 +1,17 @@
-package controller;
+package services;
 
 import jakarta.persistence.EntityManager;
-import models.Course;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import java.security.SecureRandom;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
-public class AdministratorController {
+public class AdministratorService {
 
     private EntityManagerFactory entityManagerFactory;
 
     // Constructeur pour initialiser l'EntityManagerFactory
-    public AdministratorController() {
+    public AdministratorService() {
         this.entityManagerFactory = Persistence.createEntityManagerFactory("default");
     }
 

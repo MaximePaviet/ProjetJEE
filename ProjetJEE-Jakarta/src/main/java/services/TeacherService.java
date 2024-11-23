@@ -1,22 +1,24 @@
-package controller;
+package services;
 
 import jakarta.persistence.*;
 import models.Course;
 
+import models.Student;
 import models.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class TeacherController {
+public class TeacherService {
 
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
 
     // Constructeur pour initialiser l'EntityManagerFactory
-    public TeacherController() {
+    public TeacherService() {
         try {
             // Initialisation de EntityManagerFactory pour JPA
             entityManagerFactory = Persistence.createEntityManagerFactory("default");
@@ -40,9 +42,9 @@ public class TeacherController {
             transaction.begin(); // Démarre la transaction
 
             // Génère le login unique et le mot de passe
-            AdministratorController administratorController = new AdministratorController();
-            String login = administratorController.generateUniqueLogin(name, surname);
-            String password = administratorController.generatePassword();
+            AdministratorService administratorService = new AdministratorService();
+            String login = administratorService.generateUniqueLogin(name, surname);
+            String password = administratorService.generatePassword();
 
             // Création de l'objet Teacher
             Teacher teacher = new Teacher();
@@ -81,6 +83,23 @@ public class TeacherController {
         }
 
         return teacher; // Retourne l'objet Teacher trouvé ou null si non trouvé
+    }
+
+    // Méthode pour récupérer tous les profs
+    public List<Teacher> readTeacherList() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Teacher> teachers = new ArrayList<>();
+
+        try {
+            // Utilise HQL pour récupérer tous les professeurs
+            teachers = entityManager.createQuery("FROM Teacher", Teacher.class).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close(); // Ferme l'EntityManager
+        }
+
+        return teachers;
     }
 
     // Méthode de recherche flexible pour les enseignants par nom, prénom ou contact
