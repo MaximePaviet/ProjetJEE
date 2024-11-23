@@ -2,8 +2,12 @@ package models;
 
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -23,9 +27,8 @@ public class Assessment {
     @Column(name = "average")
     private double average;
 
-    @Column(name = "gradeList", columnDefinition = "json")
-    @Type(JsonStringType.class)
-    private String gradeList;
+    @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Grade> gradeList = new ArrayList<>();
 
     // Getters et Setters
     public int getIdAssessment() {
@@ -60,12 +63,8 @@ public class Assessment {
         this.average = average;
     }
 
-    public String getGradeList() {
-        return gradeList;
-    }
+    public List<Grade> getGradeList(){ return gradeList; }
 
-    public void setGradeList(String gradeList) {
-        this.gradeList = gradeList;
-    }
+    public void setGradeList(List<Grade> gradeList){ this.gradeList = gradeList; }
 }
 

@@ -2,6 +2,7 @@ package controller;
 
 import jakarta.persistence.*;
 import models.Course;
+import models.Student;
 import models.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,7 +18,7 @@ public class CourseController{
 
     // Constructeur pour initialiser l'EntityManagerFactory
     public CourseController() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("myPersistenceUnit"); // à modifier par le nom de la mappe
+        entityManagerFactory = Persistence.createEntityManagerFactory("models.Course");
     }
     public void createCourse(String name) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -111,36 +112,44 @@ public class CourseController{
         }
         return courses;
     }
-    public void assignmentTeacher(Teacher teacher, Course course) {
-        // Assurez-vous que 'teacher' et 'course' ne sont pas null
-        if (teacher == null || course == null) {
-            throw new IllegalArgumentException("Teacher and Course cannot be null");
+    public void assignmentStudentToCourse(Course course, Student student) {
+        if (course == null || student == null) {
+            throw new IllegalArgumentException("Course and Student cannot be null");
         }
-        // Ouvrir une session avec une SessionFactory (supposée être injectée ou définie)
-        Session session = sessionFactory.openSession(); // sessionFactory est supposé être déjà défini dans ta classe
+
+        // Ouvrir une session Hibernate
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
 
         try {
             // Commencer une transaction
             transaction = session.beginTransaction();
 
-            // Récupérer l'enseignant en utilisant son idTeacher
-            Teacher existingTeacher = session.get(Teacher.class, teacher.getIdTeacher());
-            if (existingTeacher == null) {
-                throw new IllegalArgumentException("Teacher not found with ID: " + teacher.getIdTeacher());
+            // Récupérer l'étudiant et le cours depuis la base de données
+            Student existingStudent = session.get(Student.class, student.getIdStudent());
+            if (existingStudent == null) {
+                throw new IllegalArgumentException("Student not found with ID: " + student.getIdStudent());
             }
 
-            // Ajouter le cours à la liste des cours de l'enseignant
-            if (existingTeacher.getCourseList() == null) {
-                existingTeacher.setCourseList(String.valueOf(new HashMap<>()));
+            Course existingCourse = session.get(Course.class, course.getIdCourse());
+            if (existingCourse == null) {
+                throw new IllegalArgumentException("Course not found with ID: " + course.getIdCourse());
             }
 
-            // Ajouter le cours dans la map (le nom de la matière comme clé et l'objet Course comme valeur)
-            //existingTeacher.getCourseList().put(course.getName(), course);
+            // Vérifier si l'étudiant est déjà inscrit à ce cours
+            if (!existingStudent.getCourseList().contains(existingCourse)) {
+                // Ajouter le cours à la liste des cours de l'étudiant
+                existingStudent.getCourseList().add(existingCourse);
 
+                // Ajouter l'étudiant à la liste des étudiants du cours
+                existingCourse.getStudentList().add(existingStudent);
 
-            // Sauvegarder l'enseignant avec les cours mis à jour
-            session.update(existingTeacher);
+                // Mettre à jour les entités dans la base de données
+                session.update(existingStudent);
+                session.update(existingCourse);
+            } else {
+                System.out.println("Student is already assigned to the course.");
+            }
 
             // Commit de la transaction
             transaction.commit();
@@ -155,5 +164,10 @@ public class CourseController{
             session.close();
         }
     }
+
+
+
+
+
 
 }

@@ -1,9 +1,12 @@
 package controller;
 
 import jakarta.persistence.*;
+import models.Course;
+
 import models.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import java.util.List;
 
@@ -14,7 +17,7 @@ public class TeacherController {
 
     // Constructeur pour initialiser l'EntityManagerFactory
     public TeacherController() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("myPersistenceUnit"); // à modifier par le nom de la mappe
+        entityManagerFactory = Persistence.createEntityManagerFactory("models.Teacher");
     }
 
     // Méthode pour créer un nouvel enseignant
@@ -60,27 +63,25 @@ public class TeacherController {
     // Méthode de recherche flexible pour les enseignants par nom, prénom ou contact
     public List<Teacher> searchTeacher(String searchTerm) {
         // Utilisation de sessionFactory pour obtenir la session
-        Session session = sessionFactory.openSession();  // SessionFactory est supposé être injecté ou défini dans la classe
+        Session session = sessionFactory.openSession();
         List<Teacher> teachers = null;
 
         try {
-            // Requête HQL pour rechercher les enseignants dont le nom, prénom ou contact contient la chaîne de recherche
-            //String hql = "FROM Teacher t WHERE t.name LIKE :searchTerm OR t.surname LIKE :searchTerm OR t.contact LIKE :searchTerm";
-            //Query<Teacher> query = session.createQuery(hql, Teacher.class);
+            //Requête HQL pour rechercher les enseignants dont le nom, prénom ou contact contient la chaîne de recherche
+             String hql = "FROM Teacher t WHERE t.name LIKE :searchTerm OR t.surname LIKE :searchTerm OR t.contact LIKE :searchTerm";
+            TypedQuery<Teacher> query = session.createQuery(hql, Teacher.class);
 
-            // Ajoute des jokers (%) de chaque côté de searchTerm pour permettre la recherche partielle
-            //query.setParameter("searchTerm", "%" + searchTerm + "%");
+             //Ajoute des jokers (%) de chaque côté de searchTerm pour permettre la recherche partielle
+               query.setParameter("searchTerm", "%" + searchTerm + "%");
 
             // Exécute la requête et récupère les résultats dans une liste
-            //teachers = query.list();
+              teachers = query.getResultList();
         } finally {
             session.close(); // Ferme la session après l'exécution
         }
 
         return teachers; // Retourne la liste des enseignants
     }
-
-
 
 
     // Méthode pour mettre à jour les informations d'un enseignant avec des paramètres spécifiques
@@ -113,6 +114,62 @@ public class TeacherController {
             entityManager.close(); // Ferme l'EntityManager
         }
     }
+
+    public void assignmentCourseToTeacher(Teacher teacher, Course course) {
+
+        if (teacher == null || course == null) {
+            throw new IllegalArgumentException("Teacher and Course cannot be null");
+        }
+
+        // Ouvrir une session Hibernate
+        Session session = sessionFactory.openSession();
+        Transaction transaction = null;
+
+        try {
+            // Commencer une transaction
+            transaction = session.beginTransaction();
+
+            // Récupérer le professeur et le cours depuis la base de données
+            Teacher existingTeacher = session.get(Teacher.class, teacher.getIdTeacher());
+            if (existingTeacher == null) {
+                throw new IllegalArgumentException("Teacher not found with ID: " + teacher.getIdTeacher());
+            }
+
+            Course existingCourse = session.get(Course.class, course.getIdCourse());
+            if (existingCourse == null) {
+                throw new IllegalArgumentException("Course not found with ID: " + course.getIdCourse());
+            }
+
+            // Vérifier si le cours est déjà assigné au professeur
+            if (!existingTeacher.getCourseList().contains(existingCourse)) {
+                // Ajouter le cours à la liste des cours du professeur
+                existingTeacher.getCourseList().add(existingCourse);
+
+                // Associer le professeur au cours
+                existingCourse.setTeacher(existingTeacher);
+
+                // Mettre à jour les entités dans la base de données
+                session.update(existingTeacher);
+                session.update(existingCourse);
+            } else {
+                System.out.println("Course already assigned to the teacher.");
+            }
+
+            // Commit de la transaction
+            transaction.commit();
+        } catch (Exception e) {
+            // Si une erreur survient, rollback la transaction
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            // Fermer la session
+            session.close();
+        }
+    }
+
+
 
     // Ferme l'EntityManagerFactory
     public void close() {

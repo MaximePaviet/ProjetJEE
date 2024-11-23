@@ -1,6 +1,7 @@
 package controller;
 
 import jakarta.persistence.EntityManager;
+import models.Course;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
@@ -70,6 +71,8 @@ public class AdministratorController {
 
         return password.toString();
     }
+
+    //public List<List<Course>> readStudentCourses(){}
 
 
 }

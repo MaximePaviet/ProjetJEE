@@ -15,14 +15,15 @@ public class Grade {
     @Column(name = "idStudent")
     private int idStudent;
 
-    @Column(name = "idAssessment")
-    private int idAssessment;
-
     @Column(name = "idCourse")
     private int idCourse;
 
     @Column(name = "grade")
     private double grade;
+
+    @ManyToOne
+    @JoinColumn(name = "idAssessment", nullable = false)
+    private Assessment assessment;
 
     // Getters et Setters
 
@@ -40,13 +41,9 @@ public class Grade {
         this.idStudent = idStudent;
     }
 
-    public int getIdAssessment() {
-        return idAssessment;
-    }
+    public Assessment getAssessment(){ return assessment;}
 
-    public void setIdAssessment(int idAssessment) {
-        this.idAssessment = idAssessment;
-    }
+    public void setAssessment(Assessment assessment){ this.assessment = assessment;}
 
     public int getIdCourse() {
         return idCourse;
