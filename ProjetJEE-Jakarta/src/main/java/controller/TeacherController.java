@@ -17,8 +17,19 @@ public class TeacherController {
 
     // Constructeur pour initialiser l'EntityManagerFactory
     public TeacherController() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("models.Teacher");
+        try {
+            // Initialisation de EntityManagerFactory pour JPA
+            entityManagerFactory = Persistence.createEntityManagerFactory("default");
+
+            // Initialisation de SessionFactory pour Hibernate
+            org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration().configure(); // Charge hibernate.cfg.xml
+            sessionFactory = configuration.buildSessionFactory();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur d'initialisation de l'EntityManagerFactory ou SessionFactory : " + e.getMessage());
+        }
     }
+
 
     // Méthode pour créer un nouvel enseignant
     public void createTeacher(String name, String surname, String contact) {
@@ -26,25 +37,37 @@ public class TeacherController {
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
-            transaction.begin();// Démarre la transaction
+            transaction.begin(); // Démarre la transaction
+
+            // Génère le login unique et le mot de passe
+            AdministratorController administratorController = new AdministratorController();
+            String login = administratorController.generateUniqueLogin(name, surname);
+            String password = administratorController.generatePassword();
 
             // Création de l'objet Teacher
             Teacher teacher = new Teacher();
             teacher.setName(name);
             teacher.setSurname(surname);
             teacher.setContact(contact);
+            teacher.setLogin(login);
+            teacher.setPassword(password);
 
-            entityManager.persist(teacher);    // Persiste l'objet Teacher dans la base de données
-            transaction.commit();              // Valide la transaction
+            // Persiste l'objet Teacher dans la base de données
+            entityManager.persist(teacher);
+            transaction.commit(); // Valide la transaction
+
+            System.out.println("Teacher created successfully with login: " + login + " and password: " + password);
         } catch (Exception e) {
             if (transaction.isActive()) {
-                transaction.rollback();        // Annule la transaction en cas d'erreur
+                transaction.rollback(); // Annule la transaction en cas d'erreur
             }
             e.printStackTrace();
         } finally {
-            entityManager.close();             // Ferme l'EntityManager pour libérer les ressources
+            entityManager.close(); // Ferme l'EntityManager pour libérer les ressources
         }
     }
+
+
 
     // Méthode pour récupérer les informations d'un enseignant par son identifiant
     public Teacher readTeacher(int idTeacher) {
@@ -67,20 +90,28 @@ public class TeacherController {
         List<Teacher> teachers = null;
 
         try {
-            //Requête HQL pour rechercher les enseignants dont le nom, prénom ou contact contient la chaîne de recherche
-             String hql = "FROM Teacher t WHERE t.name LIKE :searchTerm OR t.surname LIKE :searchTerm OR t.contact LIKE :searchTerm";
+            System.out.println("Executing search for: " + searchTerm);
+
+            // Requête HQL avec gestion de la sensibilité à la casse
+            String hql = "FROM Teacher t WHERE LOWER(t.name) LIKE LOWER(:searchTerm) " +
+                    "OR LOWER(t.surname) LIKE LOWER(:searchTerm) " +
+                    "OR LOWER(t.contact) LIKE LOWER(:searchTerm)";
             TypedQuery<Teacher> query = session.createQuery(hql, Teacher.class);
+            query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
 
-             //Ajoute des jokers (%) de chaque côté de searchTerm pour permettre la recherche partielle
-               query.setParameter("searchTerm", "%" + searchTerm + "%");
+            // Exécuter la requête
+            teachers = query.getResultList();
 
-            // Exécute la requête et récupère les résultats dans une liste
-              teachers = query.getResultList();
+            // Journal des résultats
+            System.out.println("Search results for '" + searchTerm + "':");
+            teachers.forEach(teacher -> System.out.println("Found: " + teacher.getName() + " " + teacher.getSurname()));
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             session.close(); // Ferme la session après l'exécution
         }
 
-        return teachers; // Retourne la liste des enseignants
+        return teachers != null ? teachers : List.of(); // Retourne une liste vide si aucun résultat
     }
 
 
@@ -90,30 +121,44 @@ public class TeacherController {
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
-            transaction.begin();// Démarre la transaction
+            transaction.begin();
 
             // Recherche de l'enseignant par son ID
             Teacher teacher = entityManager.find(Teacher.class, id);
-            if (teacher != null) {
-                // Mise à jour des informations de l'enseignant
-                teacher.setName(name);
-                teacher.setSurname(surname);
-                teacher.setContact(contact);
-
-                entityManager.merge(teacher);  // Met à jour l'objet Teacher dans la base de données
-                transaction.commit();          // Valide la transaction
-            } else {
-                System.out.println("Teacher not found with ID: " + id);
+            if (teacher == null) {
+                throw new IllegalArgumentException("Teacher not found with ID: " + id);
             }
+
+            // Validation des champs obligatoires
+            if (name == null && surname == null && contact == null) {
+                throw new IllegalArgumentException("At least one field (name, surname, or contact) must be provided");
+            }
+
+            // Mise à jour des champs non-nuls
+            if (name != null) {
+                teacher.setName(name);
+            }
+            if (surname != null) {
+                teacher.setSurname(surname);
+            }
+            if (contact != null) {
+                teacher.setContact(contact);
+            }
+
+            entityManager.merge(teacher); // Enregistrer les modifications
+            transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
-                transaction.rollback(); // Annule la transaction en cas d'erreur
+                transaction.rollback();
             }
-            e.printStackTrace();
+            throw e; // Propager l'exception
         } finally {
-            entityManager.close(); // Ferme l'EntityManager
+            entityManager.close();
         }
     }
+
+
+
 
     public void assignmentCourseToTeacher(Teacher teacher, Course course) {
 
