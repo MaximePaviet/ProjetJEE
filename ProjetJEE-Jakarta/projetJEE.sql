@@ -81,41 +81,10 @@ CREATE TABLE administrator (
 
 
 
-
--- Insérer des données dans 'teacher'
-INSERT INTO teacher (idTeacher, login, password, name, surname, contact)
-VALUES
-    (1, 'jdoe', 'password123', 'John', 'Doe', 'jdoe@example.com');
-
--- Insérer des données dans 'student'
-INSERT INTO student (idStudent, login, password, name, surname, dateBirth, contact, schoolYear)
-VALUES
-    (1, 'sara123', 'pass123', 'Sara', 'Guendouz', '2003-02-12', 'sguendouz@example.com', '2026');
-
 -- Insérer des données dans 'administrator'
 INSERT INTO administrator (idAdministrator, login, password)
 VALUES
-    (1, 'admin1', 'adminpass1');
-
--- Insérer des données dans 'course'
-INSERT INTO course (idCourse, name, teacher_id)
-VALUES
-    (1, 'Artificial Intelligence', 1);
-
--- Insérer des données dans 'student_course'
-INSERT INTO student_course (student_id, course_id)
-VALUES
-    (1, 1);
-
--- Insérer des données dans 'assessment'
-INSERT INTO assessment (idAssessment, name, average, idCourse)
-VALUES
-    (1, 'Midterm Exam', NULL, 1);
-
--- Insérer des données dans 'grade'
-INSERT INTO grade (idGrade, idStudent, idAssessment, idCourse, grade)
-VALUES
-    (1, 1, 1, 1, 18.5);
+    (1, 'admin', 'admin');
 
 -- Commit pour enregistrer les modifications
 COMMIT;

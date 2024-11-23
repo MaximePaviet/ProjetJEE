@@ -1,4 +1,4 @@
-package controller;
+package services;
 
 import jakarta.persistence.*;
 import models.Course;
@@ -10,13 +10,13 @@ import org.hibernate.Transaction;
 
 import java.util.List;
 
-public class TeacherController {
+public class TeacherService {
 
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
 
     // Constructeur pour initialiser l'EntityManagerFactory
-    public TeacherController() {
+    public TeacherService() {
         try {
             // Initialisation de EntityManagerFactory pour JPA
             entityManagerFactory = Persistence.createEntityManagerFactory("default");
@@ -40,9 +40,9 @@ public class TeacherController {
             transaction.begin(); // Démarre la transaction
 
             // Génère le login unique et le mot de passe
-            AdministratorController administratorController = new AdministratorController();
-            String login = administratorController.generateUniqueLogin(name, surname);
-            String password = administratorController.generatePassword();
+            AdministratorService administratorService = new AdministratorService();
+            String login = administratorService.generateUniqueLogin(name, surname);
+            String password = administratorService.generatePassword();
 
             // Création de l'objet Teacher
             Teacher teacher = new Teacher();
