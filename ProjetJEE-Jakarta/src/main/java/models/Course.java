@@ -32,8 +32,9 @@ public class Course {
 
 
     @ManyToOne
-    @JoinColumn(name = "idTeacher", nullable = true ) // Clé étrangère vers Teacher
+    @JoinColumn(name = "idTeacher", nullable = true) // idTeacher peut être null
     private Teacher teacher;
+
 
 
     public int getIdCourse() {

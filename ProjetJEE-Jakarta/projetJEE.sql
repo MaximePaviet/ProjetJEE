@@ -33,7 +33,7 @@ CREATE TABLE student (
 CREATE TABLE course (
                         idCourse INT AUTO_INCREMENT PRIMARY KEY,
                         name VARCHAR(255) NOT NULL,
-                        teacher_id INT NOT NULL,
+                        teacher_id INT NULL,
                         CONSTRAINT fk_teacher_course FOREIGN KEY (teacher_id) REFERENCES teacher(idTeacher) ON DELETE CASCADE
 );
 
@@ -85,7 +85,7 @@ CREATE TABLE administrator (
 -- Insérer des données dans 'teacher'
 INSERT INTO teacher (idTeacher, login, password, name, surname, contact)
 VALUES
-    (1, 'jdoe', 'password123', 'John', 'Doe', 'jdoe@example.com');
+    (1, 'sty', 'passw3', 'hola', 'ty', 'ht@example.com');
 
 -- Insérer des données dans 'student'
 INSERT INTO student (idStudent, login, password, name, surname, dateBirth, contact, schoolYear)
