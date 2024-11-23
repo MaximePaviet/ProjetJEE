@@ -21,21 +21,12 @@ public class Course {
     @Column(name = "name")
     private String name;
 
-
-    @ManyToMany
-    @JoinTable(
-            name = "student_course",
-            joinColumns = @JoinColumn(name = "idStudent"),
-            inverseJoinColumns = @JoinColumn(name = "idCourse")
-    )
+    @ManyToMany(mappedBy = "courseList")
     private List<Student> studentList;
-
 
     @ManyToOne
     @JoinColumn(name = "idTeacher", nullable = true) // idTeacher peut être null
     private Teacher teacher;
-
-
 
     public int getIdCourse() {
         return idCourse;
