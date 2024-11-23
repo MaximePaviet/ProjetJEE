@@ -57,6 +57,36 @@ public class AdministratorController {
 
         return count > 0;
     }
+    // Génère un login unique basé sur le prénom et le nom
+    public  String generateUniqueLoginStudent(String firstName, String lastName) {
+        String baseLogin = firstName.substring(0, 1).toLowerCase() + lastName.toLowerCase();
+        String uniqueLogin = baseLogin;
+        int count = 1;
+
+        // Vérifie si le login existe déjà dans la base de données
+        while (isLoginExistsStudent(uniqueLogin)) {
+            uniqueLogin = baseLogin + count;
+            count++;
+        }
+
+        return uniqueLogin;
+    }
+    // Vérifie dans la base de données si le login existe déjà
+    public  boolean isLoginExistsStudent(String login) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        long count = 0;
+
+        try {
+            TypedQuery<Long> query = entityManager.createQuery(
+                    "SELECT COUNT(s) FROM Student s WHERE s.login = :login", Long.class);
+            query.setParameter("login", login);
+            count = query.getSingleResult();
+        } finally {
+            entityManager.close();
+        }
+
+        return count > 0;
+    }
 
     // Génère un mot de passe aléatoire de 9 caractères
     public String generatePassword() {
