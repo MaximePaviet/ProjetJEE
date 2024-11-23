@@ -63,6 +63,7 @@
 
     input::placeholder {
       color: #000000;
+      opacity: 70%;
     }
 
     .right{
