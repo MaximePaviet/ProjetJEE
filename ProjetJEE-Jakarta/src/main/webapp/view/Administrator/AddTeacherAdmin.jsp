@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Ajouter étudiant</title>
+    <title>Ajouter enseignant</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
@@ -98,12 +98,11 @@
 </head>
 <body>
 <a href="view/Administrator/StudentPageAdmin.jsp"><</a>
-<h1>Ajouter étudiant</h1>
+<h1>Ajouter enseignant</h1>
 <form  action="" method="POST">
     <div class="container">
         <label>Nom :<input type="text" name="surname" placeholder="Doe" required></label><br>
-        <label>Prénom :<input type="text" name="name" placeholder="John" required></label><br>
-        <label>Date de naissance :<input type="text" name="dateBirth" placeholder="YYYY-MM-DD" required></label>
+        <label>Prénom :<input type="text" name="name" placeholder="John" required></label>
     </div>
     <button type="submit">Ajouter</button>
 </form>
