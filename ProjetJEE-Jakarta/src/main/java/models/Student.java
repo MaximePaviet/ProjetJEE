@@ -7,6 +7,7 @@ import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -38,9 +39,14 @@ public class Student {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "courseList", columnDefinition = "json")
-    @Type(JsonStringType.class)
-    private String courseList;
+    @ManyToMany
+    @JoinTable(
+            name = "student_course",
+            joinColumns = @JoinColumn(name = "idStudent"),
+            inverseJoinColumns = @JoinColumn(name = "idCourse")
+    )
+    private List<Course> courseList;
+
 
     // Getters et Setters
 
@@ -106,11 +112,11 @@ public class Student {
         this.password = password;
     }
 
-    public String getCourseList() {
+    public List<Course> getCourseList() {
         return courseList;
     }
 
-    public void setCourseList(String courseList) {
+    public void setCourseList(List<Course> courseList) {
         this.courseList = courseList;
     }
 

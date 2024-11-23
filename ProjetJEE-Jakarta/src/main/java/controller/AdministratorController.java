@@ -1,6 +1,7 @@
 package controller;
 
 import jakarta.persistence.EntityManager;
+import models.Course;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
@@ -15,7 +16,7 @@ public class AdministratorController {
 
     // Constructeur pour initialiser l'EntityManagerFactory
     public AdministratorController() {
-        this.entityManagerFactory = Persistence.createEntityManagerFactory("myPersistenceUnit");
+        this.entityManagerFactory = Persistence.createEntityManagerFactory("default");
     }
 
     // Méthode pour fermer EntityManagerFactory lorsque plus nécessaire
@@ -26,7 +27,7 @@ public class AdministratorController {
     }
 
     // Génère un login unique basé sur le prénom et le nom
-    public String generateUniqueLogin(String firstName, String lastName) {
+    public  String generateUniqueLogin(String firstName, String lastName) {
         String baseLogin = firstName.substring(0, 1).toLowerCase() + lastName.toLowerCase();
         String uniqueLogin = baseLogin;
         int count = 1;
@@ -41,7 +42,7 @@ public class AdministratorController {
     }
 
     // Vérifie dans la base de données si le login existe déjà
-    private boolean isLoginExists(String login) {
+    public  boolean isLoginExists(String login) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         long count = 0;
 
@@ -70,6 +71,8 @@ public class AdministratorController {
 
         return password.toString();
     }
+
+    //public List<List<Course>> readStudentCourses(){}
 
 
 }

@@ -45,16 +45,16 @@ public class TestBDD {
             assessment.setIdCourse(1);
             assessment.setName("QCMTest");
             assessment.setAverage(10.0);
-            assessment.setGradeList("[10.0,11.0,9.0]");
+            //assessment.setGradeList("[10.0,11.0,9.0]");
 
             Course course = new Course();
-            course.setIdTeacher(1);
+            //course.setIdTeacher(1);
             course.setName("coursTest");
-            course.setStudentList("[1]");
+            //course.setStudentList("[1]");
 
             Grade grade = new Grade();
             grade.setIdStudent(1);
-            grade.setIdAssessment(2);
+            //grade.setIdAssessment(2);
             grade.setIdCourse(1);
             grade.setGrade(10.0);
 
@@ -66,7 +66,7 @@ public class TestBDD {
             student.setSchoolYear("2026");
             student.setLogin("mpaviet");
             student.setPassword("ABCDEFGHIJ");
-            student.setCourseList("[1,2]");
+            //student.setCourseList("[1,2]");
 
             Teacher teacher = new Teacher();
             teacher.setName("Sonia");
@@ -74,7 +74,7 @@ public class TestBDD {
             teacher.setContact("syassa@cy-tech.fr");
             teacher.setLogin("syassa");
             teacher.setPassword("ABCDEFGHIJ");
-            teacher.setCourseList("[1,2]");
+            //teacher.setCourseList("[1,2]");
 
             session.persist(administrator);
             session.persist(assessment);
