@@ -3,11 +3,13 @@ package services;
 import jakarta.persistence.*;
 import models.Course;
 
+import models.Student;
 import models.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherService {
@@ -81,6 +83,23 @@ public class TeacherService {
         }
 
         return teacher; // Retourne l'objet Teacher trouvé ou null si non trouvé
+    }
+
+    // Méthode pour récupérer tous les profs
+    public List<Teacher> readTeacherList() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Teacher> teachers = new ArrayList<>();
+
+        try {
+            // Utilise HQL pour récupérer tous les professeurs
+            teachers = entityManager.createQuery("FROM Teacher", Teacher.class).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close(); // Ferme l'EntityManager
+        }
+
+        return teachers;
     }
 
     // Méthode de recherche flexible pour les enseignants par nom, prénom ou contact

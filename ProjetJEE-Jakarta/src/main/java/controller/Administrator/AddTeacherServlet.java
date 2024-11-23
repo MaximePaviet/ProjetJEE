@@ -1,4 +1,4 @@
-package controller;
+package controller.Administrator;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -38,5 +38,7 @@ public class AddTeacherServlet extends HttpServlet {
 
         TeacherService service = new TeacherService();
         service.createTeacher(name,surname,contact);
+
+        request.getRequestDispatcher("/view/Administrator/TeacherPageAdmin.jsp").forward(request, response);
     }
 }
