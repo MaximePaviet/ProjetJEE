@@ -66,7 +66,7 @@
             margin-left: 150px;
         }
 
-        button {
+        .button {
             color: white;
             background-color: #4F2BEC;
             border: none;
@@ -80,7 +80,7 @@
             padding: 5px 20px;
         }
 
-        button:hover{
+        .button:hover{
             opacity: 90%;
         }
 
@@ -110,7 +110,7 @@
     </style>
 </head>
 <body>
-<a href="view/Teacher/ConnexionTeacher.jsp"><</a>
+<a href="${pageContext.request.contextPath}/view/Student/ConnexionStudent.jsp"><</a>
 <h1>Mon Profil</h1>
 <div class="profileInfo">
     <p><strong>Nom :</strong> <span id="studentName">Chargement...</span></p>
@@ -121,7 +121,7 @@
 <div class="container">
     <h2>Liste des cours :</h2>
     <div class="right">
-        <button>Relevé de notes</button>
+        <a class="button" href="${pageContext.request.contextPath}/view/Student/TranscriptStudent.jsp">Relevé de notes</a>
     </div>
 </div>
 <table id="studentsTable">

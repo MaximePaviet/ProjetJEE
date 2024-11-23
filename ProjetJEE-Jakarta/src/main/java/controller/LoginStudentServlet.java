@@ -61,7 +61,7 @@ public class LoginStudentServlet extends HttpServlet {
 
         // Validation des identifiants
         if (loginExist(login, password)) {
-            request.getRequestDispatcher("/view/Student/HomeStudent.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/Student/ProfileStudent.jsp").forward(request, response);
         } else {
             request.setAttribute("errorMessage", "Login ou mot de passe incorrect !");
             request.getRequestDispatcher("/view/Student/ConnexionStudent.jsp").forward(request, response);

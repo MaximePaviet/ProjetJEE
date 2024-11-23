@@ -90,7 +90,15 @@
             color: #A3AED0;
         }
 
-
+        .error-message {
+            color: red;
+            font-weight: bold;
+            position: absolute;
+            top: 305px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
         .toggle-password {
             position: absolute;
             top: 65.65%;
@@ -130,7 +138,11 @@
 <h1>CYSCOLARITÉ</h1>
 <h2>Espace Enseignant</h2>
 <hr>
-<form action="${pageContext.request.contextPath}/validateLogin" method="POST">
+<form action="${pageContext.request.contextPath}/teacherLogin" method="POST">
+    <!-- Afficher le message d'erreur si l'attribut errorMessage existe -->
+    <div class="error-message">
+        ${errorMessage}
+    </div>
     <label>Email<span class="asterisque">*</span><br>
         <input type="text" name="login" placeholder="mail@exemple.com" required>
     </label> <br>

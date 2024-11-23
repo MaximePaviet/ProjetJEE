@@ -116,7 +116,7 @@
     </style>
 </head>
 <body>
-<a href="view/Administrator/HomeAdministrator.jsp"><</a>
+<a href="${pageContext.request.contextPath}/view/Teacher/ProfileTeacher.jsp"><</a>
 <h1>Page cours</h1>
 <div class="container">
     <div class="searchBar">
@@ -124,7 +124,7 @@
         <input type="text" name="search" placeholder="Recherche">
     </div>
     <div class="right">
-        <a href="" class="button">Ajouter évaluation</a>
+        <a href="${pageContext.request.contextPath}/view/Teacher/AddAssessmentTeacher.jsp" class="button">Ajouter évaluation</a>
     </div>
 </div>
 <table id="studentsTable">

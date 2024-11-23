@@ -110,7 +110,7 @@
     </style>
 </head>
 <body>
-<a href="view/Administrator/CoursePageTeacher.jsp"><</a>
+<a href="${pageContext.request.contextPath}/view/Teacher/CoursePageTeacher.jsp"><</a>
 <h1>Ajouter évaluation</h1>
 <form  action="" method="POST">
     <label><span class="assessmentName">Nom</span> :<input type="text" name="nameCourse" placeholder="Nom de l'évaluation" required></label>

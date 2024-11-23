@@ -79,7 +79,7 @@
     </style>
 </head>
 <body>
-<a href="view/Teacher/ConnexionTeacher.jsp"><</a>
+<a href="${pageContext.request.contextPath}/view/Teacher/ConnexionTeacher.jsp"><</a>
 <h1>Mon Profil</h1>
 <div class="profileInfo">
     <p><strong>Nom :</strong> <span id="studentName">Chargement...</span></p>

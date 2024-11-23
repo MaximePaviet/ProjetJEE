@@ -60,7 +60,7 @@ public class LoginTeacherServlet extends HttpServlet {
 
         // Validation des identifiants
         if (loginExist(login, password)) {
-            request.getRequestDispatcher("/view/Teacher/HomeTeacher.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/Teacher/ProfileTeacher.jsp").forward(request, response);
         } else {
             request.setAttribute("errorMessage", "Login ou mot de passe incorrect !");
             request.getRequestDispatcher("/view/Teacher/ConnexionTeacher.jsp").forward(request, response);

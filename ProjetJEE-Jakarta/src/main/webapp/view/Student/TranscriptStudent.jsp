@@ -110,7 +110,7 @@
     </style>
 </head>
 <body>
-<a href="view/Teacher/ConnexionTeacher.jsp"><</a>
+<a href="${pageContext.request.contextPath}/view/Teacher/ConnexionTeacher.jsp"><</a>
 <h1>Relevé de notes</h1>
 </body>
 </html>
