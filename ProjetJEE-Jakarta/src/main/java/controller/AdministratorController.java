@@ -60,7 +60,7 @@ public class AdministratorController {
 
     // Génère un mot de passe aléatoire de 9 caractères
     public String generatePassword() {
-        final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+        final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder(9); // Longueur fixe de 9 caractères
 
