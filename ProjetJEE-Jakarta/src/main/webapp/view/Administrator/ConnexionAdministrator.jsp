@@ -94,7 +94,7 @@
              color: red;
              font-weight: bold;
              position: absolute;
-             top: 235px; /* Ajustez la position en fonction de votre design */
+             top: 305px;
              left: 50%;
              transform: translateX(-50%);
              z-index: 10;
@@ -103,7 +103,7 @@
 
     .toggle-password {
             position: absolute;
-            top: 55.45%;
+            top: 65.65%;
             right: 36%;
             cursor: pointer;
             color: #A3AED0;
@@ -112,7 +112,7 @@
         }
 
         .toggle-password:hover {
-            color: #4F2BEC; /* Couleur en hover */
+            color: #4F2BEC;
         }
 
         button{
@@ -136,7 +136,7 @@
     </style>
 </head>
 <body>
-    <a href="${pageContext.request.contextPath}/view/index.jsp"></a>
+    <a href="${pageContext.request.contextPath}/view/index.jsp"><</a>
     <h1>CYSCOLARITÉ</h1>
     <h2>Espace Administrateur</h2>
     <hr>
