@@ -9,17 +9,13 @@ import org.hibernate.annotations.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
-@Table(name="assessment")
+@Table(name = "assessment")
 public class Assessment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idAssessment")
     private int idAssessment;
-
-    @Column(name = "idCourse")
-    private int idCourse;
 
     @Column(name = "name")
     private String name;
@@ -27,24 +23,21 @@ public class Assessment {
     @Column(name = "average")
     private double average;
 
+    @ManyToOne(optional = false) // Relation obligatoire avec Course
+    @JoinColumn(name = "idCourse", nullable = false) // Clé étrangère non nullable
+    private Course course;
+
     @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> gradeList = new ArrayList<>();
 
     // Getters et Setters
+
     public int getIdAssessment() {
         return idAssessment;
     }
 
     public void setIdAssessment(int idAssessment) {
         this.idAssessment = idAssessment;
-    }
-
-    public int getIdCourse() {
-        return idCourse;
-    }
-
-    public void setIdCourse(int idCourse) {
-        this.idCourse = idCourse;
     }
 
     public String getName() {
@@ -63,8 +56,19 @@ public class Assessment {
         this.average = average;
     }
 
-    public List<Grade> getGradeList(){ return gradeList; }
+    public Course getCourse() {
+        return course;
+    }
 
-    public void setGradeList(List<Grade> gradeList){ this.gradeList = gradeList; }
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public List<Grade> getGradeList() {
+        return gradeList;
+    }
+
+    public void setGradeList(List<Grade> gradeList) {
+        this.gradeList = gradeList;
+    }
 }
-
