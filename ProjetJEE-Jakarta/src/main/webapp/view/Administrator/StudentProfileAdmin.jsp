@@ -79,7 +79,7 @@
     </style>
 </head>
 <body>
-<a href="view/Administrator/StudentPageAdmin.jsp"><</a>
+<a href="${pageContext.request.contextPath}/view/Administrator/StudentPageAdmin.jsp"><</a>
 <h1>Profil étudiant</h1>
 <div class="profileInfo">
     <p><strong>Nom :</strong> <span id="studentName">Chargement...</span></p>

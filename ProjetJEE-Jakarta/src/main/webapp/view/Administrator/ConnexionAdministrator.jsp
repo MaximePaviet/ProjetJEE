@@ -90,10 +90,20 @@
             color: #A3AED0;
         }
 
+         .error-message {
+             color: red;
+             font-weight: bold;
+             position: absolute;
+             top: 235px; /* Ajustez la position en fonction de votre design */
+             left: 50%;
+             transform: translateX(-50%);
+             z-index: 10;
+         }
 
-        .toggle-password {
+
+    .toggle-password {
             position: absolute;
-            top: 65.65%;
+            top: 55.45%;
             right: 36%;
             cursor: pointer;
             color: #A3AED0;
@@ -126,11 +136,16 @@
     </style>
 </head>
 <body>
-    <a href="${pageContext.request.contextPath}/view/index.jsp"><</a>
+    <a href="${pageContext.request.contextPath}/view/index.jsp"></a>
     <h1>CYSCOLARITÉ</h1>
     <h2>Espace Administrateur</h2>
     <hr>
-    <form action="${pageContext.request.contextPath}/validateLogin" method="POST">
+    <form action="${pageContext.request.contextPath}/adminLogin" method="POST">
+        <!-- Afficher le message d'erreur si l'attribut errorMessage existe -->
+        <div class="error-message">
+            ${errorMessage}
+        </div>
+
         <label>Email<span class="asterisque">*</span><br>
             <input type="text" name="login" placeholder="mail@exemple.com" required>
         </label> <br>
@@ -141,6 +156,7 @@
             </div>
         </label> <br>
         <button type="submit">Connexion</button>
+
     </form>
 
     <script>

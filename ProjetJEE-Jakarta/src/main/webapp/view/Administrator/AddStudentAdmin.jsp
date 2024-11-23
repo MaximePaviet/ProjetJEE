@@ -97,7 +97,7 @@
     </style>
 </head>
 <body>
-<a href="view/Administrator/StudentPageAdmin.jsp"><</a>
+<a href="${pageContext.request.contextPath}/view/Administrator/StudentPageAdmin.jsp"><</a>
 <h1>Ajouter étudiant</h1>
 <form  action="" method="POST">
     <div class="container">

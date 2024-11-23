@@ -5,7 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import models.Administrator;
+import models.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -13,8 +13,8 @@ import org.hibernate.query.Query;
 
 import java.io.IOException;
 
-@WebServlet(name = "LoginAdminServlet", value = "/adminLogin")
-public class LoginAdminServlet extends HttpServlet {
+@WebServlet(name = "LoginTeacherServlet", value = "/teacherLogin")
+public class LoginTeacherServlet extends HttpServlet {
 
     private SessionFactory sessionFactory;
 
@@ -35,11 +35,11 @@ public class LoginAdminServlet extends HttpServlet {
         boolean isValid = false;
 
         // HQL pour vérifier les identifiants
-        String hql = "FROM Administrator WHERE login = :login AND password = :password";
+        String hql = "FROM Teacher WHERE login = :login AND password = :password";
 
         try (Session session = sessionFactory.openSession()) {
             // Création de la requête
-            Query<Administrator> query = session.createQuery(hql, Administrator.class);
+            Query<Teacher> query = session.createQuery(hql, Teacher.class);
             query.setParameter("login", login);
             query.setParameter("password", password);
 
@@ -60,10 +60,10 @@ public class LoginAdminServlet extends HttpServlet {
 
         // Validation des identifiants
         if (loginExist(login, password)) {
-            request.getRequestDispatcher("/view/Administrator/HomeAdministrator.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/Teacher/HomeTeacher.jsp").forward(request, response);
         } else {
             request.setAttribute("errorMessage", "Login ou mot de passe incorrect !");
-            request.getRequestDispatcher("/view/Administrator/ConnexionAdministrator.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/Teacher/ConnexionTeacher.jsp").forward(request, response);
         }
     }
 }

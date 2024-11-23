@@ -133,7 +133,7 @@
     </style>
 </head>
 <body>
-<a href="view/Administrator/HomeAdministrator.jsp"><</a>
+<a href="${pageContext.request.contextPath}/view/Administrator/HomeAdministrator.jsp"><</a>
 <h1>Page enseignants</h1>
 <div class="container">
     <div class="searchBar">
@@ -142,7 +142,7 @@
     </div>
     <div class="right">
         <button>Filtre</button>
-        <a href="" class="button">Ajouter Enseignant</a>
+        <a href="${pageContext.request.contextPath}/view/Administrator/AddTeacherAdmin.jsp" class="button">Ajouter Enseignant</a>
     </div>
 </div>
 <table id="studentsTable">
