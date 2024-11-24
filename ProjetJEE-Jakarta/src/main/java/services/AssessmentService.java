@@ -1,4 +1,4 @@
-package controller;
+package services;
 
 import jakarta.persistence.*;
 import models.Assessment;
@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 
-public class AssessmentController {
+public class AssessmentService {
 
     // Constructeur pour initialiser l'EntityManagerFactory
-    public AssessmentController() {
+    public AssessmentService() {
         entityManagerFactory = Persistence.createEntityManagerFactory("models.Assessment");
     }
 

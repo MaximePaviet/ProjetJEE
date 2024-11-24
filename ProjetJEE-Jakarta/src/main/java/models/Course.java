@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.*;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
