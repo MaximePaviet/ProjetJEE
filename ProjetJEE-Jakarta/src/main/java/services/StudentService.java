@@ -1,42 +1,57 @@
-package controller;
+package services;
 
 import jakarta.persistence.*;
 import models.Course;
 import models.Student;
 import org.hibernate.Session;
-import org.hibernate.SessionBuilder;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
-
 import java.sql.Date;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 
-public class StudentController {
+public class StudentService {
 
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
     // Constructeur pour initialiser l'EntityManagerFactory
-    public StudentController() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("default");
+    public StudentService() {
+        try {
+            // Initialisation de EntityManagerFactory pour JPA
+            entityManagerFactory = Persistence.createEntityManagerFactory("default");
+
+            // Initialisation de SessionFactory pour Hibernate
+            org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration().configure(); // Charge hibernate.cfg.xml
+            sessionFactory = configuration.buildSessionFactory();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur d'initialisation de l'EntityManagerFactory ou SessionFactory : " + e.getMessage());
+        }
     }
-    public void createStudent(String name, String surname, Date dateBirth, String contact) {
+    public void createStudent(String name, String surname, Date dateBirth, String contact, String schoolYear) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
             transaction.begin();// Démarre la transaction
 
+            // Génère le login unique et le mot de passe
+            AdministratorService administratorService = new AdministratorService();
+            String login = administratorService.generateUniqueLoginStudent(name, surname);
+            String password = administratorService.generatePassword();
+
             // Création de l'objet Student
             Student student = new Student();
             student.setName(name);
             student.setSurname(surname);
-            student.setDateBirth(dateBirth.toLocalDate());
+            student.setDateBirth(dateBirth);
             student.setContact(contact);
+            student.setSchoolYear(schoolYear);
+            student.setLogin(login);
+            student.setPassword(password);
 
 
             entityManager.persist(student);    // Persiste l'objet Student dans la base de données
@@ -51,8 +66,9 @@ public class StudentController {
         }
     }
 
+
     // Méthode pour mettre à jour les informations d'un étudiant avec des paramètres spécifiques
-    public void updateStudent(Integer id, String name, String surname, Date dateBirth, String contact) {
+    public void updateStudent(Integer id, String name, String surname, Date dateBirth, String contact, String schoolYear) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
 
@@ -65,10 +81,11 @@ public class StudentController {
                 // Mise à jour des informations de l'étudiant
                 student.setName(name);
                 student.setSurname(surname);
-                student.setDateBirth(dateBirth.toLocalDate());
+                student.setDateBirth(dateBirth);
                 student.setContact(contact);
+                student.setSchoolYear(schoolYear);
 
-                entityManager.merge(student);  // Met à jour l'objet Student dans la base de données
+                entityManager.persist(student);  // Met à jour l'objet Student dans la base de données
                 transaction.commit();          // Valide la transaction
             } else {
                 System.out.println("Student not found with ID: " + id);
@@ -141,28 +158,37 @@ public class StudentController {
         return student;// Retourne l'objet Student trouvé
     }
 
-    // Méthode de recherche flexible pour les étudiants par nom, prénom ou contact
+    // Méthode de recherche flexible pour les enseignants par nom, prénom ou contact
     public List<Student> searchStudent(String searchTerm) {
         // Utilisation de sessionFactory pour obtenir la session
-        Session session = sessionFactory.openSession(); // SessionFactory est supposé être injecté ou défini dans la classe
+        Session session = sessionFactory.openSession();
         List<Student> students = null;
 
         try {
-            // Requête HQL pour rechercher les étudiants dont le nom, prénom ou contact contient la chaîne de recherche
-            String hql = "FROM Student s WHERE s.name LIKE :searchTerm OR s.surname LIKE :searchTerm OR s.contact LIKE :searchTerm";
+            System.out.println("Executing search for: " + searchTerm);
+
+            // Requête HQL avec gestion de la sensibilité à la casse
+            String hql = "FROM Student t WHERE LOWER(t.name) LIKE LOWER(:searchTerm) " +
+                    "OR LOWER(t.surname) LIKE LOWER(:searchTerm) " +
+                    "OR LOWER(t.contact) LIKE LOWER(:searchTerm)";
             TypedQuery<Student> query = session.createQuery(hql, Student.class);
+            query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
 
-            // Ajoute des jokers (%) de chaque côté de searchTerm pour permettre la recherche partielle
-            query.setParameter("searchTerm", "%" + searchTerm + "%");
-
-            // Exécute la requête et récupère les résultats dans une liste
+            // Exécuter la requête
             students = query.getResultList();
+
+            // Journal des résultats
+            System.out.println("Search results for '" + searchTerm + "':");
+            students.forEach(student -> System.out.println("Found: " + student.getName() + " " + student.getSurname()));
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             session.close(); // Ferme la session après l'exécution
         }
 
-        return students; // Retourne la liste des étudiants
+        return students != null ? students : List.of(); // Retourne une liste vide si aucun résultat
     }
+
     public List<Student> filtering(Course course) {
         // Utilisation de sessionFactory pour obtenir la session
         Session session = sessionFactory.openSession(); // SessionFactory est supposé être injecté dans la classe
@@ -184,46 +210,60 @@ public class StudentController {
 
         return students; // Retourne la liste des étudiants
     }
-    public void registrationCourse(int idStudent, int idCourse) {
-        // Ouverture de la session
+
+    public void registrationCourse(Course course, Student student) {
+        if (course == null || student == null) {
+            throw new IllegalArgumentException("Course and Student cannot be null");
+        }
+
+        // Ouvrir une session Hibernate
         Session session = sessionFactory.openSession();
         Transaction transaction = null;
 
         try {
-            // Début de la transaction
+            // Commencer une transaction
             transaction = session.beginTransaction();
 
-            // Récupère l'objet Student par son ID
-            Student student = session.get(Student.class, idStudent);
-            if (student == null) {
-                throw new IllegalArgumentException("Aucun étudiant trouvé avec l'ID : " + idStudent);
+            // Récupérer l'étudiant et le cours depuis la base de données
+            Student existingStudent = session.get(Student.class, student.getIdStudent());
+            if (existingStudent == null) {
+                throw new IllegalArgumentException("Student not found with ID: " + student.getIdStudent());
             }
 
-            // Récupère l'objet Course par son ID
-            Course course = session.get(Course.class, idCourse);
-            if (course == null) {
-                throw new IllegalArgumentException("Aucun cours trouvé avec l'ID : " + idCourse);
+            Course existingCourse = session.get(Course.class, course.getIdCourse());
+            if (existingCourse == null) {
+                throw new IllegalArgumentException("Course not found with ID: " + course.getIdCourse());
             }
 
-            // Ajoute le cours à la liste des cours de l'étudiant
-            if (!student.getCourseList().contains(course)) { // Évite les doublons
-                student.getCourseList().add(course);
+            // Vérifier si l'étudiant est déjà inscrit à ce cours
+            if (!existingStudent.getCourseList().contains(existingCourse)) {
+                // Ajouter le cours à la liste des cours de l'étudiant
+                existingStudent.getCourseList().add(existingCourse);
+
+                // Ajouter l'étudiant à la liste des étudiants du cours
+                existingCourse.getStudentList().add(existingStudent);
+
+                // Mettre à jour les entités dans la base de données
+                session.update(existingStudent);
+                session.update(existingCourse);
+            } else {
+                System.out.println("Student is already assigned to the course.");
             }
 
-            // Met à jour l'étudiant dans la base de données
-            session.update(student);
-
-            // Valide la transaction
+            // Commit de la transaction
             transaction.commit();
         } catch (Exception e) {
+            // Si une erreur survient, rollback la transaction
             if (transaction != null) {
-                transaction.rollback(); // Annule la transaction en cas d'erreur
+                transaction.rollback();
             }
-            throw e; // Relance l'exception pour gestion dans la couche supérieure
+            e.printStackTrace();
         } finally {
-            session.close(); // Ferme la session
+            // Fermer la session
+            session.close();
         }
     }
+
     public List<Course> readCourse(int idStudent) {
         // Ouverture de la session
         Session session = sessionFactory.openSession();
@@ -245,59 +285,6 @@ public class StudentController {
 
         return courses; // Retourne la liste des cours
     }
-    public static void main(String[] args) {
-        // Initialisation du StudentController
-        StudentController studentController = new StudentController();
-
-        // Test de la création d'un étudiant
-        System.out.println("### Test de création d'un étudiant ###");
-        studentController.createStudent("John", "Doe", java.sql.Date.valueOf(LocalDate.of(2000, 1, 1)), "john.doe@example.com");
-        List<Student> students = studentController.readStudentList();
-        System.out.println("Étudiants après création : " + students);
-
-        // Test de mise à jour d'un étudiant
-        System.out.println("\n### Test de mise à jour d'un étudiant ###");
-        Student studentToUpdate = students.get(0);
-        studentController.updateStudent(studentToUpdate.getIdStudent(), "John", "Smith", java.sql.Date.valueOf(LocalDate.of(2000, 1, 1)), "john.smith@example.com");
-        Student updatedStudent = studentController.readStudent(studentToUpdate.getIdStudent());
-        System.out.println("Étudiant mis à jour : " + updatedStudent);
-
-        // Test de suppression d'un étudiant
-        System.out.println("\n### Test de suppression d'un étudiant ###");
-        studentController.deleteStudent(studentToUpdate.getIdStudent());
-        Student deletedStudent = studentController.readStudent(studentToUpdate.getIdStudent());
-        System.out.println("Étudiant après suppression : " + deletedStudent);
-
-        // Test de recherche d'étudiant
-        System.out.println("\n### Test de recherche d'un étudiant ###");
-        studentController.createStudent("Jane", "Doe", java.sql.Date.valueOf(LocalDate.of(2001, 5, 15)), "jane.doe@example.com");
-        List<Student> searchResults = studentController.searchStudent("Jane");
-        System.out.println("Résultats de la recherche : " + searchResults);
-
-        // Test du filtrage des étudiants inscrits à un cours
-        System.out.println("\n### Test du filtrage des étudiants par cours ###");
-        Course course = new Course();  // Créez un cours ou récupérez-le de la base
-        studentController.createStudent("Tom", "Riddle", java.sql.Date.valueOf(LocalDate.of(1997, 12, 5)), "tom.riddle@example.com");
-        Student student = studentController.readStudentList().get(0);
-        studentController.registrationCourse(student.getIdStudent(), course.getIdCourse());
-        List<Student> studentsInCourse = studentController.filtering(course);
-        System.out.println("Étudiants inscrits au cours : " + studentsInCourse);
-
-        // Test de la récupération des cours d'un étudiant
-        System.out.println("\n### Test de la récupération des cours d'un étudiant ###");
-        List<Course> courses = studentController.readCourse(student.getIdStudent());
-        System.out.println("Cours de l'étudiant : " + courses);
-
-        // Test de l'inscription d'un étudiant à un cours
-        System.out.println("\n### Test de l'inscription d'un étudiant à un cours ###");
-        studentController.registrationCourse(student.getIdStudent(), course.getIdCourse());
-        List<Student> studentsInCourseAfterRegistration = studentController.filtering(course);
-        System.out.println("Étudiants inscrits au cours après inscription : " + studentsInCourseAfterRegistration);
-    }
-
-
-
-
 
 
 

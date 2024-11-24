@@ -1,21 +1,17 @@
-package controller;
+package services;
 
 import jakarta.persistence.EntityManager;
-import models.Course;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import java.security.SecureRandom;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
-public class AdministratorController {
+public class AdministratorService {
 
     private EntityManagerFactory entityManagerFactory;
 
     // Constructeur pour initialiser l'EntityManagerFactory
-    public AdministratorController() {
+    public AdministratorService() {
         this.entityManagerFactory = Persistence.createEntityManagerFactory("default");
     }
 
@@ -49,6 +45,36 @@ public class AdministratorController {
         try {
             TypedQuery<Long> query = entityManager.createQuery(
                     "SELECT COUNT(t) FROM Teacher t WHERE t.login = :login", Long.class);
+            query.setParameter("login", login);
+            count = query.getSingleResult();
+        } finally {
+            entityManager.close();
+        }
+
+        return count > 0;
+    }
+    // Génère un login unique basé sur le prénom et le nom
+    public  String generateUniqueLoginStudent(String firstName, String lastName) {
+        String baseLogin = firstName.substring(0, 1).toLowerCase() + lastName.toLowerCase();
+        String uniqueLogin = baseLogin;
+        int count = 1;
+
+        // Vérifie si le login existe déjà dans la base de données
+        while (isLoginExistsStudent(uniqueLogin)) {
+            uniqueLogin = baseLogin + count;
+            count++;
+        }
+
+        return uniqueLogin;
+    }
+    // Vérifie dans la base de données si le login existe déjà
+    public  boolean isLoginExistsStudent(String login) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        long count = 0;
+
+        try {
+            TypedQuery<Long> query = entityManager.createQuery(
+                    "SELECT COUNT(s) FROM Student s WHERE s.login = :login", Long.class);
             query.setParameter("login", login);
             count = query.getSingleResult();
         } finally {
