@@ -79,15 +79,37 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Administrator/StudentPageAdmin.jsp"><</a>
-<h1>Profil enseignant</h1>
+<a href="${pageContext.request.contextPath}/view/Administrator/HomeAdministrator.jsp"><</a>
+<h1>Profil de l'enseignant</h1>
+
+<%-- Afficher les informations sur l'enseignant --%>
+<%
+    models.Teacher teacher = (models.Teacher) request.getAttribute("teacher");
+    if (teacher != null) {
+%>
 <div class="profileInfo">
-    <p><strong>Nom :</strong> <span id="studentName">Chargement...</span></p>
-    <p><strong>Prénom :</strong> <span id="studentFirstName">Chargement...</span></p>
-    <p><strong>Contact :</strong> <span id="studentContact">Chargement...</span></p>
+    <p><strong>Nom :</strong> <%= teacher.getSurname() %></p>
+    <p><strong>Prénom :</strong> <%= teacher.getName() %></p>
+    <p><strong>Contact :</strong> <%= teacher.getContact() %></p>
 </div>
+<%
+} else {
+%>
+<p>Aucun enseignant trouvé.</p>
+<%
+    }
+%>
+
 <h2>Liste des cours :</h2>
-<table id="studentsTable">
+<%
+    java.util.List<models.Course> courses = (java.util.List<models.Course>) request.getAttribute("courses");
+    if (courses == null || courses.isEmpty()) {
+%>
+<p style="text-align: center;">Aucun cours trouvé pour cet enseignant.</p>
+<%
+} else {
+%>
+<table>
     <thead>
     <tr>
         <th>Cours</th>
@@ -96,10 +118,18 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Les lignes de données sont ajoutées dynamiquement ici -->
+    <% for (models.Course course : courses) { %>
+    <tr>
+        <td><%= course.getName() %></td>
+        <td><%= course.getStudentList().size() %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->
+        <td> Chargement ...</td> <!-- Si vous avez une méthode pour calculer la moyenne -->
+    </tr>
+    <% } %>
     </tbody>
-    <!-- Générer la case moyenne générale avec du JavaScript -->
 </table>
+<%
+    }
+%>
 </body>
 </html>
 

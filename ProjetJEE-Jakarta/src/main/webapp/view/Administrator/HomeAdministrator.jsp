@@ -69,7 +69,7 @@
 <a href="${pageContext.request.contextPath}/view/Administrator/ConnexionAdministrator.jsp"><</a>
 <h1>Accueil Administrateur</h1>
 <div class="container">
-  <a href="${pageContext.request.contextPath}/view/Administrator/TeacherPageAdmin.jsp" class="button">Enseignants</a>
+  <a href="${pageContext.request.contextPath}/TeacherPageServlet" class="button">Enseignants</a>
   <a href="${pageContext.request.contextPath}/view/Administrator/StudentPageAdmin.jsp" class="button">Étudiants</a>
   <a href="${pageContext.request.contextPath}/view/Administrator/CoursePageAdmin.jsp" class="button">Cours</a>
 </div>

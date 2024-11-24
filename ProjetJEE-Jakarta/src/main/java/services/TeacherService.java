@@ -233,8 +233,6 @@ public class TeacherService {
         }
     }
 
-
-
     // Ferme l'EntityManagerFactory
     public void close() {
         if (entityManagerFactory != null) {

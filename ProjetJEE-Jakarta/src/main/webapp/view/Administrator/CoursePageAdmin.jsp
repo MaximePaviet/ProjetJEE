@@ -88,7 +88,7 @@
       text-align: center;
     }
 
-    .button {
+    button {
       color: white;
       background-color: #4F2BEC;
       border: 2px solid #4F2BEC;
@@ -102,7 +102,7 @@
       padding: 5px 20px;
     }
 
-    .button:hover {
+    button:hover {
       opacity: 90%;
     }
 
@@ -132,30 +132,32 @@
   </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Administrator/HomeAdministrator.jsp"><</a>
-<h1>Page cours</h1>
-<div class="container">
-  <div class="searchBar">
-    <span>🔍︎</span>
-    <input type="text" name="search" placeholder="Recherche">
+  <a href="${pageContext.request.contextPath}/view/Administrator/HomeAdministrator.jsp"><</a>
+  <h1>Page cours</h1>
+  <div class="container">
+    <div class="searchBar">
+      <span>🔍︎</span>
+      <input type="text" name="search" placeholder="Recherche">
+    </div>
+    <div class="right">
+      <form action="${pageContext.request.contextPath}/addCourse" method="POST">
+        <input class="courseName" type="text" name="courseName" placeholder="Nom du cours" required>
+        <button type="submit">Ajouter cours</button>
+      </form>
+    </div>
   </div>
-  <div class="right">
-    <input class="courseName" type="text" name="courseName" placeholder="Nom du cours">
-    <a href="" class="button">Ajouter cours</a>
-  </div>
-</div>
-<table id="studentsTable">
-  <thead>
-  <tr>
-    <th>Cours</th>
-    <th>Professeur</th>
-    <th>Nombre d'élèves</th>
-    <th>Action</th>
-  </tr>
-  </thead>
-  <tbody>
-  <!-- Les lignes de données sont ajoutées dynamiquement ici -->
-  </tbody>
-</table>
+  <table id="studentsTable">
+    <thead>
+    <tr>
+      <th>Cours</th>
+      <th>Professeur</th>
+      <th>Nombre d'élèves</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Les lignes de données sont ajoutées dynamiquement ici -->
+    </tbody>
+  </table>
 </body>
 </html>

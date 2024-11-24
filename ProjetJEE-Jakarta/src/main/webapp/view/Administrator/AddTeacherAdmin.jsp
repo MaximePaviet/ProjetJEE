@@ -97,7 +97,7 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Administrator/StudentPageAdmin.jsp"><</a>
+<a href="${pageContext.request.contextPath}/TeacherPageServlet"><</a>
 <h1>Ajouter enseignant</h1>
 <form  action="${pageContext.request.contextPath}/addTeacher" method="POST">
     <div class="container">
