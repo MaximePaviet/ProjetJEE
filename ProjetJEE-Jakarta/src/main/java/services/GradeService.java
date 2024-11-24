@@ -15,18 +15,30 @@ public class GradeService {
     private SessionFactory sessionFactory;
     // Constructeur pour initialiser l'EntityManagerFactory
     public GradeService() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("models.Grade");
+        try {
+            // Initialisation de EntityManagerFactory pour JPA
+            entityManagerFactory = Persistence.createEntityManagerFactory("default");
+
+            // Initialisation de SessionFactory pour Hibernate
+            org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration().configure(); // Charge hibernate.cfg.xml
+            sessionFactory = configuration.buildSessionFactory();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur d'initialisation de l'EntityManagerFactory ou SessionFactory : " + e.getMessage());
+        }
     }
 
-    //Méthode qui renvoie la liste d'objet Grade d'un étudiant dans une matière
     public List<Grade> readGrade(int idStudent, int idCourse) {
         // Ouverture de la session
-        Session session = sessionFactory.openSession(); // Assurez-vous que sessionFactory est correctement configuré
+        Session session = sessionFactory.openSession();
         List<Grade> grades = null;
 
         try {
             // Requête HQL pour récupérer les grades correspondant à l'étudiant et au cours spécifiés
-            String hql = "FROM Grade g WHERE g.idStudent = :idStudent AND g.idCourse = :idCourse";
+            // La jointure via l'entité Assessment pour accéder à l'idCourse
+            String hql = "FROM Grade g " +
+                    "WHERE g.student.idStudent = :idStudent " +
+                    "AND g.assessment.course.idCourse = :idCourse";
             Query<Grade> query = session.createQuery(hql, Grade.class);
 
             // Définit les paramètres de la requête
@@ -35,13 +47,14 @@ public class GradeService {
 
             // Exécute la requête et récupère les résultats
             grades = query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             session.close(); // Ferme la session après l'exécution
         }
 
         return grades; // Retourne la liste des grades
     }
-    //Méthode qui renvoie la moyenne d'un étudiant dans une matière
     public float calculateAverage(int idStudent, int idCourse) {
         // Ouverture de la session
         Session session = sessionFactory.openSession();
@@ -50,8 +63,12 @@ public class GradeService {
 
         try {
             // Requête HQL pour récupérer les grades correspondant à l'étudiant et au cours spécifiés
-            String hql = "FROM Grade g WHERE g.idStudent = :idStudent AND g.idCourse = :idCourse";
+            String hql = "FROM Grade g " +
+                    "WHERE g.student.idStudent = :idStudent " +
+                    "AND g.assessment.course.idCourse = :idCourse";
             Query<Grade> query = session.createQuery(hql, Grade.class);
+
+            // Définit les paramètres de la requête
             query.setParameter("idStudent", idStudent);
             query.setParameter("idCourse", idCourse);
 
@@ -61,17 +78,20 @@ public class GradeService {
             if (!grades.isEmpty()) {
                 float sum = 0.0f;
                 for (Grade grade : grades) {
-                    sum += grade.getGrade();
-                    count++;
+                    sum += grade.getGrade();  // Additionner toutes les notes
+                    count++;  // Compter le nombre de notes
                 }
-                average = sum / count;
+                average = sum / count;  // Calculer la moyenne
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            session.close(); // Ferme la session
+            session.close(); // Ferme la session après l'exécution
         }
 
-        return average; // Retourne la moyenne
+        return average;  // Retourne la moyenne
     }
+
     /*public Map<Student, Float> readGradeStudent(Course course) {
         // Ouverture de la session Hibernate
         Session session = sessionFactory.openSession();
