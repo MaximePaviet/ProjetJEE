@@ -1,24 +1,30 @@
-package controller;
+package services;
 
 import jakarta.persistence.*;
 import models.Course;
-import models.Student;
-import models.Teacher;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import java.util.HashMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class CourseController{
+public class CourseService {
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
 
     // Constructeur pour initialiser l'EntityManagerFactory
-    public CourseController() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("models.Course");
+    public CourseService() {
+        try {
+            // Initialisation de EntityManagerFactory pour JPA
+            entityManagerFactory = Persistence.createEntityManagerFactory("default");
+
+            // Initialisation de SessionFactory pour Hibernate
+            org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration().configure(); // Charge hibernate.cfg.xml
+            sessionFactory = configuration.buildSessionFactory();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur d'initialisation de l'EntityManagerFactory ou SessionFactory : " + e.getMessage());
+        }
     }
     public void createCourse(String name) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -112,6 +118,7 @@ public class CourseController{
         }
         return courses;
     }
+    /*
     public void assignmentStudentToCourse(Course course, Student student) {
         if (course == null || student == null) {
             throw new IllegalArgumentException("Course and Student cannot be null");
@@ -163,11 +170,5 @@ public class CourseController{
             // Fermer la session
             session.close();
         }
-    }
-
-
-
-
-
-
+    }*/
 }

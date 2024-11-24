@@ -1,25 +1,20 @@
-package controller;
-import models.Course;
+package services;
 import models.Grade;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import models.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.mapping.Map;
 import org.hibernate.query.Query;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
-public class GradeController {
+public class GradeService {
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
     // Constructeur pour initialiser l'EntityManagerFactory
-    public GradeController() {
+    public GradeService() {
         entityManagerFactory = Persistence.createEntityManagerFactory("models.Grade");
     }
 
@@ -138,12 +133,5 @@ public class GradeController {
 
         return transcript;  // Retourner la liste complète des grades de l'étudiant
     }
-
-
-
-
-
-
-
 }
 
