@@ -21,7 +21,7 @@ public class Assessment {
     private String name;
 
     @Column(name = "average")
-    private double average;
+    private Double average;
 
     @ManyToOne(optional = false) // Relation obligatoire avec Course
     @JoinColumn(name = "idCourse", nullable = false) // Clé étrangère non nullable
