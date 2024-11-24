@@ -158,8 +158,6 @@ public class TeacherService {
     }
 
 
-
-
     public void assignmentCourseToTeacher(Teacher teacher, Course course) {
 
         if (teacher == null || course == null) {
