@@ -133,12 +133,5 @@ public class GradeService {
 
         return transcript;  // Retourner la liste complète des grades de l'étudiant
     }
-
-
-
-
-
-
-
 }
 

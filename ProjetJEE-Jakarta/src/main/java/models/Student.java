@@ -1,14 +1,12 @@
 package models;
 
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.*;
-import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+
 
 @Entity
 @Table(name = "student")
@@ -16,7 +14,7 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idStudent")
-    private int idStudent;
+    private Integer idStudent;
 
     @Column(name = "name")
     private String name;
@@ -25,7 +23,7 @@ public class Student {
     private String surname;
 
     @Column(name = "dateBirth")
-    private LocalDate dateBirth;
+    private Date dateBirth;
 
     @Column(name = "contact")
     private String contact;
@@ -39,11 +37,11 @@ public class Student {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "student_course",
-            joinColumns = @JoinColumn(name = "idStudent"),
-            inverseJoinColumns = @JoinColumn(name = "idCourse")
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     private List<Course> courseList;
 
@@ -72,11 +70,11 @@ public class Student {
         this.surname = surname;
     }
 
-    public LocalDate getDateBirth() {
+    public Date getDateBirth() {
         return dateBirth;
     }
 
-    public void setDateBirth(LocalDate dateBirth) {
+    public void setDateBirth(Date dateBirth) {
         this.dateBirth = dateBirth;
     }
 
