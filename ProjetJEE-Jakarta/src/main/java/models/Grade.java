@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.beans.ConstructorProperties;
 
+import jakarta.persistence.*;
+
 @Entity
 @Table(name = "grade")
 public class Grade {
@@ -12,18 +14,16 @@ public class Grade {
     @Column(name = "idGrade")
     private int idGrade;
 
-    @Column(name = "idStudent")
-    private int idStudent;
-
-    @Column(name = "idCourse")
-    private int idCourse;
-
     @Column(name = "grade")
     private double grade;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "idAssessment", nullable = false)
     private Assessment assessment;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "idStudent", nullable = false)
+    private Student student;
 
     // Getters et Setters
 
@@ -31,26 +31,8 @@ public class Grade {
         return idGrade;
     }
 
-    public void setIdGrade(int id) { this.idGrade = id; }
-
-    public int getIdStudent() {
-        return idStudent;
-    }
-
-    public void setIdStudent(int idStudent) {
-        this.idStudent = idStudent;
-    }
-
-    public Assessment getAssessment(){ return assessment;}
-
-    public void setAssessment(Assessment assessment){ this.assessment = assessment;}
-
-    public int getIdCourse() {
-        return idCourse;
-    }
-
-    public void setIdCourse(int idCourse) {
-        this.idCourse = idCourse;
+    public void setIdGrade(int id) {
+        this.idGrade = id;
     }
 
     public double getGrade() {
@@ -61,4 +43,19 @@ public class Grade {
         this.grade = grade;
     }
 
+    public Assessment getAssessment() {
+        return assessment;
+    }
+
+    public void setAssessment(Assessment assessment) {
+        this.assessment = assessment;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 }
