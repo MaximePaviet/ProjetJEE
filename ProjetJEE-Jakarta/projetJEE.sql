@@ -63,12 +63,12 @@ CREATE TABLE grade (
                        idStudent INT NOT NULL,                      -- Clé étrangère vers la table student
                        idAssessment INT NOT NULL,                   -- Clé étrangère vers la table assessment
                        grade FLOAT NOT NULL,                        -- Note attribuée (obligatoire)
-                       idCourse INT NOT NULL,                       -- Clé étrangère vers la table course (pour redondance)
+
 
     -- Contraintes de clé étrangère
                        CONSTRAINT fk_student_grade FOREIGN KEY (idStudent) REFERENCES student(idStudent) ON DELETE CASCADE,
-                       CONSTRAINT fk_assessment_grade FOREIGN KEY (idAssessment) REFERENCES assessment(idAssessment) ON DELETE CASCADE,
-                       CONSTRAINT fk_course_grade FOREIGN KEY (idCourse) REFERENCES course(idCourse) ON DELETE CASCADE
+                       CONSTRAINT fk_assessment_grade FOREIGN KEY (idAssessment) REFERENCES assessment(idAssessment) ON DELETE CASCADE
+
 );
 
 -- Table administrator
@@ -95,7 +95,28 @@ VALUES
 -- Insérer des données dans 'administrator'
 INSERT INTO administrator (idAdministrator, login, password)
 VALUES
-    (1, 'admin', 'admin');
+    (1, 'admin1', 'adminpass1');
+
+-- Insérer des données dans 'course'
+INSERT INTO course (idCourse, name, teacher_id)
+VALUES
+    (1, 'Artificial Intelligence', 1);
+
+-- Insérer des données dans 'student_course'
+INSERT INTO student_course (student_id, course_id)
+VALUES
+    (1, 1);
+
+-- Insérer des données dans 'assessment'
+INSERT INTO assessment (idAssessment, name, average, idCourse)
+VALUES
+    (1, 'Midterm Exam', NULL, 1);
+
+-- Insérer des données dans 'grade'
+INSERT INTO grade (idGrade, idStudent, idAssessment, grade)
+VALUES
+    (1, 1, 1, 18.5);
+
 
 -- Commit pour enregistrer les modifications
 COMMIT;
