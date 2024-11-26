@@ -1,3 +1,4 @@
+<%@ page import="models.Student" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
@@ -145,6 +146,14 @@
               <a href="${pageContext.request.contextPath}/view/Administrator/AddStudentAdmin.jsp" class="button">Ajouter Étudiant</a>
           </div>
       </div>
+      <%
+          java.util.List<models.Student> students = (java.util.List<Student>) request.getAttribute("students");
+          if (students == null || students.isEmpty()) {
+      %>
+      <p>Aucun enseignant trouvé.</p>
+      <%
+      } else {
+      %>
       <table id="studentsTable">
           <thead>
           <tr>
@@ -152,13 +161,62 @@
               <th>Prénom</th>
               <th>Date de naissance</th>
               <th>Contact</th>
+              <th>Promo</th>
               <th>Action</th>
           </tr>
           </thead>
           <tbody>
-          <!-- Les lignes de données sont ajoutées dynamiquement ici -->
+          <% for (models.Student student : students) { %>
+          <tr onclick="viewProfile(<%= student.getIdStudent() %>)" style="cursor: pointer;">
+              <td><%= student.getSurname() %></td>
+              <td><%= student.getName()%></td>
+              <td><%= student.getDateBirth()%></td>
+              <td><%= student.getContact() %></td>
+              <td><%= student.getSchoolYear() %></td>
+
+              <td>
+                  <button onclick="event.stopPropagation(); editTeacher(<%= student.getIdStudent() %>)">
+                      Modifier
+                  </button>
+              </td>
+          </tr>
+          <% } %>
           </tbody>
       </table>
+          <%
+            }
+            %>
+
+      <script>
+          // Fonction pour rediriger vers la page de profil
+          function viewProfile(idStudent) {
+              if (idStudent) {
+                  // Créez un formulaire HTML de manière dynamique
+                  const form = document.createElement("form");
+                  form.method = "POST"; // Utiliser POST au lieu de GET
+                  form.action = `${pageContext.request.contextPath}/StudentProfileAdminServlet`;
+
+                  // Ajoutez un champ caché contenant l'ID de l'enseignant
+                  const input = document.createElement("input");
+                  input.type = "hidden";
+                  input.name = "idStudent"; // Le nom doit correspondre à ce que le servlet attend
+                  input.value = idStudent;
+                  form.appendChild(input);
+
+                  // Ajoutez le formulaire à la page et soumettez-le
+                  document.body.appendChild(form);
+                  form.submit();
+              } else {
+                  console.error("Aucun ID étudiant n'a été transmis.");
+              }
+          }
+
+          // Fonction pour modifier un enseignant
+          function editStudent(idStudent) {
+              window.location.href = `${pageContext.request.contextPath}${window.location.pathname.replace("TeacherPageAdmin.jsp", "EditTeacher.jsp")}?idTeacher=${idTeacher}`;
+          }
+
+          </script>
   </body>
 </html>
 

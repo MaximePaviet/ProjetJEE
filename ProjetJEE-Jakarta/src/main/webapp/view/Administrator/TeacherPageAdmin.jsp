@@ -186,7 +186,7 @@
             // Créez un formulaire HTML de manière dynamique
             const form = document.createElement("form");
             form.method = "POST"; // Utiliser POST au lieu de GET
-            form.action = `${pageContext.request.contextPath}/TeacherProfileServlet`;
+            form.action = `${pageContext.request.contextPath}/TeacherProfileAdminServlet`;
 
             // Ajoutez un champ caché contenant l'ID de l'enseignant
             const input = document.createElement("input");
@@ -204,9 +204,38 @@
     }
 
     // Fonction pour modifier un enseignant
-    function editTeacher(idTeacher) {
-        window.location.href = `${pageContext.request.contextPath}${window.location.pathname.replace("TeacherPageAdmin.jsp", "EditTeacher.jsp")}?idTeacher=${idTeacher}`;
+    function editTeacher(idTeacher, name, surname, contact) {
+        if (idTeacher) {
+            // Créez un formulaire HTML de manière dynamique
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = `${pageContext.request.contextPath}/UpdateTeacherServlet`;
+
+            // Ajoutez les champs cachés pour chaque donnée
+            const inputs = [
+                { name: "idTeacher", value: idTeacher },
+                { name: "name", value: name },
+                { name: "surname", value: surname },
+                { name: "contact", value: contact },
+            ];
+
+            inputs.forEach(inputData => {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = inputData.name;
+                input.value = inputData.value;
+                form.appendChild(input);
+            });
+
+            // Ajoutez le formulaire à la page et soumettez-le
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            console.error("Les données de l'enseignant sont incomplètes.");
+        }
     }
+
+
 
 
 </script>

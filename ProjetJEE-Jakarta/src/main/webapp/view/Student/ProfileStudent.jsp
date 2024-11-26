@@ -112,18 +112,34 @@
 <body>
 <a href="${pageContext.request.contextPath}/view/Student/ConnexionStudent.jsp"><</a>
 <h1>Mon Profil</h1>
+
+<%
+    models.Student student = (models.Student) session.getAttribute("student");
+    java.util.List<models.Course> courses = student.getCourseList();
+    models.Teacher teacher =(models.Teacher) session.getAttribute("teacher");
+%>
 <div class="profileInfo">
-    <p><strong>Nom :</strong> <span id="studentName">Chargement...</span></p>
-    <p><strong>Prénom :</strong> <span id="studentFirstName">Chargement...</span></p>
-    <p><strong>Date de naissance :</strong> <span id="studentBirthDate">Chargement...</span></p>
-    <p><strong>Contact :</strong> <span id="studentContact">Chargement...</span></p>
+    <p><strong>Nom :</strong> <span id="studentName"><%= student.getSurname() %></span></p>
+    <p><strong>Prénom :</strong> <span id="studentFirstName"><%= student.getName() %></span></p>
+    <p><strong>Date de naissance :</strong> <span id="studentBirthDate"><%= student.getDateBirth() %></span></p>
+    <p><strong>Contact :</strong> <span id="studentContact"><%= student.getContact() %></span></p>
 </div>
 <div class="container">
     <h2>Liste des cours :</h2>
     <div class="right">
         <a class="button" href="${pageContext.request.contextPath}/view/Student/TranscriptStudent.jsp">Relevé de notes</a>
+        <a class="button" href="${pageContext.request.contextPath}/studentProfile">S'inscrire à un cours</a>
     </div>
 </div>
+
+<%
+    if (courses == null || courses.isEmpty()) {
+%>
+<p style="text-align: center;">Aucun cours trouvé pour cet élève.</p>
+<%
+} else {
+%>
+
 <table id="studentsTable">
     <thead>
     <tr>
@@ -133,10 +149,22 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Les lignes de données sont ajoutées dynamiquement ici -->
+    <% for (models.Course course : courses) {
+        models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
+    %>
+    <tr>
+        <td><%= course.getName() %></td>
+        <td>
+            <%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %>
+        </td>
+        <td>Chargement...</td>
+    </tr>
+    <% } %>
     </tbody>
-    <!-- Générer la case moyenne générale avec du JavaScript -->
 </table>
+<%
+    }
+%>
 </body>
 </html>
 

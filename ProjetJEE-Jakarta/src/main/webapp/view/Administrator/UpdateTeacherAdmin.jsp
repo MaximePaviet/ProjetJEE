@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Ajouter étudiant</title>
+    <title>Ajouter enseignant</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
@@ -97,15 +97,32 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/StudentPageServlet"><</a>
-<h1>Ajouter étudiant</h1>
-<form  action="${pageContext.request.contextPath}/StudentPageServlet" method="POST">
+<a href="${pageContext.request.contextPath}/TeacherPageServlet"><</a>
+<h1>Ajouter enseignant</h1>
+<%
+    models.Teacher teacher = (models.Teacher) request.getAttribute("teacher");
+    if (teacher == null) {
+%>
+<p style="color: red; text-align: center;">Aucun enseignant trouvé. Veuillez réessayer.</p>
+<%
+    }
+%>
+<form action="${pageContext.request.contextPath}/UpdateTeacherServlet" method="GET">
     <div class="container">
-        <label>Nom :<input type="text" name="surname" placeholder="Doe" required></label><br>
-        <label>Prénom :<input type="text" name="name" placeholder="John" required></label><br>
-        <label>Date de naissance :<input type="text" name="dateBirth" placeholder="YYYY-MM-DD" required></label>
+        <input type="hidden" name="id" value="<%= teacher != null ? teacher.getIdTeacher() : "" %>" />
+
+        <label>Nom :</label>
+        <input type="text" name="name" value="<%= teacher != null ? teacher.getName() : "" %>" />
+
+        <label>Prénom :</label>
+        <input type="text" name="surname" value="<%= teacher != null ? teacher.getSurname() : "" %>" />
+
+        <label>Contact :</label>
+        <input type="text" name="contact" value="<%= teacher != null ? teacher.getContact() : "" %>" />
     </div>
-    <button type="submit">Ajouter</button>
+    <button type="submit">Mettre à jour</button>
 </form>
+
+
 </body>
 </html>

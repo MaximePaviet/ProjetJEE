@@ -1,3 +1,5 @@
+<%@ page import="models.Student" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -147,7 +149,27 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Les lignes de données sont ajoutées dynamiquement ici -->
+    <%
+        List<Student> students = (List<Student>) request.getAttribute("students");
+        if (students != null) {
+            for (models.Student student : students) {
+    %>
+    <tr>
+        <td><%= student.getName() %></td>
+        <td><%= student.getSurname() %></td>
+        <td>
+            <!-- Champ de texte pour entrer la note -->
+            <input type="text" name="grade" placeholder="/20" required />
+        </td>
+    </tr>
+    <%
+        }
+    } else {
+    %>
+    <tr>
+        <td colspan="3">Aucun étudiant trouvé pour ce cours.</td>
+    </tr>
+    <% } %>
     </tbody>
 </table>
 </body>
