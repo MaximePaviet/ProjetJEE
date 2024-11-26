@@ -12,8 +12,8 @@ import services.TeacherService;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/TeacherProfileServlet")
-public class TeacherProfileServlet extends HttpServlet {
+@WebServlet("/TeacherProfileAdminServlet")
+public class TeacherProfileAdminServlet extends HttpServlet {
 
     private TeacherService teacherService;
 

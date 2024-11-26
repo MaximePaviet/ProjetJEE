@@ -134,6 +134,14 @@
 <body>
   <a href="${pageContext.request.contextPath}/view/Administrator/HomeAdministrator.jsp"><</a>
   <h1>Page cours</h1>
+  <%
+    java.util.List<models.Course> courses = (java.util.List<models.Course>) request.getAttribute("courses");
+    if (courses == null || courses.isEmpty()) {
+  %>
+  <p style="text-align: center;">Aucun cours trouvé </p>
+  <%
+  } else {
+  %>
   <div class="container">
     <div class="searchBar">
       <span>🔍︎</span>
@@ -156,8 +164,61 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Les lignes de données sont ajoutées dynamiquement ici -->
+    <% for (models.Course course : courses) {
+    models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours %>
+    <tr>
+      <td><%= course.getName() %></td>
+      <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->
+      <td> <%=course.getStudentList().size()%></td> <!-- Si vous avez une méthode pour calculer la moyenne -->
+      <td>
+        <button onclick="event.stopPropagation(); editCourse(<%= course.getIdCourse() %>)">
+          Modifier
+        </button>
+        <button onclick="event.stopPropagation(); deleteCourse(<%= course.getIdCourse() %>)">
+          Supprimer
+        </button>
+      </td>
+    </tr>
+    <% } %>
     </tbody>
   </table>
+  <%
+    }
+  %>
+
+  <script>
+    // Fonction pour rediriger vers la page de profil
+    function viewProfile(idCourse) {
+      if (idCourse) {
+        // Créez un formulaire HTML de manière dynamique
+        const form = document.createElement("form");
+        form.method = "POST"; // Utiliser POST au lieu de GET
+        form.action = `${pageContext.request.contextPath}/CourseProfileAdminServlet`;
+
+        // Ajoutez un champ caché contenant l'ID de l'enseignant
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "idCourse"; // Le nom doit correspondre à ce que le servlet attend
+        input.value = idCourse;
+        form.appendChild(input);
+
+        // Ajoutez le formulaire à la page et soumettez-le
+        document.body.appendChild(form);
+        form.submit();
+      } else {
+        console.error("Aucun ID cours n'a été transmis.");
+      }
+    }
+
+    // Fonction pour modifier un enseignant
+    function editCourse(idCourse) {
+      window.location.href = `${pageContext.request.contextPath}${window.location.pathname.replace("TeacherPageAdmin.jsp", "EditTeacher.jsp")}?idTeacher=${idTeacher}`;
+    }
+    function deleteCourse(idCourse) {}
+
+
+  </script>
 </body>
+
+
 </html>

@@ -79,15 +79,35 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Administrator/StudentPageAdmin.jsp"><</a>
+<a href="${pageContext.request.contextPath}/StudentPageServlet"><</a>
 <h1>Profil étudiant</h1>
+
+<%
+    models.Student student = (models.Student) request.getAttribute("student");
+    if (student != null) {
+%>
 <div class="profileInfo">
-    <p><strong>Nom :</strong> <span id="studentName">Chargement...</span></p>
-    <p><strong>Prénom :</strong> <span id="studentFirstName">Chargement...</span></p>
-    <p><strong>Date de naissance :</strong> <span id="studentBirthDate">Chargement...</span></p>
-    <p><strong>Contact :</strong> <span id="studentContact">Chargement...</span></p>
+    <p><strong>Nom :</strong> <span id="studentName"> <%= student.getSurname() %></span></p>
+    <p><strong>Prénom :</strong> <span id="studentFirstName"> <%= student.getName() %></span></p>
+    <p><strong>Date de naissance :</strong> <span id="studentBirthDate"> <%= student.getDateBirth() %></span></p>
+    <p><strong>Contact :</strong> <span id="studentContact"> <%= student.getContact() %></span></p>
 </div>
+<%
+} else {
+%>
+<p>Aucun étudiant trouvé.</p>
+<%
+    }
+%>
 <h2>Liste des cours :</h2>
+<%
+    java.util.List<models.Course> courses = (java.util.List<models.Course>) request.getAttribute("courses");
+    if (courses == null || courses.isEmpty()) {
+%>
+<p style="text-align: center;">Aucun cours trouvé pour cet étudiant.</p>
+<%
+} else {
+%>
 <table id="studentsTable">
     <thead>
     <tr>
@@ -97,9 +117,20 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Les lignes de données sont ajoutées dynamiquement ici -->
+    <% for (models.Course course : courses) {
+        models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
+    %>
+    <tr>
+        <td><%= course.getName() %></td>
+        <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->
+        <td> Chargement ...</td> <!-- Si vous avez une méthode pour calculer la moyenne -->
+    </tr>
+    <% } %>
     </tbody>
     <!-- Générer la case moyenne générale avec du JavaScript -->
 </table>
+<%
+    }
+%>
 </body>
 </html>

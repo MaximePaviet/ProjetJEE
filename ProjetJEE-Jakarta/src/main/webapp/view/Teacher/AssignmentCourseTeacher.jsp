@@ -1,9 +1,8 @@
-<%@ page import="models.Student" %>
-<%@ page import="java.util.List" %>
+<%@ page import="models.Course" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Ajouter évaluation</title>
+    <title>S'inscrire à un cours</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
@@ -14,7 +13,12 @@
             background-color: #f5f5f5;
         }
 
-        a {
+        .hiddenForm{
+            position: relative;
+            visibility: hidden;
+        }
+        .returnButton {
+            all: unset;
             color: #4F2BEC;
             font-family: "DM Sans", sans-serif;
             font-size: 50px;
@@ -22,6 +26,8 @@
             margin: 20px;
             cursor: pointer;
             text-decoration: none;
+            visibility: visible;
+            position: relative;
         }
 
         h1 {
@@ -34,41 +40,24 @@
             margin: 0;
         }
 
-        input{
-            background-color: #AAC2FF;
-            border: 2px solid #4F2BEC;
-            border-radius: 16px;
-            margin: 20px;
-            padding: 5px 20px;
-        }
-
-        input:focus{
-            outline:none;
-            border:none;
-        }
-
-        input::placeholder {
-            color: #000000;
-            opacity: 70%;
-        }
-
-        .assessmentName{
+        h2{
             font-size: 24px;
-            color: #2B3674;
+            color: #4F2BEC;
             font-family: 'DM Sans', serif;
             font-weight: bold;
             font-style: normal;
             margin-top: 30px;
-            margin-left: 150px;
+            margin-left: 303px;
         }
 
-        .container{
+        form:not(.hiddenForm) {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        button {
+
+        .button {
             color: white;
             background-color: #4F2BEC;
             border: 2px solid #4F2BEC;
@@ -82,14 +71,14 @@
             padding: 5px 20px;
         }
 
-        button:hover {
+        .button:hover {
             opacity: 90%;
         }
 
         /* Style du tableau */
         table {
             color: #4F2BEC;
-            width: 80%;
+            width: 60%;
             border-collapse: collapse;
             margin: 20px auto;
             font-family: "DM Sans", sans-serif;
@@ -112,27 +101,54 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Teacher/CoursePageTeacher.jsp"><</a>
-<h1>Ajouter évaluation</h1>
-<form  action="" method="POST">
-    <label><span class="assessmentName">Nom</span> :<input type="text" name="nameCourse" placeholder="Nom de l'évaluation" required></label>
-    <div class="container">
-        <table id="studentsTable">
-            <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Note</th>
-            </tr>
-            </thead>
-            <tbody>
 
-            </tbody>
-        </table>
-        <button type="submit">Ajouter</button>
-    </div>
+<%
+    models.Teacher teacher = (models.Teacher) session.getAttribute("teacher");
+%>
+<form class="hiddenForm" action="${pageContext.request.contextPath}/teacherLogin" method="POST">
+    <input type="hidden" name="login" value="<%= teacher.getLogin() %>">
+    <input type="hidden" name="password" value="<%= teacher.getPassword() %>">
+    <button class="returnButton" type="submit"><</button>
 </form>
+
+<h1>S'inscrire à un cours</h1>
+<h2>Liste des cours existants :</h2>
+<%
+    java.util.List<models.Course> courses = (java.util.List<Course>) request.getAttribute("courses");
+    if (courses == null || courses.isEmpty()) {
+%>
+<p style="text-align: center">Aucun cours trouvé.</p>
+<%
+} else {
+%>
+<form action=${pageContext.request.contextPath}/assignmentCourseTeacher method="POST">
+    <table id="studentsTable">
+        <thead>
+        <tr>
+            <th>Cours</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for (models.Course course : courses) { %>
+        <tr>
+            <td><%= course.getName() %></td>
+
+            <td style="text-align: center; padding: 10px;">
+                <input type="checkbox" name="courseSelection" value="<%= course.getIdCourse() %>" style="text-align: center; padding: 10px;">
+            </td>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+    <button class="button" type="submit">S'inscrire</button>
+</form>
+<%
+    }
+%>
+
 
 
 </body>
 </html>
+

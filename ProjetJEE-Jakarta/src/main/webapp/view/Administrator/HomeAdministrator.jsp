@@ -70,8 +70,8 @@
 <h1>Accueil Administrateur</h1>
 <div class="container">
   <a href="${pageContext.request.contextPath}/TeacherPageServlet" class="button">Enseignants</a>
-  <a href="${pageContext.request.contextPath}/view/Administrator/StudentPageAdmin.jsp" class="button">Étudiants</a>
-  <a href="${pageContext.request.contextPath}/view/Administrator/CoursePageAdmin.jsp" class="button">Cours</a>
+  <a href="${pageContext.request.contextPath}/StudentPageServlet" class="button">Étudiants</a>
+  <a href="${pageContext.request.contextPath}/CoursePageServlet" class="button">Cours</a>
 </div>
 </body>
 </html>
