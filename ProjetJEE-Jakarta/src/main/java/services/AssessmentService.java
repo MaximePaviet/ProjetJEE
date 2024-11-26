@@ -3,7 +3,9 @@ package services;
 import jakarta.persistence.*;
 import models.Assessment;
 import models.Grade;
+import models.Student;
 import java.util.List;
+import models.Course;
 
 import org.hibernate.SessionFactory;
 
@@ -11,7 +13,7 @@ public class AssessmentService {
 
     // Constructeur pour initialiser l'EntityManagerFactory
     public AssessmentService() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("models.Assessment");
+        entityManagerFactory = Persistence.createEntityManagerFactory("default");
     }
 
 
@@ -19,16 +21,29 @@ public class AssessmentService {
     private SessionFactory sessionFactory;
 
     // Méthode pour créer un nouvel Assessment
-    public void createAssessment(int idCourse, String name) {
+    public void createAssessment(Course course, String name) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
             transaction.begin(); // Démarrer une transaction
 
+            // Vérifier si le Course est valide
+            if (course == null || course.getIdCourse() == 0) {
+                System.out.println("Course is null or has idCourse = 0");
+                throw new IllegalArgumentException("Invalid Course object provided.");
+            }
+
+
+            // Vérifier si le Course existe dans la base de données
+            Course persistedCourse = entityManager.find(Course.class, course.getIdCourse());
+            if (persistedCourse == null) {
+                throw new IllegalArgumentException("Course with ID " + course.getIdCourse() + " not found in the database.");
+            }
+
             // Création de l'objet Assessment
             Assessment assessment = new Assessment();
-            assessment.setIdCourse(idCourse);
+            assessment.setCourse(persistedCourse); // Associer l'objet Course
             assessment.setName(name);
 
             // Persiste l'objet Assessment dans la base de données
@@ -45,7 +60,8 @@ public class AssessmentService {
         }
     }
 
-    public void createGrade(int idStudent, int idAssessment, float gradeValue) {
+
+    public void createGrade(Student student, int idAssessment, float gradeValue) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
 
@@ -58,14 +74,19 @@ public class AssessmentService {
                 throw new IllegalArgumentException("Assessment with ID " + idAssessment + " not found.");
             }
 
+            // Vérifier que l'étudiant existe en base de données
+            Student persistedStudent = entityManager.find(Student.class, student.getIdStudent());
+            if (persistedStudent == null) {
+                throw new IllegalArgumentException("Student with ID " + student.getIdStudent() + " not found.");
+            }
+
             // Création de l'objet Grade
             Grade grade = new Grade();
-            grade.setIdStudent(idStudent);  // Associer l'ID de l'étudiant
-            grade.setAssessment(assessment);  // Associer l'Assessment existant
-            grade.setGrade(gradeValue);  // Définir la valeur de la note
-            grade.setIdCourse(assessment.getIdCourse()); // Associer le cours lié à l'Assessment
+            grade.setStudent(persistedStudent);  // Associer l'étudiant existant
+            grade.setAssessment(assessment);    // Associer l'Assessment existant
+            grade.setGrade(gradeValue);         // Définir la valeur de la note
 
-            // Ajouter la note au contrôle
+            // Ajouter la note à la liste des grades de l'évaluation
             assessment.getGradeList().add(grade);
 
             // Persister la note dans la base de données
@@ -81,6 +102,7 @@ public class AssessmentService {
             entityManager.close(); // Fermer l'EntityManager
         }
     }
+
 
     public void averageAssessmentClass(List<Grade> gradeList) {
         if (gradeList == null || gradeList.isEmpty()) {
