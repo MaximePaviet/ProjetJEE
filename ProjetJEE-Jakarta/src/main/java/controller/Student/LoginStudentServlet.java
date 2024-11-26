@@ -1,4 +1,4 @@
-package controller.Teacher;
+package controller.Student;
 
 import models.Course;
 import models.Student;
