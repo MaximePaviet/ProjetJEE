@@ -1,4 +1,4 @@
-package controller.Administrator;
+package controllers.Administrator;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,9 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
 import models.Student;
-import models.Teacher;
 import services.StudentService;
-import services.TeacherService;
 
 import java.io.IOException;
 import java.util.List;

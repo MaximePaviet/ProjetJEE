@@ -1,6 +1,5 @@
-package controller.Administrator;
+package controllers.Administrator;
 
-import jakarta.persistence.EntityManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,7 +11,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import services.AssessmentService;
-import services.CourseService;
 
 import java.io.IOException;
 import java.util.List;
