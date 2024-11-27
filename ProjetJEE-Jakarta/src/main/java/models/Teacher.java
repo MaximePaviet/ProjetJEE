@@ -34,7 +34,7 @@ public class Teacher {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Course> courseList = new ArrayList<>();
 
     // Getters et Setters
