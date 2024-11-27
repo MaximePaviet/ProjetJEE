@@ -170,8 +170,8 @@
         if (idTeacher) {
             // Créez un formulaire HTML de manière dynamique
             const form = document.createElement("form");
-            form.method = "POST"; // Utiliser POST au lieu de GET
-            form.action = `${pageContext.request.contextPath}/AddAssessmentServlet`;
+            form.method = "POST";
+            form.action = `${pageContext.request.contextPath}/CoursePageServlet`;
 
             // Ajoutez un champ caché contenant l'ID de l'enseignant
             const input = document.createElement("input");

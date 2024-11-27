@@ -1,4 +1,4 @@
-package controller.Administrator;
+package controllers.Administrator;
 
 public class AssessmentServlet {
 }

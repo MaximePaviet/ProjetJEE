@@ -22,7 +22,7 @@ public class Course {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy = "courseList")
+    @ManyToMany(mappedBy = "courseList", fetch = FetchType.EAGER)
     private List<Student> studentList;
 
     @ManyToOne

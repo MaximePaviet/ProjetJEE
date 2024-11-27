@@ -1,11 +1,8 @@
-package controller.Student;
+package controllers.Teacher;
 
-import models.Course;
-import models.Student;
 import models.Teacher;
 import org.hibernate.Hibernate;
 import services.HibernateUtil;
-import services.StudentService;
 import services.TeacherService;
 import jakarta.persistence.NoResultException;
 import jakarta.servlet.ServletException;
@@ -17,33 +14,32 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet(name = "LoginStudentServlet", value = "/studentLogin")
-public class LoginStudentServlet extends HttpServlet {
+@WebServlet(name = "LoginTeacherServlet", value = "/teacherLogin")
+public class LoginTeacherServlet extends HttpServlet {
 
-    private StudentService studentService;
+    private TeacherService teacherService;
 
     @Override
     public void init() {
         // Initialisation des services
-        studentService = new StudentService();
+        teacherService = new TeacherService();
     }
 
     @Override
     public void destroy() {
-        if (studentService != null) {
-            studentService.close();
+        if (teacherService != null) {
+            teacherService.close();
         }
         // Fermeture de la SessionFactory via HibernateUtil
         HibernateUtil.shutdown();
     }
 
-    private Integer getStudentIdByLoginAndPassword(String login, String password) {
-        Integer studentId = null;
+    private Integer getTeacherIdByLoginAndPassword(String login, String password) {
+        Integer teacherId = null;
 
         // HQL pour récupérer l'ID en fonction du login et du mot de passe
-        String hql = "SELECT s.idStudent FROM Student s WHERE s.login = :login AND s.password = :password";
+        String hql = "SELECT t.idTeacher FROM Teacher t WHERE t.login = :login AND t.password = :password";
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Integer> query = session.createQuery(hql, Integer.class);
@@ -51,14 +47,14 @@ public class LoginStudentServlet extends HttpServlet {
             query.setParameter("password", password);
 
             // Récupérer l'ID si un résultat est trouvé
-            studentId = query.uniqueResult();
+            teacherId = query.uniqueResult();
         } catch (NoResultException e) {
-            System.out.println("Aucun étudiant trouvé avec ces identifiants.");
+            System.out.println("Aucun professeur trouvé avec ces identifiants.");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return studentId;
+        return teacherId;
     }
 
     @Override
@@ -66,27 +62,27 @@ public class LoginStudentServlet extends HttpServlet {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
 
-        Integer idTStudentParam = getStudentIdByLoginAndPassword(login, password);
+        Integer idTeacherParam = getTeacherIdByLoginAndPassword(login, password);
 
-        if (idTStudentParam != null) {
-            Student student = studentService.readStudent(idTStudentParam);
+        if (idTeacherParam != null) {
+            Teacher teacher = teacherService.readTeacher(idTeacherParam);
 
-            if (student != null) {
+            if (teacher != null) {
                 // Charger explicitement les cours si nécessaire
-                Hibernate.initialize(student.getCourseList());
+                Hibernate.initialize(teacher.getCourseList());
 
                 // Stocker dans la session
-                request.getSession().setAttribute("student", student);
+                request.getSession().setAttribute("teacher", teacher);
 
                 // Redirection
-                response.sendRedirect(request.getContextPath() + "/view/Student/ProfileStudent.jsp");
+                response.sendRedirect(request.getContextPath() + "/view/Teacher/ProfileTeacher.jsp");
             } else {
-                request.setAttribute("errorMessage", "Etudiant introuvable !");
-                request.getRequestDispatcher("/view/Student/ConnexionStudent.jsp").forward(request, response);
+                request.setAttribute("errorMessage", "Enseignant introuvable !");
+                request.getRequestDispatcher("/view/Teacher/ConnexionTeacher.jsp").forward(request, response);
             }
         } else {
             request.setAttribute("errorMessage", "Login ou mot de passe incorrect !");
-            request.getRequestDispatcher("/view/Student/ConnexionStudent.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/Teacher/ConnexionTeacher.jsp").forward(request, response);
         }
     }
 

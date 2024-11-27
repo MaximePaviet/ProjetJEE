@@ -286,6 +286,13 @@ public class StudentService {
         return courses; // Retourne la liste des cours
     }
 
+    // Ferme l'EntityManagerFactory
+    public void close() {
+        if (entityManagerFactory != null) {
+            entityManagerFactory.close();
+        }
+    }
+
 
 
 }

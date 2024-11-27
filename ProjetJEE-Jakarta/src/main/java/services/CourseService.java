@@ -103,6 +103,21 @@ public class CourseService {
             entityManager.close(); // Ferme l'EntityManager
         }
     }
+
+    // Méthode pour récupérer les informations d'un cours par son identifiant
+    public Course readCourse(int idCourse) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        Course course = null;
+
+        try {
+            course = entityManager.find(Course.class, idCourse); // Recherche le cours par ID
+        } finally {
+            entityManager.close(); // Ferme l'EntityManager
+        }
+
+        return course; // Retourne l'objet Course trouvé ou null si non trouvé
+    }
+
     // Méthode pour récupérer tous les cours
     public List<Course> readCourseList() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -117,6 +132,13 @@ public class CourseService {
             entityManager.close(); // Ferme l'EntityManager
         }
         return courses;
+    }
+
+    // Ferme l'EntityManagerFactory
+    public void close() {
+        if (entityManagerFactory != null) {
+            entityManagerFactory.close();
+        }
     }
     /*
     public void assignmentStudentToCourse(Course course, Student student) {

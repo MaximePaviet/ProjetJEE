@@ -1,4 +1,4 @@
-package controller.Student;
+package controllers.Teacher;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -6,26 +6,23 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
-import models.Student;
 import models.Teacher;
 import services.CourseService;
-import services.StudentService;
 import services.TeacherService;
 
 import java.io.IOException;
 
-
-@WebServlet(name = "AssignmentCourseStudent", value = "/assignmentCourseStudent")
-public class AssignmentCourseStudent extends HttpServlet {
+@WebServlet(name = "AssignmentTeacherCourseServlet", value = "/assignmentCourseTeacher")
+public class AssignmentTeacherCourseServlet extends HttpServlet {
 
     private CourseService courseService;
-    private StudentService studentService;
+    private TeacherService teacherService;
 
     @Override
     public void init() {
         // Initialisation des services
         courseService = new CourseService();
-        studentService = new StudentService();
+        teacherService = new TeacherService();
     }
 
     @Override
@@ -33,8 +30,8 @@ public class AssignmentCourseStudent extends HttpServlet {
         if (courseService != null) {
             courseService.close();
         }
-        if (studentService != null) {
-            studentService.close();
+        if (teacherService != null) {
+            teacherService.close();
         }
     }
 
@@ -45,7 +42,7 @@ public class AssignmentCourseStudent extends HttpServlet {
         // Récupération des valeurs des checkboxes
         String[] selectedCourseIds = request.getParameterValues("courseSelection");
 
-        Student student = (Student) request.getSession().getAttribute("student");
+        Teacher teacher = (Teacher) request.getSession().getAttribute("teacher");
 
         // Vérifier si des cours ont été sélectionnés
         if (selectedCourseIds != null && selectedCourseIds.length > 0) {
@@ -54,7 +51,7 @@ public class AssignmentCourseStudent extends HttpServlet {
                     int id = Integer.parseInt(courseId);
                     Course course = courseService.readCourse(id);
                     if (course != null) {
-                        studentService.registrationCourse(course, student);
+                        teacherService.assignmentCourseToTeacher(teacher, course);
                     }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
@@ -62,16 +59,16 @@ public class AssignmentCourseStudent extends HttpServlet {
             }
 
             // Rechargez les données du professeur après modification
-            Student updatedStudentr = studentService.readStudent(student.getIdStudent());
-            request.getSession().setAttribute("student", updatedStudentr);
-            request.getSession().setAttribute("courses", updatedStudentr.getCourseList());
+            Teacher updatedTeacher = teacherService.readTeacher(teacher.getIdTeacher());
+            request.getSession().setAttribute("teacher", updatedTeacher);
+            request.getSession().setAttribute("courses", updatedTeacher.getCourseList());
         } else {
             // Aucun cours sélectionné
             request.setAttribute("error", "Aucun cours sélectionné.");
         }
 
         // Redirigez vers la page Profil pour afficher les données actualisées
-        response.sendRedirect(request.getContextPath() + "/view/Student/ProfileStudent.jsp");
+        response.sendRedirect(request.getContextPath() + "/view/Teacher/ProfileTeacher.jsp");
     }
 
 
