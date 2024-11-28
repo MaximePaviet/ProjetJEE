@@ -32,7 +32,7 @@ public class UpdateTeacherAdminController {
         } else {
             model.addAttribute("error", "Enseignant introuvable"); // Message d'erreur dans le modèle
         }
-        return "/WEB-INF/views/Administrator/UpdateTeacherAdmin.jsp";  // Nom de la JSP
+        return "/views/Administrator/UpdateTeacherAdmin";  // Nom de la JSP
     }
 
     // Méthode pour gérer la mise à jour de l'enseignant
