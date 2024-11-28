@@ -23,6 +23,11 @@ public class StudentProfileAdminServlet extends HttpServlet {
     }
 
     @Override
+    public void destroy() {
+        studentService.close();
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idStudentParam = request.getParameter("idStudent");
 
@@ -50,11 +55,5 @@ public class StudentProfileAdminServlet extends HttpServlet {
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID étudiant manquant");
         }
-    }
-
-
-    @Override
-    public void destroy() {
-        studentService.close();
     }
 }

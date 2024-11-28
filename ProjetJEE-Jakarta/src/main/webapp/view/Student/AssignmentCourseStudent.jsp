@@ -1,4 +1,5 @@
 <%@ page import="models.Course" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -105,7 +106,7 @@
 <%
     models.Student student = (models.Student) session.getAttribute("student");
 %>
-<form class="hiddenForm" action="${pageContext.request.contextPath}/studentLogin" method="POST">
+<form class="hiddenForm" action="${pageContext.request.contextPath}/LoginStudentServlet" method="POST">
     <input type="hidden" name="login" value="<%= student.getLogin() %>">
     <input type="hidden" name="password" value="<%= student.getPassword() %>">
     <button class="returnButton" type="submit"><</button>
@@ -114,15 +115,15 @@
 <h1>S'inscrire à un cours</h1>
 <h2>Liste des cours existants :</h2>
 <%
-    java.util.List<models.Course> courses = (java.util.List<Course>) request.getAttribute("courses");
+    List<Course> courses = (List<Course>) request.getAttribute("courses");
     if (courses == null || courses.isEmpty()) {
 %>
-<p style="text-align: center">Aucun cours trouvé.</p>
+<p style="text-align: center">Vous êtes déjà inscrit à tous les cours.</p>
 <%
 } else {
 %>
-<form action=${pageContext.request.contextPath}/assignmentCourseStudent method="POST">
-    <table id="studentsTable">
+<form action=${pageContext.request.contextPath}/AssignmentCourseStudentServlet method="POST">
+    <table>
         <thead>
         <tr>
             <th>Cours</th>

@@ -120,5 +120,13 @@ public class AssessmentService {
     }
 
 
+    // Ferme l'EntityManagerFactory
+    public void close() {
+        if (entityManagerFactory != null) {
+            entityManagerFactory.close();
+        }
+    }
+
+
 
 }

@@ -1,19 +1,28 @@
 package controllers.Teacher;
 
+import jakarta.persistence.NoResultException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
+import models.Student;
 import models.Teacher;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import services.CourseService;
+import services.HibernateUtil;
+import services.StudentService;
 import services.TeacherService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-@WebServlet(name = "AssignmentTeacherCourseServlet", value = "/assignmentCourseTeacher")
-public class AssignmentTeacherCourseServlet extends HttpServlet {
+
+@WebServlet("/AssignmentCourseTeacherServlet")
+public class AssignmentCourseTeacherServlet extends HttpServlet {
 
     private CourseService courseService;
     private TeacherService teacherService;
@@ -35,7 +44,35 @@ public class AssignmentTeacherCourseServlet extends HttpServlet {
         }
     }
 
+    private List<Course> getCoursesWithoutTeacher() {
+        List<Course> courses = new ArrayList<>();
 
+        // HQL pour récupérer l'ID en fonction du login et du mot de passe
+        String hql = "FROM Course c WHERE c.teacher IS NULL";
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Course> query = session.createQuery(hql, Course.class);
+            courses = query.list();
+        } catch (NoResultException e) {
+            System.out.println("Aucun cours non enseigné trouvé");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
+
+
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Teacher teacher = (Teacher) request.getSession().getAttribute("teacher");
+        List<Course> courses = getCoursesWithoutTeacher(); //liste des cours non enseignés par un prof
+
+        request.setAttribute("courses", courses);
+
+        request.getRequestDispatcher("/view/Teacher/AssignmentCourseTeacher.jsp").forward(request, response);
+
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -58,7 +95,7 @@ public class AssignmentTeacherCourseServlet extends HttpServlet {
                 }
             }
 
-            // Rechargez les données du professeur après modification
+            // Rechargez les données de l'étudiant après modification
             Teacher updatedTeacher = teacherService.readTeacher(teacher.getIdTeacher());
             request.getSession().setAttribute("teacher", updatedTeacher);
             request.getSession().setAttribute("courses", updatedTeacher.getCourseList());
@@ -67,7 +104,6 @@ public class AssignmentTeacherCourseServlet extends HttpServlet {
             request.setAttribute("error", "Aucun cours sélectionné.");
         }
 
-        // Redirigez vers la page Profil pour afficher les données actualisées
         response.sendRedirect(request.getContextPath() + "/view/Teacher/ProfileTeacher.jsp");
     }
 

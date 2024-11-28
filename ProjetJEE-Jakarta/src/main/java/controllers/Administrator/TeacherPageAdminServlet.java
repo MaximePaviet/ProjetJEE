@@ -1,20 +1,18 @@
 package controllers.Administrator;
 
-import jakarta.servlet.ServletException;
+
+import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
 import models.Teacher;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import services.TeacherService;
-
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "TeacherAdminServlet", urlPatterns = {"/TeacherPageServlet", "/addTeacher"})
-public class TeacherAdminServlet extends HttpServlet {
+@WebServlet("/TeacherPageAdminServlet")
+public class TeacherPageAdminServlet extends HttpServlet {
 
     private TeacherService teacherService;
     private SessionFactory sessionFactory;
@@ -38,7 +36,6 @@ public class TeacherAdminServlet extends HttpServlet {
             teacherService.close();
         }
     }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Gestion de l'affichage de la liste des enseignants
@@ -50,20 +47,6 @@ public class TeacherAdminServlet extends HttpServlet {
         // Transfert vers la page JSP correspondante
         request.getRequestDispatcher("/view/Administrator/TeacherPageAdmin.jsp").forward(request, response);
     }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gestion de l'ajout d'un nouvel enseignant via un formulaire
-
-        // Récupération des paramètres du formulaire
-        String surname = request.getParameter("surname");
-        String name = request.getParameter("name");
-        String contact = name + surname + "@cy-tech.fr";
-
-        // Création de l'enseignant via le service
-        teacherService.createTeacher(name, surname, contact);
-
-        // Redirection ou transfert vers la page des enseignants pour afficher la liste mise à jour
-        response.sendRedirect(request.getContextPath() + "/TeacherPageServlet");
-    }
 }
+
+

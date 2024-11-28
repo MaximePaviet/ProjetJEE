@@ -138,7 +138,7 @@
 <h1>CYSCOLARITÉ</h1>
 <h2>Espace Enseignant</h2>
 <hr>
-<form action="${pageContext.request.contextPath}/teacherLogin" method="POST">
+<form action="${pageContext.request.contextPath}/LoginTeacherServlet" method="POST">
     <!-- Afficher le message d'erreur si l'attribut errorMessage existe -->
     <div class="error-message">
         ${errorMessage}

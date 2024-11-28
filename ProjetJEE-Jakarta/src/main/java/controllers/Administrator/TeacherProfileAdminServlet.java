@@ -23,6 +23,11 @@ public class TeacherProfileAdminServlet extends HttpServlet {
     }
 
     @Override
+    public void destroy() {
+        teacherService.close();
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idTeacherParam = request.getParameter("idTeacher");
 
@@ -53,8 +58,5 @@ public class TeacherProfileAdminServlet extends HttpServlet {
     }
 
 
-    @Override
-    public void destroy() {
-        teacherService.close();
-    }
+
 }

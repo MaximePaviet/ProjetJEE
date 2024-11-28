@@ -13,7 +13,7 @@ import org.hibernate.query.Query;
 
 import java.io.IOException;
 
-@WebServlet(name = "LoginAdminServlet", value = "/adminLogin")
+@WebServlet("/LoginAdminServlet")
 public class LoginAdminServlet extends HttpServlet {
 
     private SessionFactory sessionFactory;

@@ -67,6 +67,24 @@
             margin-right: 132px;
         }
 
+        button {
+            color: white;
+            background-color: #4F2BEC;
+            border: 2px solid #4F2BEC;
+            border-radius: 20px;
+            font-family: "DM Sans", sans-serif;
+            font-size: 1rem;
+            font-weight: normal;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 20px;
+            padding: 5px 20px;
+        }
+
+        button:hover {
+            opacity: 90%;
+        }
+
         .button {
             color: white;
             background-color: #4F2BEC;
@@ -130,8 +148,8 @@
 <div class="container">
     <h2>Liste des cours :</h2>
     <div class="right">
-        <a class="button" href="${pageContext.request.contextPath}/teacherProfile">S'inscrire à un cours</a>
 
+        <button onclick="assignmentCourse(<%= teacher.getIdTeacher() %>)" class="button" >S'inscrire à un cours</button>
     </div>
 </div>
 
@@ -142,7 +160,7 @@
 <%
 } else {
 %>
-<table id="coursesTable">
+<table>
     <thead>
     <tr>
         <th>Nom du cours</th>
@@ -152,11 +170,10 @@
     </thead>
     <tbody>
     <% for (models.Course course : courses) { %>
-    <tr onclick="viewProfile(<%= course.getIdCourse() %>)" style="cursor: pointer;">
+    <tr onclick="viewCourse(<%= course.getIdCourse() %>)" style="cursor: pointer;">
         <td><%= course.getName() %></td>
-        <th><%=course.getStudentList().size()%></th>
-        <th>Chargement...</th>
-        </td>
+        <td><%=course.getStudentList().size()%></td>
+        <td>Chargement...</td>
     </tr>
     <% } %>
     </tbody>
@@ -166,12 +183,12 @@
 %>
 <script>
     // Fonction pour rediriger vers la page de profil
-    function viewProfile(idCourse) {
-        if (idTeacher) {
+    function viewCourse(idCourse) {
+        if (idCourse) {
             // Créez un formulaire HTML de manière dynamique
             const form = document.createElement("form");
             form.method = "POST";
-            form.action = `${pageContext.request.contextPath}/CoursePageServlet`;
+            form.action = `${pageContext.request.contextPath}/CoursePageTeacherServlet`;
 
             // Ajoutez un champ caché contenant l'ID de l'enseignant
             const input = document.createElement("input");
@@ -187,6 +204,30 @@
             console.error("Aucun ID cours n'a été transmis.");
         }
     }
+
+        // Fonction pour que le prof s'inscrive aux cours
+        function assignmentCourse(idTeacher) {
+        if (idTeacher) {
+        // Créez un formulaire HTML de manière dynamique
+        const form = document.createElement("form");
+        form.method = "GET";
+        form.action = `${pageContext.request.contextPath}/AssignmentCourseTeacherServlet`;
+
+        // Ajoutez un champ caché contenant l'ID de l'enseignant
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
+        input.value = idTeacher;
+        form.appendChild(input);
+
+        // Ajoutez le formulaire à la page et soumettez-le
+        document.body.appendChild(form);
+        form.submit();
+        } else {
+            console.error("Aucun ID étudiant n'a été transmis.");
+        }
+    }
+
 
 </script>
 </body>

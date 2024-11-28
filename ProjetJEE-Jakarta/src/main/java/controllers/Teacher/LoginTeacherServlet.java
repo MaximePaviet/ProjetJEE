@@ -15,7 +15,7 @@ import org.hibernate.query.Query;
 
 import java.io.IOException;
 
-@WebServlet(name = "LoginTeacherServlet", value = "/teacherLogin")
+@WebServlet("/LoginTeacherServlet")
 public class LoginTeacherServlet extends HttpServlet {
 
     private TeacherService teacherService;

@@ -79,7 +79,7 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/StudentPageServlet"><</a>
+<a href="${pageContext.request.contextPath}/StudentPageAdminServlet"><</a>
 <h1>Profil étudiant</h1>
 
 <%

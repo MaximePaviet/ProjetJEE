@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Ajouter enseignant</title>
+    <title>Modifier enseignant</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
@@ -64,7 +64,7 @@
         }
 
         input{
-            flex-grow: 1; /* Permet à l'input de prendre tout l'espace restant */
+            flex-grow: 1;
             background-color: #FFFFFF;
             border: 3px solid #4F2BEC;
             border-radius: 16px;
@@ -97,8 +97,8 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/TeacherPageServlet"><</a>
-<h1>Ajouter enseignant</h1>
+<a href="${pageContext.request.contextPath}/TeacherPageAdminServlet"><</a>
+<h1>Modifier enseignant</h1>
 <%
     models.Teacher teacher = (models.Teacher) request.getAttribute("teacher");
     if (teacher == null) {
@@ -107,15 +107,15 @@
 <%
     }
 %>
-<form action="${pageContext.request.contextPath}/UpdateTeacherServlet" method="GET">
+<form action="${pageContext.request.contextPath}/UpdateTeacherAdminServlet" method="POST">
     <div class="container">
         <input type="hidden" name="id" value="<%= teacher != null ? teacher.getIdTeacher() : "" %>" />
 
         <label>Nom :</label>
-        <input type="text" name="name" value="<%= teacher != null ? teacher.getName() : "" %>" />
+        <input type="text" name="surname" value="<%= teacher != null ? teacher.getSurname() : "" %>" />
 
         <label>Prénom :</label>
-        <input type="text" name="surname" value="<%= teacher != null ? teacher.getSurname() : "" %>" />
+        <input type="text" name="name" value="<%= teacher != null ? teacher.getName() : "" %>" />
 
         <label>Contact :</label>
         <input type="text" name="contact" value="<%= teacher != null ? teacher.getContact() : "" %>" />

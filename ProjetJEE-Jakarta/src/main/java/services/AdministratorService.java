@@ -23,7 +23,7 @@ public class AdministratorService {
     }
 
     // Génère un login unique basé sur le prénom et le nom
-    public  String generateUniqueLogin(String firstName, String lastName) {
+    public String generateUniqueLogin(String firstName, String lastName) {
         String baseLogin = firstName.substring(0, 1).toLowerCase() + lastName.toLowerCase();
         String uniqueLogin = baseLogin;
         int count = 1;
@@ -38,7 +38,7 @@ public class AdministratorService {
     }
 
     // Vérifie dans la base de données si le login existe déjà
-    public  boolean isLoginExists(String login) {
+    public boolean isLoginExists(String login) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         long count = 0;
 
@@ -53,8 +53,9 @@ public class AdministratorService {
 
         return count > 0;
     }
+
     // Génère un login unique basé sur le prénom et le nom
-    public  String generateUniqueLoginStudent(String firstName, String lastName) {
+    public String generateUniqueLoginStudent(String firstName, String lastName) {
         String baseLogin = firstName.substring(0, 1).toLowerCase() + lastName.toLowerCase();
         String uniqueLogin = baseLogin;
         int count = 1;
@@ -67,8 +68,9 @@ public class AdministratorService {
 
         return uniqueLogin;
     }
+
     // Vérifie dans la base de données si le login existe déjà
-    public  boolean isLoginExistsStudent(String login) {
+    public boolean isLoginExistsStudent(String login) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         long count = 0;
 
@@ -97,8 +99,4 @@ public class AdministratorService {
 
         return password.toString();
     }
-
-    //public List<List<Course>> readStudentCourses(){}
-
-
 }

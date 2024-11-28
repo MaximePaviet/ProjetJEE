@@ -97,9 +97,9 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/StudentPageServlet"><</a>
+<a href="${pageContext.request.contextPath}/StudentPageAdminServlet"><</a>
 <h1>Ajouter étudiant</h1>
-<form  action="${pageContext.request.contextPath}/StudentPageServlet" method="POST">
+<form  action="${pageContext.request.contextPath}/AddStudentAdminServlet" method="POST">
     <div class="container">
         <label>Nom :<input type="text" name="surname" placeholder="Doe" required></label><br>
         <label>Prénom :<input type="text" name="name" placeholder="John" required></label><br>

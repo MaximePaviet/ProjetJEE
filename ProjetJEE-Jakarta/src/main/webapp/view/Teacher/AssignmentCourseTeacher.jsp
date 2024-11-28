@@ -105,7 +105,7 @@
 <%
     models.Teacher teacher = (models.Teacher) session.getAttribute("teacher");
 %>
-<form class="hiddenForm" action="${pageContext.request.contextPath}/teacherLogin" method="POST">
+<form class="hiddenForm" action="${pageContext.request.contextPath}/LoginTeacherServlet" method="POST">
     <input type="hidden" name="login" value="<%= teacher.getLogin() %>">
     <input type="hidden" name="password" value="<%= teacher.getPassword() %>">
     <button class="returnButton" type="submit"><</button>
@@ -117,12 +117,12 @@
     java.util.List<models.Course> courses = (java.util.List<Course>) request.getAttribute("courses");
     if (courses == null || courses.isEmpty()) {
 %>
-<p style="text-align: center">Aucun cours trouvé.</p>
+<p style="text-align: center">Tous les cours ont déjà un professeur assigné.</p>
 <%
 } else {
 %>
-<form action=${pageContext.request.contextPath}/assignmentCourseTeacher method="POST">
-    <table id="studentsTable">
+<form action=${pageContext.request.contextPath}/AssignmentCourseTeacherServlet method="POST">
+    <table>
         <thead>
         <tr>
             <th>Cours</th>
@@ -135,7 +135,7 @@
             <td><%= course.getName() %></td>
 
             <td style="text-align: center; padding: 10px;">
-                <input type="checkbox" name="courseSelection" value="<%= course.getIdCourse() %>" style="text-align: center; padding: 10px;">
+                <input type="checkbox" name="courseSelection" value="<%= course.getIdCourse() %>">
             </td>
         </tr>
         <% } %>
