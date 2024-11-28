@@ -27,5 +27,16 @@ public class AdminController {
         return "Administrator/AddTeacherAdmin"; // Correspond au fichier JSP de la page d'accueil
     }
 
+    @GetMapping("/views/Administrator/AddStudentAdmin")
+    public String showAddStudentAdminPage() {
+        return "Administrator/AddStudentAdmin"; // Correspond au fichier JSP de la page d'accueil
+    }
+    @GetMapping("/views/Administrator/StudentPageAdmin")
+    public String showStudentPageAdmin() {
+        return "Administrator/StudentPageAdmin"; // Correspond au fichier JSP de la page d'accueil
+    }
+
+
+
 
 }

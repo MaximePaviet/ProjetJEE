@@ -211,10 +211,39 @@
     }
   }
 
-  // Fonction pour modifier un enseignant
-  function editStudent(idStudent) {
-    window.location.href = `${pageContext.request.contextPath}${window.location.pathname.replace("TeacherPageAdmin.jsp", "EditTeacher.jsp")}?idTeacher=${idTeacher}`;
+  // Fonction pour modifier un étudiant
+  function editStudent(idStudent, name, surname, dateBirth, promoYear) {
+    if (idStudent) {
+      // Créez un formulaire HTML de manière dynamique
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = `${pageContext.request.contextPath}/UpdateStudentAdminController`; // Changez l'URL pour correspondre au contrôleur étudiant
+
+      // Ajoutez les champs cachés pour chaque donnée
+      const inputs = [
+        { name: "idStudent", value: idStudent },
+        { name: "name", value: name },
+        { name: "surname", value: surname },
+        { name: "dateBirth", value: dateBirth },
+        { name: "promoYear", value: promoYear },
+      ];
+
+      inputs.forEach(inputData => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = inputData.name;
+        input.value = inputData.value;
+        form.appendChild(input);
+      });
+
+      // Ajoutez le formulaire à la page et soumettez-le
+      document.body.appendChild(form);
+      form.submit();
+    } else {
+      console.error("Les données de l'étudiant sont incomplètes.");
+    }
   }
+
 
 </script>
 </body>
