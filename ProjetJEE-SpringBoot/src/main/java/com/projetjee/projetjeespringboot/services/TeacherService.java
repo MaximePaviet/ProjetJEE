@@ -81,5 +81,14 @@ public class TeacherService {
     public List<Teacher> readTeacherList() {
         return teacherRepository.findAll();
     }
+
+    public Integer findTeacherIdByLoginAndPassword(String login, String password) {
+        try {
+            return teacherRepository.findIdByLoginAndPassword(login, password);
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la recherche de l'enseignant : " + e.getMessage());
+            return null;
+        }
+    }
 }
 

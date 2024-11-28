@@ -1,78 +1,119 @@
 package com.projetjee.projetjeespringboot.services;
 
+import com.projetjee.projetjeespringboot.models.Assessment;
 import com.projetjee.projetjeespringboot.models.Course;
+import com.projetjee.projetjeespringboot.models.Grade;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.projetjee.projetjeespringboot.repositories.CourseRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class CourseService {
 
-    private final CourseRepository courseRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    @Autowired
-    public CourseService(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
-    }
-
-    // Méthode pour créer un cours
     @Transactional
     public void createCourse(String name) {
-        Course course = new Course();
-        course.setName(name);
-        courseRepository.save(course);  // Utilise Spring Data JPA pour enregistrer l'entité
-    }
+        try {
+            // Création de l'objet Course
+            Course course = new Course();
+            course.setName(name);
 
-    // Méthode pour mettre à jour un cours
-    @Transactional
-    public void updateCourse(Integer idCourse, String newName) {
-        Course course = courseRepository.findById(idCourse).orElse(null);
-        if (course != null) {
-            course.setName(newName);  // Mettre à jour les informations du cours
-            courseRepository.save(course);  // Sauvegarde les modifications
-        } else {
-            System.out.println("Course not found with ID: " + idCourse);
+            // Persiste l'objet Course dans la base de données
+            entityManager.persist(course);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la création du cours : " + e.getMessage());
         }
     }
 
-    // Méthode pour supprimer un cours
+    @Transactional
+    public void updateCourse(Integer idCourse, String courseName) {
+        try {
+            // Recherche du cours par son ID
+            Course course = entityManager.find(Course.class, idCourse);
+            if (course != null) {
+                // Mise à jour des informations du cours
+                course.setName(courseName);
+                entityManager.merge(course);
+            } else {
+                throw new RuntimeException("Cours non trouvé avec l'ID : " + idCourse);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la mise à jour du cours : " + e.getMessage());
+        }
+    }
+
     @Transactional
     public void deleteCourse(Integer idCourse) {
-        Course course = courseRepository.findById(idCourse).orElse(null);
-        if (course != null) {
-            courseRepository.delete(course);  // Supprime le cours de la base de données
-            System.out.println("Course deleted with ID: " + idCourse);
-        } else {
-            System.out.println("Course not found with ID: " + idCourse);
-        }
-    }
-
-    // Méthode pour récupérer tous les cours
-    public List<Course> readCourseList() {
-        return courseRepository.findAll();  // Récupère tous les cours via Spring Data JPA
-    }
-
-    // Méthode pour attribuer un étudiant à un cours (commentée dans l'exemple, peut être activée si nécessaire)
-    /*
-    @Transactional
-    public void assignStudentToCourse(Integer courseId, Integer studentId) {
-        Course course = courseRepository.findById(courseId).orElse(null);
-        if (course != null) {
-            Student student = studentRepository.findById(studentId).orElse(null);
-            if (student != null) {
-                course.getStudentList().add(student);  // Ajoute l'étudiant à la liste des étudiants du cours
-                student.getCourseList().add(course);  // Ajoute le cours à la liste des cours de l'étudiant
-                courseRepository.save(course);  // Enregistre le cours mis à jour
-                studentRepository.save(student);  // Enregistre l'étudiant mis à jour
+        try {
+            // Recherche du cours par son ID
+            Course course = entityManager.find(Course.class, idCourse);
+            if (course != null) {
+                entityManager.remove(course);
             } else {
-                System.out.println("Student not found with ID: " + studentId);
+                throw new RuntimeException("Cours non trouvé avec l'ID : " + idCourse);
             }
-        } else {
-            System.out.println("Course not found with ID: " + courseId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la suppression du cours : " + e.getMessage());
         }
     }
-    */
+
+    public Course readCourse(int idCourse) {
+        try {
+            return entityManager.find(Course.class, idCourse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la lecture du cours : " + e.getMessage());
+        }
+    }
+
+    public List<Course> readCourseList() {
+        try {
+            TypedQuery<Course> query = entityManager.createQuery("FROM Course", Course.class);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la récupération de la liste des cours : " + e.getMessage());
+        }
+    }
+
+    public double calculateCourseAverage(int courseId) {
+        try {
+            TypedQuery<Double> query = entityManager.createQuery(
+                    "SELECT AVG(g.grade) FROM Grade g WHERE g.assessment.course.idCourse = :courseId", Double.class);
+            query.setParameter("courseId", courseId);
+            Double result = query.getSingleResult();
+            return result != null ? result : 0.0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0;
+        }
+    }
+
+    public double calculateStudentAverageInCourse(int courseId, int studentId) {
+        try {
+            TypedQuery<Double> query = entityManager.createQuery(
+                    "SELECT AVG(g.grade) FROM Grade g WHERE g.assessment.course.idCourse = :courseId " +
+                            "AND g.student.idStudent = :studentId", Double.class);
+            query.setParameter("courseId", courseId);
+            query.setParameter("studentId", studentId);
+            Double result = query.getSingleResult();
+            return result != null ? result : 0.0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0;
+        }
+    }
 }
