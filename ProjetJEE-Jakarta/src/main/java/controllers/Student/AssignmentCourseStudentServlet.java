@@ -103,7 +103,7 @@ public class AssignmentCourseStudentServlet extends HttpServlet {
         }
 
         // Redirigez vers la page Profil pour afficher les données actualisées
-        response.sendRedirect(request.getContextPath() + "/view/Student/ProfileStudent.jsp");
+        response.sendRedirect(request.getContextPath() + "/ProfileStudentServlet");
     }
 
 

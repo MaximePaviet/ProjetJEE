@@ -1,4 +1,5 @@
 <%@ page import="models.Course" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -146,7 +147,7 @@
 <div class="container">
     <h2>Liste des cours :</h2>
     <div class="right">
-        <a class="button" href="${pageContext.request.contextPath}/view/Student/TranscriptStudent.jsp">Relevé de notes</a>
+        <button onclick="transcritpStudent()">Relevé de notes</button>
         <button onclick="assignmentCourse(<%= student.getIdStudent() %>)" class="button" >S'inscrire à un cours</button>
     </div>
 </div>
@@ -168,7 +169,8 @@
     </tr>
     </thead>
     <tbody>
-    <% for (models.Course course : courses) {
+    <%  Map<Integer, String> courseAverages = (Map<Integer, String>) request.getAttribute("courseAverages");
+        for (models.Course course : courses) {
         models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
     %>
     <tr>
@@ -176,7 +178,7 @@
         <td>
             <%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %>
         </td>
-        <td>Chargement...</td>
+        <td><%= courseAverages.get(course.getIdCourse()) %></td>
     </tr>
     <% } %>
     </tbody>
@@ -206,6 +208,18 @@
         } else {
             console.error("Aucun ID étudiant n'a été transmis.");
         }
+    }
+
+    //Fonction pour afficher le relevé de note
+    function transcritpStudent(){
+        // Créez un formulaire HTML de manière dynamique
+        const form = document.createElement("form");
+        form.method = "GET";
+        form.action = `${pageContext.request.contextPath}/TranscriptStudentServlet`;
+
+        // Ajoutez le formulaire à la page et soumettez-le
+        document.body.appendChild(form);
+        form.submit();
     }
 </script>
 </body>

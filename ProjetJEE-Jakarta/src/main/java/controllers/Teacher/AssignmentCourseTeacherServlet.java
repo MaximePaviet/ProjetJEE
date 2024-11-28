@@ -104,7 +104,7 @@ public class AssignmentCourseTeacherServlet extends HttpServlet {
             request.setAttribute("error", "Aucun cours sélectionné.");
         }
 
-        response.sendRedirect(request.getContextPath() + "/view/Teacher/ProfileTeacher.jsp");
+        response.sendRedirect(request.getContextPath() + "/ProfileTeacherServlet");
     }
 
 

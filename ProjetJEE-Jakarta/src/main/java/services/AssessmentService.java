@@ -4,9 +4,14 @@ import jakarta.persistence.*;
 import models.Assessment;
 import models.Grade;
 import models.Student;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import models.Course;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 public class AssessmentService {
@@ -66,57 +71,147 @@ public class AssessmentService {
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
-            transaction.begin(); // Démarrer une transaction
+            transaction.begin();
 
-            // Récupérer l'Assessment depuis la base de données
+            // Récupérer l'Assessment
             Assessment assessment = entityManager.find(Assessment.class, idAssessment);
             if (assessment == null) {
                 throw new IllegalArgumentException("Assessment with ID " + idAssessment + " not found.");
             }
 
-            // Vérifier que l'étudiant existe en base de données
+            // Récupérer l'étudiant
             Student persistedStudent = entityManager.find(Student.class, student.getIdStudent());
             if (persistedStudent == null) {
                 throw new IllegalArgumentException("Student with ID " + student.getIdStudent() + " not found.");
             }
 
-            // Création de l'objet Grade
+            // Créer le grade
             Grade grade = new Grade();
-            grade.setStudent(persistedStudent);  // Associer l'étudiant existant
-            grade.setAssessment(assessment);    // Associer l'Assessment existant
-            grade.setGrade(gradeValue);         // Définir la valeur de la note
+            grade.setStudent(persistedStudent);
+            grade.setAssessment(assessment);
+            grade.setGrade(gradeValue);
 
-            // Ajouter la note à la liste des grades de l'évaluation
+            // Ajouter le grade à l'évaluation
             assessment.getGradeList().add(grade);
 
-            // Persister la note dans la base de données
+            // Persister les objets
             entityManager.persist(grade);
-            transaction.commit(); // Valider la transaction
-            System.out.println("Grade created successfully!");
+            entityManager.merge(assessment);
+
+            transaction.commit();
+
+            // Mettre à jour la moyenne de l'évaluation
+            updateAssessmentAverage(idAssessment); // Appel après la transaction pour recalculer la moyenne
+
         } catch (Exception e) {
             if (transaction.isActive()) {
-                transaction.rollback(); // Annuler la transaction en cas d'erreur
+                transaction.rollback();
             }
             e.printStackTrace();
         } finally {
-            entityManager.close(); // Fermer l'EntityManager
+            entityManager.close();
         }
     }
 
 
-    public void averageAssessmentClass(List<Grade> gradeList) {
-        if (gradeList == null || gradeList.isEmpty()) {
-            System.out.println("No grades available for this assessment.");
-            return;
+    public void updateAssessmentAverage(int idAssessment) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+
+            // Récupérer l'Assessment
+            Assessment assessment = entityManager.find(Assessment.class, idAssessment);
+            if (assessment == null) {
+                throw new IllegalArgumentException("Assessment with ID " + idAssessment + " not found.");
+            }
+
+            // Calculer la moyenne des grades associés
+            List<Grade> gradeList = assessment.getGradeList();
+            if (gradeList == null || gradeList.isEmpty()) {
+                assessment.setAverage(0.0); // Aucune note, moyenne à 0
+            } else {
+                double average = gradeList.stream()
+                        .mapToDouble(Grade::getGrade)
+                        .average()
+                        .orElse(0.0);
+                assessment.setAverage(average); // Mettre à jour la moyenne
+            }
+
+            // Persister les changements
+            entityManager.merge(assessment);
+            transaction.commit();
+            System.out.println("Moyenne mise à jour pour l'évaluation avec ID " + idAssessment);
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    //Vérifie si il existe une évaluation ayant déjà ce nom dans le cours
+    public boolean checkAssessmentExists(Course course, String name) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        String queryStr = "SELECT COUNT(a) FROM Assessment a WHERE a.course.idCourse = :idCourse AND a.name = :name";
+        Long count = (Long) entityManager.createQuery(queryStr)
+                .setParameter("idCourse", course.getIdCourse())
+                .setParameter("name", name)
+                .getSingleResult();
+
+        entityManager.close();
+
+        return count > 0; // Retourne true si l'évaluation existe déjà
+    }
+
+    //Calcule la meilleure et la pire note
+    public Map<Integer, Map<String, Float>> calculateMinMaxGrades(List<Assessment> assessments) {
+        Map<Integer, Map<String, Float>> result = new HashMap<>();
+
+        for (Assessment assessment : assessments) {
+            Map<String, Float> minMax = new HashMap<>();
+            List<Grade> grades = assessment.getGradeList();
+
+            if (grades == null || grades.isEmpty()) {
+                minMax.put("min", null); // Aucune note
+                minMax.put("max", null);
+            } else {
+                float min = (float) grades.stream().mapToDouble(Grade::getGrade).min().orElse(0.0);
+                float max = (float) grades.stream().mapToDouble(Grade::getGrade).max().orElse(0.0);
+                minMax.put("min", min);
+                minMax.put("max", max);
+            }
+            result.put(assessment.getIdAssessment(), minMax);
         }
 
-        // Calculer la moyenne
-        double average = gradeList.stream()
-                .mapToDouble(Grade::getGrade) // Extraire la valeur de la note
-                .average() // Calculer la moyenne
-                .orElse(0.0); // Par défaut 0 si la liste est vide
+        return result; // Map contenant {idAssessment -> {"min" -> valeur, "max" -> valeur}}
+    }
 
-        System.out.println("The average grade for the class is: " + average);
+    public Map<Assessment, Double> getAssessmentsAndGradesByCourseAndStudent(int courseId, int studentId) {
+        Map<Assessment, Double> assessmentsWithGrades = new HashMap<>();
+
+        String hql = " SELECT a, g.grade FROM Assessment a LEFT JOIN Grade g ON g.assessment.idAssessment = a.idAssessment AND g.student.idStudent = :studentId WHERE a.course.idCourse = :courseId ";
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            org.hibernate.query.Query<Object[]> query = session.createQuery(hql, Object[].class);
+            query.setParameter("courseId", courseId);
+            query.setParameter("studentId", studentId);
+
+            List<Object[]> results = query.getResultList();
+
+            for (Object[] row : results) {
+                Assessment assessment = (Assessment) row[0];
+                Double grade = (Double) row[1];
+                assessmentsWithGrades.put(assessment, grade);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return assessmentsWithGrades;
     }
 
 

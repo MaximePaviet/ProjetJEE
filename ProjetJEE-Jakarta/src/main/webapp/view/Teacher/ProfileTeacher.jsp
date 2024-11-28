@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Course, java.util.List" %>
+<%@ page import="java.util.Map" %>
 <html>
 <head>
     <title>Mon Profil</title>
@@ -169,11 +170,14 @@
     </tr>
     </thead>
     <tbody>
-    <% for (models.Course course : courses) { %>
+    <%
+        Map<Integer, String> courseAverages = (Map<Integer, String>) request.getAttribute("courseAverages");
+        for (models.Course course : courses) {
+    %>
     <tr onclick="viewCourse(<%= course.getIdCourse() %>)" style="cursor: pointer;">
         <td><%= course.getName() %></td>
-        <td><%=course.getStudentList().size()%></td>
-        <td>Chargement...</td>
+        <td><%= course.getStudentList().size() %></td>
+        <td><%= courseAverages.get(course.getIdCourse()) %></td> <!-- Afficher moyenne ou message -->
     </tr>
     <% } %>
     </tbody>

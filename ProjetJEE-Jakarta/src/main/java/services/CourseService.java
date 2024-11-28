@@ -1,8 +1,12 @@
 package services;
 
 import jakarta.persistence.*;
+import models.Assessment;
 import models.Course;
+import models.Grade;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,6 +136,58 @@ public class CourseService {
         }
         return courses;
     }
+
+    //Calcule la moyenne totale du cours
+    public double calculateCourseAverage(int courseId) {
+        double total = 0;
+        int count = 0;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Requête pour obtenir les notes du cours
+            String hql = "SELECT g.grade FROM Grade g WHERE g.assessment.course.idCourse = :courseId";
+            Query<Double> query = session.createQuery(hql, Double.class);
+            query.setParameter("courseId", courseId);
+
+            List<Double> grades = query.getResultList();
+            for (Double grade : grades) {
+                total += grade;
+                count++;
+            }
+        } catch (NoResultException e) {
+            e.printStackTrace();
+        }
+
+        return count > 0 ? total / count : 0.0; // Retourne 0.0 si aucune note
+    }
+
+    // Calcule la moyenne d'un élève dans un cours
+    public double calculateStudentAverageInCourse(int courseId, int studentId) {
+        double total = 0;
+        int count = 0;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Requête pour obtenir les notes d'un étudiant spécifique dans un cours
+            String hql = "SELECT g.grade FROM Grade g " +
+                    "WHERE g.assessment.course.idCourse = :courseId " +
+                    "AND g.student.idStudent = :studentId";
+            Query<Double> query = session.createQuery(hql, Double.class);
+            query.setParameter("courseId", courseId);
+            query.setParameter("studentId", studentId);
+
+            List<Double> grades = query.getResultList();
+            for (Double grade : grades) {
+                total += grade;
+                count++;
+            }
+        } catch (NoResultException e) {
+            e.printStackTrace();
+        }
+
+        return count > 0 ? total / count : 0.0; // Retourne 0.0 si aucune note
+    }
+
+
+
 
     // Ferme l'EntityManagerFactory
     public void close() {

@@ -75,7 +75,7 @@ public class LoginTeacherServlet extends HttpServlet {
                 request.getSession().setAttribute("teacher", teacher);
 
                 // Redirection
-                response.sendRedirect(request.getContextPath() + "/view/Teacher/ProfileTeacher.jsp");
+                response.sendRedirect(request.getContextPath() + "/ProfileTeacherServlet");
             } else {
                 request.setAttribute("errorMessage", "Enseignant introuvable !");
                 request.getRequestDispatcher("/view/Teacher/ConnexionTeacher.jsp").forward(request, response);

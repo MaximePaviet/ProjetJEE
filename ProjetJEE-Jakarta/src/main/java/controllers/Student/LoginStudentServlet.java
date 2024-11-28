@@ -75,7 +75,7 @@ public class LoginStudentServlet extends HttpServlet {
                 request.getSession().setAttribute("student", student);
 
                 // Redirection
-                response.sendRedirect(request.getContextPath() + "/view/Student/ProfileStudent.jsp");
+                response.sendRedirect(request.getContextPath() + "/ProfileStudentServlet");
             } else {
                 request.setAttribute("errorMessage", "Etudiant introuvable !");
                 request.getRequestDispatcher("/view/Student/ConnexionStudent.jsp").forward(request, response);

@@ -23,7 +23,7 @@
             font-family: "DM Sans", sans-serif;
             font-size: 50px;
             font-weight: bold;
-            margin: 20px;
+            margin: 0 20px;
             cursor: pointer;
             text-decoration: none;
             visibility: visible;
@@ -105,9 +105,7 @@
 <%
     models.Teacher teacher = (models.Teacher) session.getAttribute("teacher");
 %>
-<form class="hiddenForm" action="${pageContext.request.contextPath}/LoginTeacherServlet" method="POST">
-    <input type="hidden" name="login" value="<%= teacher.getLogin() %>">
-    <input type="hidden" name="password" value="<%= teacher.getPassword() %>">
+<form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileTeacherServlet" method="GET">
     <button class="returnButton" type="submit"><</button>
 </form>
 

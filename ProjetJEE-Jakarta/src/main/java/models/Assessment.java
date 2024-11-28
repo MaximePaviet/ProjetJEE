@@ -27,7 +27,7 @@ public class Assessment {
     @JoinColumn(name = "idCourse", nullable = false) // Clé étrangère non nullable
     private Course course;
 
-    @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Grade> gradeList = new ArrayList<>();
 
     // Getters et Setters

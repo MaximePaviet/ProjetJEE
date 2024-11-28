@@ -153,5 +153,12 @@ public class GradeService {
 
         return transcript;  // Retourner la liste complète des grades de l'étudiant
     }
+
+    // Ferme l'EntityManagerFactory
+    public void close() {
+        if (entityManagerFactory != null) {
+            entityManagerFactory.close();
+        }
+    }
 }
 

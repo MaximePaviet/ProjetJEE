@@ -18,6 +18,7 @@
             position: relative;
             visibility: hidden;
         }
+
         .returnButton {
             all: unset;
             color: #4F2BEC;
@@ -106,9 +107,7 @@
 <%
     models.Student student = (models.Student) session.getAttribute("student");
 %>
-<form class="hiddenForm" action="${pageContext.request.contextPath}/LoginStudentServlet" method="POST">
-    <input type="hidden" name="login" value="<%= student.getLogin() %>">
-    <input type="hidden" name="password" value="<%= student.getPassword() %>">
+<form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileStudentServlet" method="GET">
     <button class="returnButton" type="submit"><</button>
 </form>
 
