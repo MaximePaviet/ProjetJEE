@@ -134,7 +134,7 @@
   </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Administrator/HomeAdministrator.jsp"><</a>
+<a href="${pageContext.request.contextPath}/views/Administrator/HomeAdministrator"><</a>
 <h1>Page étudiants</h1>
 <div class="container">
   <div class="searchBar">
@@ -143,7 +143,7 @@
   </div>
   <div class="right">
     <button>Filtre</button>
-    <a href="${pageContext.request.contextPath}/view/Administrator/AddStudentAdmin.jsp" class="button">Ajouter Étudiant</a>
+    <a href="${pageContext.request.contextPath}/views/Administrator/AddStudentAdmin" class="button">Ajouter Étudiant</a>
   </div>
 </div>
 <%
@@ -194,7 +194,7 @@
       // Créez un formulaire HTML de manière dynamique
       const form = document.createElement("form");
       form.method = "POST"; // Utiliser POST au lieu de GET
-      form.action = `${pageContext.request.contextPath}/StudentProfileAdminServlet`;
+      form.action = `${pageContext.request.contextPath}/StudentProfileAdminController`;
 
       // Ajoutez un champ caché contenant l'ID de l'enseignant
       const input = document.createElement("input");

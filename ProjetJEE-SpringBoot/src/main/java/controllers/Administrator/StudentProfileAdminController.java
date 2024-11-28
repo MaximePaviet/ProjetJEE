@@ -1,4 +1,4 @@
-package controllers.Adminstrator;
+package controllers.Administrator;
 
 public class StudentProfileAdminController {
 }

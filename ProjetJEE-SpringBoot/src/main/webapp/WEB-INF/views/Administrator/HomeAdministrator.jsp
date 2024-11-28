@@ -83,12 +83,12 @@
   </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Administrator/ConnexionAdministrator.jsp"><</a>
+<a href="${pageContext.request.contextPath}/views/Administrator/ConnexionAdministrator"><</a>
 <h1>Accueil Administrateur</h1>
 <div class="container">
-  <a href="${pageContext.request.contextPath}/TeacherPageServlet" class="button">Enseignants</a>
-  <a href="${pageContext.request.contextPath}/StudentPageServlet" class="button">Étudiants</a>
-  <a href="${pageContext.request.contextPath}/CoursePageServlet" class="button">Cours</a>
+  <a href="${pageContext.request.contextPath}/TeacherPageAdminController" class="button">Enseignants</a>
+  <a href="${pageContext.request.contextPath}/StudentPageAdminController" class="button">Étudiants</a>
+  <a href="${pageContext.request.contextPath}/CoursePageAdminController" class="button">Cours</a>
 </div>
 </body>
 </html>

@@ -76,5 +76,10 @@ public class TeacherService {
     public List<Teacher> searchTeacher(String searchTerm) {
         return teacherRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCaseOrContactContainingIgnoreCase(searchTerm, searchTerm, searchTerm);
     }
+
+    // Méthode pour lire la liste des enseignants
+    public List<Teacher> readTeacherList() {
+        return teacherRepository.findAll();
+    }
 }
 

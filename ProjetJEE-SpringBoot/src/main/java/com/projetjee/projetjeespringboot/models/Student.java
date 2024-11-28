@@ -13,7 +13,7 @@ import java.util.List;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idStudent")
+    @Column(name = "id_student")
     private Integer idStudent;
 
     @Column(name = "name")

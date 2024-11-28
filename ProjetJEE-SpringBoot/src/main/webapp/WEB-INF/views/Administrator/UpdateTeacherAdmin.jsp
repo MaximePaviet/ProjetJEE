@@ -98,7 +98,7 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/TeacherPageServlet"><</a>
+<a href="${pageContext.request.contextPath}/TeacherPageAdminController"><</a>
 <h1>Ajouter enseignant</h1>
 <%
     Teacher teacher = (Teacher) request.getAttribute("teacher");
@@ -108,7 +108,7 @@
 <%
     }
 %>
-<form action="${pageContext.request.contextPath}/UpdateTeacherServlet" method="GET">
+<form action="${pageContext.request.contextPath}/UpdateTeacherAdminController" method="GET">
     <div class="container">
         <input type="hidden" name="id" value="<%= teacher != null ? teacher.getIdTeacher() : "" %>" />
 

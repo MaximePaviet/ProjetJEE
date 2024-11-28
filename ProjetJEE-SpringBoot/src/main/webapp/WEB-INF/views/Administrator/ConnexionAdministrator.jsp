@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -19,6 +20,7 @@
             margin: 20px;
             cursor: pointer;
             text-decoration: none;
+
         }
 
         h1 {
@@ -34,7 +36,7 @@
         h2 {
             font-size: 36px;
             color: #4F2BEC;
-            font-family: 'DM Sans', serif;
+            font-family:'DM Sans', serif;
             text-align: center;
         }
 
@@ -47,7 +49,7 @@
         }
 
         form {
-            font-family: 'DM Sans', serif;
+            font-family:'DM Sans', serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -55,19 +57,19 @@
             height: 50%;
         }
 
-        label {
+        label{
             font-size: 14px;
             font-weight: 500;
             color: #2B3674;
         }
 
-        .asterisque {
+        .asterisque{
             font-size: 14px;
             font-weight: 500;
-            color: #4318FF;
+            color: #4318FF
         }
 
-        input {
+        input{
             color: #A3AED0;
             background-color: #f5f5f5;
             padding: 10px 40px 10px 10px;
@@ -99,6 +101,7 @@
             z-index: 10;
         }
 
+
         .toggle-password {
             position: absolute;
             top: 65.65%;
@@ -113,7 +116,7 @@
             color: #4F2BEC;
         }
 
-        button {
+        button{
             color: white;
             background-color: #4F2BEC;
             border: none;
@@ -134,14 +137,14 @@
     </style>
 </head>
 <body>
-<a href="<%= request.getContextPath() %>/index.jsp"><</a>
+<a href="${pageContext.request.contextPath}/view/index.jsp"><</a>
 <h1>CYSCOLARITÉ</h1>
 <h2>Espace Administrateur</h2>
 <hr>
 <form action="${pageContext.request.contextPath}/adminLogin" method="POST">
     <!-- Afficher le message d'erreur si l'attribut errorMessage existe -->
     <div class="error-message">
-        <%= request.getAttribute("errorMessage") %>
+        ${errorMessage}
     </div>
 
     <label>Login<span class="asterisque">*</span><br>
@@ -154,6 +157,7 @@
         </div>
     </label> <br>
     <button type="submit">Connexion</button>
+
 </form>
 
 <script>

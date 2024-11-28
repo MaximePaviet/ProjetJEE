@@ -16,7 +16,7 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idCourse")
+    @Column(name = "id_course")
     private int idCourse;
 
     @Column(name = "name")

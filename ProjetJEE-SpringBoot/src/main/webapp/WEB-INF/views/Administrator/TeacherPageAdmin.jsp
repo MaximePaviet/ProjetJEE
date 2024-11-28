@@ -133,7 +133,7 @@
 
   </style>
 <body>
-<a href="${pageContext.request.contextPath}/view/Administrator/HomeAdministrator.jsp"><</a>
+<a href="${pageContext.request.contextPath}/views/Administrator/HomeAdministrator"><</a>
 <h1>Page enseignants</h1>
 <div class="container">
   <div class="searchBar">
@@ -141,7 +141,7 @@
     <input type="text" name="search" placeholder="Recherche">
   </div>
   <div class="right">
-    <a href="${pageContext.request.contextPath}/view/Administrator/AddTeacherAdmin.jsp" class="button">Ajouter Enseignant</a>
+    <a href="${pageContext.request.contextPath}/views/Administrator/AddTeacherAdmin" class="button">Ajouter Enseignant</a>
   </div>
 </div>
 <%
@@ -187,7 +187,7 @@
       // Créez un formulaire HTML de manière dynamique
       const form = document.createElement("form");
       form.method = "POST"; // Utiliser POST au lieu de GET
-      form.action = `${pageContext.request.contextPath}/TeacherProfileAdminServlet`;
+      form.action = `${pageContext.request.contextPath}/TeacherProfileAdminController`;
 
       // Ajoutez un champ caché contenant l'ID de l'enseignant
       const input = document.createElement("input");
@@ -210,7 +210,7 @@
       // Créez un formulaire HTML de manière dynamique
       const form = document.createElement("form");
       form.method = "POST";
-      form.action = `${pageContext.request.contextPath}/UpdateTeacherServlet`;
+      form.action = `${pageContext.request.contextPath}/UpdateTeacherController`;
 
       // Ajoutez les champs cachés pour chaque donnée
       const inputs = [
