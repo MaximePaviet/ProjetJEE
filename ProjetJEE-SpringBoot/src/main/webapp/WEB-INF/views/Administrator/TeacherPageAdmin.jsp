@@ -210,7 +210,7 @@
       // Créez un formulaire HTML de manière dynamique
       const form = document.createElement("form");
       form.method = "POST";
-      form.action = `${pageContext.request.contextPath}/UpdateTeacherController`;
+      form.action = `${pageContext.request.contextPath}/UpdateTeacherAdminController`;
 
       // Ajoutez les champs cachés pour chaque donnée
       const inputs = [

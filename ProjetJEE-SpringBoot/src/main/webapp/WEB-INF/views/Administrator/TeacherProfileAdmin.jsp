@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/TeacherPageServlet"><</a>
+<a href="${pageContext.request.contextPath}/TeacherPageAdminController"><</a>
 <h1>Profil de l'enseignant</h1>
 
 <%-- Afficher les informations sur l'enseignant --%>

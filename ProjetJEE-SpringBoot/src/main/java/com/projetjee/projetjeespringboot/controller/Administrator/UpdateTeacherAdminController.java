@@ -23,18 +23,16 @@ public class UpdateTeacherAdminController {
 
     // Méthode pour afficher le formulaire de mise à jour d'un enseignant
     @GetMapping("/UpdateTeacherAdminController")
-    public String showUpdateTeacherForm(@RequestParam("idTeacher") int idTeacher, Model model) {
+    public String showUpdateTeacherForm(@RequestParam("id") int idTeacher, Model model) {
         // Récupérer l'enseignant à partir de l'ID
         Teacher teacher = teacherService.readTeacher(idTeacher);
 
         if (teacher != null) {
             model.addAttribute("teacher", teacher);
-            return "Administrator/UpdateTeacherAdmin";  // Nom de la JSP ou template Thymeleaf
         } else {
-            // Retourner une erreur si l'enseignant n'est pas trouvé
-            model.addAttribute("error", "Enseignant introuvable");
-            return "errorPage"; // Remplacez "errorPage" par votre page d'erreur
+            model.addAttribute("error", "Enseignant introuvable"); // Message d'erreur dans le modèle
         }
+        return "/WEB-INF/views/Administrator/UpdateTeacherAdmin.jsp";  // Nom de la JSP
     }
 
     // Méthode pour gérer la mise à jour de l'enseignant
@@ -52,6 +50,6 @@ public class UpdateTeacherAdminController {
         redirectAttributes.addFlashAttribute("message", "Enseignant mis à jour avec succès!");
 
         // Rediriger vers la page des enseignants après mise à jour
-        return "redirect:Administrator/TeacherPageAdmin";  // Remplacez "/admin/teachers" par l'URL de la page des enseignants
+        return "redirect:/TeacherPageAdminController";  // Remplacez par l'URL de votre page de liste des enseignants
     }
 }
