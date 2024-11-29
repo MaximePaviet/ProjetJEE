@@ -25,9 +25,9 @@ CREATE TABLE student (
                          password VARCHAR(255) NOT NULL,
                          name VARCHAR(255) NOT NULL,
                          surname VARCHAR(255) NOT NULL,
-                         dateBirth DATE NOT NULL,
+                         date_birth DATE NOT NULL,
                          contact VARCHAR(255),
-                         schoolYear VARCHAR(50) NOT NULL
+                         school_year VARCHAR(50) NOT NULL
 );
 
 -- Table course

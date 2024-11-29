@@ -1,6 +1,3 @@
-<%@ page import="com.projetjee.projetjeespringboot.models.Teacher" %>
-<%@ page import="com.projetjee.projetjeespringboot.models.Student" %>
-<%@ page import="com.projetjee.projetjeespringboot.models.Course" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -82,11 +79,11 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/StudentPageServlet"><</a>
+<a href="${pageContext.request.contextPath}/StudentPageAdminController"><</a>
 <h1>Profil étudiant</h1>
 
 <%
-    Student student = (Student) request.getAttribute("student");
+    com.projetjee.projetjeespringboot.models.Student student = (com.projetjee.projetjeespringboot.models.Student) request.getAttribute("student");
     if (student != null) {
 %>
 <div class="profileInfo">
@@ -104,7 +101,7 @@
 %>
 <h2>Liste des cours :</h2>
 <%
-    java.util.List<Course> courses = (java.util.List<Course>) request.getAttribute("courses");
+    java.util.List<com.projetjee.projetjeespringboot.models.Course> courses = (java.util.List<com.projetjee.projetjeespringboot.models.Course>) request.getAttribute("courses");
     if (courses == null || courses.isEmpty()) {
 %>
 <p style="text-align: center;">Aucun cours trouvé pour cet étudiant.</p>
@@ -120,8 +117,8 @@
     </tr>
     </thead>
     <tbody>
-    <% for (Course course : courses) {
-        Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
+    <% for (com.projetjee.projetjeespringboot.models.Course course : courses) {
+        com.projetjee.projetjeespringboot.models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
     %>
     <tr>
         <td><%= course.getName() %></td>

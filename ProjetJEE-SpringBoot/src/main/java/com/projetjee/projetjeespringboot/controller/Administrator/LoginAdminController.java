@@ -17,13 +17,13 @@ public class LoginAdminController {
         this.administratorService = administratorService;
     }
 
-    @GetMapping("/adminLogin")
-    public String showLoginPage(Model model) {
-        model.addAttribute("errorMessage", null); // Préparation du message d'erreur (vide par défaut)
+    @GetMapping("/LoginAdminController")
+    public String showLoginPage() {
+        // Préparation du message d'erreur (vide par défaut)
         return "Administrator/ConnexionAdministrator"; // Nom de la page HTML Thymeleaf
     }
 
-    @PostMapping("/adminLogin")
+    @PostMapping("/LoginAdminController")
     public String handleLogin(
             @RequestParam String login,
             @RequestParam String password,

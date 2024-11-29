@@ -18,6 +18,10 @@ public class HomeController {
     public String showAdminPage() {
         return "Administrator/ConnexionAdministrator"; // Correspond au fichier JSP admin.jsp
     }
+    @GetMapping("/views/Student/ConnexionStudent")
+    public String showStudentPage() {
+        return "Student/ConnexionStudent"; // Correspond au fichier JSP admin.jsp
+    }
 
    /* @GetMapping("/views/Teacher/ConnexionTeacher")
     public String showTeacherPage() {

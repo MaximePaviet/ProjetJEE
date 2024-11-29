@@ -1,20 +1,3 @@
-<%@ page import="com.projetjee.projetjeespringboot.models.Teacher" %>
-<%@ page import="com.projetjee.projetjeespringboot.models.Course" %><%--
-  Created by IntelliJ IDEA.
-  User: CYTech Student
-  Date: 11/27/2024
-  Time: 3:45 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -37,189 +20,186 @@
       margin: 20px;
       cursor: pointer;
       text-decoration: none;
+
     }
 
     h1 {
-      font-size: 36px;
-      color: #4F2BEC;
-      font-family: 'DM Sans', serif;
-      font-weight: bold;
+      font-size: 64px;
+      color: #2549A4;
+      font-family: 'Monofett', serif;
+      font-weight: 400;
       font-style: normal;
       text-align: center;
-      margin: 0;
-    }
-
-    .container{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       margin-top: 30px;
     }
 
-    .searchBar{
-      background-color: #AAC2FF;
-      border: 2px solid #4F2BEC;
-      border-radius: 16px;
-      margin: 20px 150px;
-      padding: 5px 20px;
-      width: 200px;
-    }
-
-    input{
-      color: #000000;
-      background-color: #AAC2FF;
-      border: none;
-      font-size: 14px;
-      font-weight: normal;
-    }
-
-    input:focus{
-      outline:none;
-      border:none;
-    }
-
-    input::placeholder {
-      color: #000000;
-      opacity: 70%;
-    }
-
-    .right{
-      display: flex;
-      justify-content: flex-end;
-      margin-right: 132px;
-    }
-
-    .courseName{
-      background-color: #AAC2FF;
-      border: 2px solid #4F2BEC;
-      border-radius: 16px;
-      margin: 20px;
-      padding: 5px 20px;
-    }
-
-    .courseName:focus{
-      border:2px solid #4F2BEC;
-    }
-
-    .courseName::placeholder{
+    h2 {
+      font-size: 36px;
+      color: #4F2BEC;
+      font-family:'DM Sans', serif;
       text-align: center;
     }
 
-    button {
+    hr {
+      width: 426px;
+      border-top: 1px solid #E0E5F2;
+      border-left: none;
+      border-bottom: none;
+      border-right: none;
+    }
+
+    form {
+      font-family:'DM Sans', serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 50%;
+    }
+
+    label{
+      font-size: 14px;
+      font-weight: 500;
+      color: #2B3674;
+    }
+
+    .asterisque{
+      font-size: 14px;
+      font-weight: 500;
+      color: #4318FF
+    }
+
+    input{
+      color: #A3AED0;
+      background-color: #f5f5f5;
+      padding: 10px 40px 10px 10px;
+      margin: 10px 0 10px 0;
+      border: 2px solid #4F2BEC;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: normal;
+      width: 450px;
+      height: 50px;
+    }
+
+    input:focus {
+      outline: none;
+      border: 2px solid #4F2BEC;
+    }
+
+    input::placeholder {
+      color: #A3AED0;
+    }
+
+    .error-message {
+      color: red;
+      font-weight: bold;
+      position: absolute;
+      top: 305px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+
+    .toggle-password {
+      position: absolute;
+      top: 65.65%;
+      right: 36%;
+      cursor: pointer;
+      color: #A3AED0;
+      font-size: 1.8rem;
+      user-select: none;
+    }
+
+    .toggle-password:hover {
+      color: #4F2BEC;
+    }
+
+    button{
       color: white;
       background-color: #4F2BEC;
-      border: 2px solid #4F2BEC;
+      border: none;
       border-radius: 20px;
+      margin-top: 20px;
       font-family: "DM Sans", sans-serif;
       font-size: 1rem;
       font-weight: normal;
       cursor: pointer;
       text-decoration: none;
-      margin: 20px;
-      padding: 5px 20px;
+      padding: 10px 15px;
+      width: 250px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    button:hover {
-      opacity: 90%;
-    }
-
-    /* Style du tableau */
-    table {
-      color: #4F2BEC;
-      width: 80%;
-      border-collapse: collapse;
-      margin: 20px auto;
-      font-family: "DM Sans", sans-serif;
-    }
-
-    table, th, td {
-      border: 2px solid #AAC2FF;
-    }
-
-    td {
-      padding: 12px;
-      text-align: left;
-    }
-
-    th {
-      padding: 12px;
-      text-align: center;
-    }
-
   </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Administrator/HomeAdministrator.jsp"><</a>
+<a href="${pageContext.request.contextPath}/views/Administrator/HomeAdministrator"><</a>
 <h1>Page cours</h1>
-<%
-  java.util.List<Course> courses = (java.util.List<Course>) request.getAttribute("courses");
-  if (courses == null || courses.isEmpty()) {
-%>
-<p style="text-align: center;">Aucun cours trouvé </p>
-<%
-} else {
-%>
-<div class="container">
-  <div class="searchBar">
-    <span>🔍︎</span>
-    <input type="text" name="search" placeholder="Recherche">
+<c:if test="${empty courses}">
+  <p style="text-align: center;">Aucun cours trouvé</p>
+</c:if>
+<c:if test="${not empty courses}">
+  <div class="container">
+    <div class="searchBar">
+      <span>🔍︎</span>
+      <input type="text" name="search" placeholder="Recherche">
+    </div>
+    <div class="right">
+      <form action="${pageContext.request.contextPath}/AddCourseAdminController" method="POST">
+        <input class="courseName" type="text" name="courseName" placeholder="Nom du cours" required>
+        <button type="submit">Ajouter cours</button>
+      </form>
+    </div>
   </div>
-  <div class="right">
-    <form action="${pageContext.request.contextPath}/addCourse" method="POST">
-      <input class="courseName" type="text" name="courseName" placeholder="Nom du cours" required>
-      <button type="submit">Ajouter cours</button>
-    </form>
-  </div>
-</div>
-<table id="studentsTable">
-  <thead>
-  <tr>
-    <th>Cours</th>
-    <th>Professeur</th>
-    <th>Nombre d'élèves</th>
-    <th>Action</th>
-  </tr>
-  </thead>
-  <tbody>
-  <% for (Course course : courses) {
-    Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours %>
-  <tr>
-    <td><%= course.getName() %></td>
-    <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->
-    <td> <%=course.getStudentList().size()%></td> <!-- Si vous avez une méthode pour calculer la moyenne -->
-    <td>
-      <button onclick="event.stopPropagation(); editCourse(<%= course.getIdCourse() %>)">
-        Modifier
-      </button>
-      <button onclick="event.stopPropagation(); deleteCourse(<%= course.getIdCourse() %>)">
-        Supprimer
-      </button>
-    </td>
-  </tr>
-  <% } %>
-  </tbody>
-</table>
-<%
-  }
-%>
+  <table id="studentsTable">
+    <thead>
+    <tr>
+      <th>Cours</th>
+      <th>Professeur</th>
+      <th>Nombre d'élèves</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <c:forEach var="course" items="${courses}">
+      <tr>
+        <td>${course.name}</td>
+        <td>${course.teacher != null ? course.teacher.name + " " + course.teacher.surname : "Aucun professeur"}</td>
+        <td>${course.studentList.size()}</td>
+        <td class="action">
+          <button class="actionButton" onclick="editCourse(${course.idCourse})">
+            <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Votre SVG ici -->
+            </svg>
+          </button>
+          |
+          <button class="actionButton" onclick="deleteCourse(${course.idCourse})">
+            <svg width="20" height="21" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Votre SVG ici -->
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </c:forEach>
+    </tbody>
+  </table>
+</c:if>
 
 <script>
-  // Fonction pour rediriger vers la page de profil
-  function viewProfile(idCourse) {
+  function editCourse(idCourse) {
     if (idCourse) {
-      // Créez un formulaire HTML de manière dynamique
       const form = document.createElement("form");
-      form.method = "POST"; // Utiliser POST au lieu de GET
-      form.action = `${pageContext.request.contextPath}/CourseProfileAdminServlet`;
-
-      // Ajoutez un champ caché contenant l'ID de l'enseignant
+      form.method = "GET";
+      form.action = "${pageContext.request.contextPath}/UpdateCourseAdminController";
       const input = document.createElement("input");
       input.type = "hidden";
-      input.name = "idCourse"; // Le nom doit correspondre à ce que le servlet attend
+      input.name = "idCourse";
       input.value = idCourse;
       form.appendChild(input);
-
-      // Ajoutez le formulaire à la page et soumettez-le
       document.body.appendChild(form);
       form.submit();
     } else {
@@ -227,15 +207,22 @@
     }
   }
 
-  // Fonction pour modifier un enseignant
-  function editCourse(idCourse) {
-    window.location.href = `${pageContext.request.contextPath}${window.location.pathname.replace("TeacherPageAdmin.jsp", "EditTeacher.jsp")}?idTeacher=${idTeacher}`;
+  function deleteCourse(idCourse) {
+    if (idCourse) {
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "${pageContext.request.contextPath}/DeleteCourseAdminController";
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "idCourse";
+      input.value = idCourse;
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    } else {
+      console.error("Aucun ID cours n'a été transmis.");
+    }
   }
-  function deleteCourse(idCourse) {}
-
-
 </script>
 </body>
-
-
 </html>

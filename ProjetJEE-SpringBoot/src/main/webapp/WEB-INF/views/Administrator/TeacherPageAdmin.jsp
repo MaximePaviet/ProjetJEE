@@ -73,21 +73,15 @@
     }
 
     button {
-      color: white;
-      background-color: #4F2BEC;
+      display: inline-flex;
+      justify-content: center; /* Centre horizontalement le contenu du bouton */
+      align-items: center; /* Centre verticalement le contenu du bouton */
+      background-color: transparent;
       border: none;
-      border-radius: 20px;
-      font-family: "DM Sans", sans-serif;
-      font-size: 1rem;
-      font-weight: normal;
+      padding: 0; /* Supprime les marges internes */
       cursor: pointer;
-      text-decoration: none;
-      margin: 20px;
-      padding: 5px 20px;
-    }
-
-    button:hover{
-      opacity: 90%;
+      width: auto; /* Taille ajustée au contenu, ici le SVG */
+      height: auto; /* Taille ajustée au contenu */
     }
 
     .button {
@@ -131,6 +125,11 @@
       text-align: center;
     }
 
+    .action{
+      text-align: center;
+      vertical-align: middle;
+    }
+
   </style>
 <body>
 <a href="${pageContext.request.contextPath}/views/Administrator/HomeAdministrator"><</a>
@@ -138,14 +137,14 @@
 <div class="container">
   <div class="searchBar">
     <span>🔍︎</span>
-    <input type="text" name="search" placeholder="Recherche">
+    <input oninput="teachersearch(this.value)" ontype="text" name="search" placeholder="Recherche">
   </div>
   <div class="right">
     <a href="${pageContext.request.contextPath}/views/Administrator/AddTeacherAdmin" class="button">Ajouter Enseignant</a>
   </div>
 </div>
 <%
-  java.util.List<Teacher> teachers = (java.util.List<Teacher>) request.getAttribute("teachers");
+  java.util.List<com.projetjee.projetjeespringboot.models.Teacher> teachers = (java.util.List<Teacher>) request.getAttribute("teachers");
   if (teachers == null || teachers.isEmpty()) {
 %>
 <p>Aucun enseignant trouvé.</p>
@@ -162,14 +161,16 @@
   </tr>
   </thead>
   <tbody>
-  <% for (Teacher teacher : teachers) { %>
-  <tr onclick="viewProfile(<%= teacher.getIdTeacher() %>)" style="cursor: pointer;">
-    <td><%= teacher.getSurname() %></td>
-    <td><%= teacher.getName()%></td>
-    <td><%= teacher.getContact() %></td>
-    <td>
-      <button onclick="event.stopPropagation(); editTeacher(<%= teacher.getIdTeacher() %>)">
-        Modifier
+  <% for (com.projetjee.projetjeespringboot.models.Teacher teacher : teachers) { %>
+  <tr onclick="viewProfile(<%= teacher.getIdTeacher() %>)">
+    <td style="cursor: pointer;"><%= teacher.getSurname() %></td>
+    <td style="cursor: pointer;"><%= teacher.getName()%></td>
+    <td style="cursor: pointer;"><%= teacher.getContact() %></td>
+    <td  onclick="event.stopPropagation()" class="action">
+      <button onclick="editTeacher(<%= teacher.getIdTeacher() %>)">
+        <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.16671 4.66664H5.00004C4.55801 4.66664 4.13409 4.84223 3.82153 5.15479C3.50897 5.46736 3.33337 5.89128 3.33337 6.33331V15.5C3.33337 15.942 3.50897 16.3659 3.82153 16.6785C4.13409 16.991 4.55801 17.1666 5.00004 17.1666H14.1667C14.6087 17.1666 15.0327 16.991 15.3452 16.6785C15.6578 16.3659 15.8334 15.942 15.8334 15.5V11.3333M14.655 3.48831C14.8088 3.32912 14.9927 3.20215 15.196 3.1148C15.3994 3.02746 15.6181 2.98148 15.8394 2.97956C16.0607 2.97763 16.2801 3.0198 16.485 3.1036C16.6898 3.1874 16.8759 3.31116 17.0324 3.46765C17.1889 3.62414 17.3126 3.81022 17.3964 4.01505C17.4802 4.21988 17.5224 4.43934 17.5205 4.66064C17.5185 4.88194 17.4726 5.10064 17.3852 5.30398C17.2979 5.50732 17.1709 5.69123 17.0117 5.84497L9.85671 13H7.50004V10.6433L14.655 3.48831Z" stroke="#2E65F3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </button>
     </td>
   </tr>
@@ -205,34 +206,25 @@
   }
 
   // Fonction pour modifier un enseignant
-  function editTeacher(idTeacher, name, surname, contact) {
+  function editTeacher(idTeacher) {
     if (idTeacher) {
       // Créez un formulaire HTML de manière dynamique
       const form = document.createElement("form");
-      form.method = "POST";
+      form.method = "GET";
       form.action = `${pageContext.request.contextPath}/UpdateTeacherAdminController`;
 
-      // Ajoutez les champs cachés pour chaque donnée
-      const inputs = [
-        { name: "idTeacher", value: idTeacher },
-        { name: "name", value: name },
-        { name: "surname", value: surname },
-        { name: "contact", value: contact },
-      ];
-
-      inputs.forEach(inputData => {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = inputData.name;
-        input.value = inputData.value;
-        form.appendChild(input);
-      });
+      // Ajoutez un champ caché contenant l'ID de l'enseignant
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
+      input.value = idTeacher;
+      form.appendChild(input);
 
       // Ajoutez le formulaire à la page et soumettez-le
       document.body.appendChild(form);
       form.submit();
     } else {
-      console.error("Les données de l'enseignant sont incomplètes.");
+      console.error("Aucun ID enseignant n'a été transmis.");
     }
   }
 
@@ -241,6 +233,4 @@
 
 </script>
 </body>
-
-
 </html>

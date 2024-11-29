@@ -1,4 +1,3 @@
-<%@ page import="com.projetjee.projetjeespringboot.models.Teacher" %>
 <%@ page import="com.projetjee.projetjeespringboot.models.Course" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -86,7 +85,7 @@
 
 <%-- Afficher les informations sur l'enseignant --%>
 <%
-    Teacher teacher = (Teacher) request.getAttribute("teacher");
+    com.projetjee.projetjeespringboot.models.Teacher teacher = (com.projetjee.projetjeespringboot.models.Teacher) request.getAttribute("teacher");
     if (teacher != null) {
 %>
 <div class="profileInfo">
@@ -104,7 +103,7 @@
 
 <h2>Liste des cours :</h2>
 <%
-    java.util.List<Course> courses = (java.util.List<Course>) request.getAttribute("courses");
+    java.util.List<com.projetjee.projetjeespringboot.models.Course> courses = (java.util.List<Course>) request.getAttribute("courses");
     if (courses == null || courses.isEmpty()) {
 %>
 <p style="text-align: center;">Aucun cours trouvé pour cet enseignant.</p>
@@ -120,7 +119,7 @@
     </tr>
     </thead>
     <tbody>
-    <% for (Course course : courses) { %>
+    <% for (com.projetjee.projetjeespringboot.models.Course course : courses) { %>
     <tr>
         <td><%= course.getName() %></td>
         <td><%= course.getStudentList().size() %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->

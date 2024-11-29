@@ -122,4 +122,7 @@ public class StudentService {
 
         return student.getCourseList();
     }
+    public boolean loginExist(String login, String password) {
+        return studentRepository.findByLoginAndPassword(login, password) != null;
+    }
 }

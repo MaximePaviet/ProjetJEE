@@ -1,3 +1,4 @@
+
 <%@ page import="com.projetjee.projetjeespringboot.models.Student" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -131,6 +132,24 @@
       text-align: center;
     }
 
+    .action{
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .actionButton {
+      all: unset;
+      display: inline-flex;
+      justify-content: center; /* Centre horizontalement le contenu du bouton */
+      align-items: center; /* Centre verticalement le contenu du bouton */
+      background-color: transparent;
+      border: none;
+      padding: 0; /* Supprime les marges internes */
+      cursor: pointer;
+      width: auto; /* Taille ajustée au contenu, ici le SVG */
+      height: auto; /* Taille ajustée au contenu */
+    }
+
   </style>
 </head>
 <body>
@@ -147,7 +166,7 @@
   </div>
 </div>
 <%
-  java.util.List<Student> students = (java.util.List<Student>) request.getAttribute("students");
+  java.util.List<com.projetjee.projetjeespringboot.models.Student> students = (java.util.List<com.projetjee.projetjeespringboot.models.Student>) request.getAttribute("students");
   if (students == null || students.isEmpty()) {
 %>
 <p>Aucun enseignant trouvé.</p>
@@ -166,17 +185,19 @@
   </tr>
   </thead>
   <tbody>
-  <% for (Student student : students) { %>
-  <tr onclick="viewProfile(<%= student.getIdStudent() %>)" style="cursor: pointer;">
-    <td><%= student.getSurname() %></td>
-    <td><%= student.getName()%></td>
-    <td><%= student.getDateBirth()%></td>
-    <td><%= student.getContact() %></td>
-    <td><%= student.getSchoolYear() %></td>
+  <% for (com.projetjee.projetjeespringboot.models.Student student : students) { %>
+  <tr onclick="viewProfile(<%= student.getIdStudent() %>)" >
+    <td style="cursor: pointer;"><%= student.getSurname() %></td>
+    <td style="cursor: pointer;"><%= student.getName()%></td>
+    <td style="cursor: pointer;"><%= student.getDateBirth()%></td>
+    <td style="cursor: pointer;"><%= student.getContact() %></td>
+    <td style="cursor: pointer;"><%= student.getSchoolYear() %></td>
 
-    <td>
-      <button onclick="event.stopPropagation(); editTeacher(<%= student.getIdStudent() %>)">
-        Modifier
+    <td  onclick="event.stopPropagation()" class="action">
+      <button class="actionButton" onclick="editStudent(<%= student.getIdStudent() %>)">
+        <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.16671 4.66664H5.00004C4.55801 4.66664 4.13409 4.84223 3.82153 5.15479C3.50897 5.46736 3.33337 5.89128 3.33337 6.33331V15.5C3.33337 15.942 3.50897 16.3659 3.82153 16.6785C4.13409 16.991 4.55801 17.1666 5.00004 17.1666H14.1667C14.6087 17.1666 15.0327 16.991 15.3452 16.6785C15.6578 16.3659 15.8334 15.942 15.8334 15.5V11.3333M14.655 3.48831C14.8088 3.32912 14.9927 3.20215 15.196 3.1148C15.3994 3.02746 15.6181 2.98148 15.8394 2.97956C16.0607 2.97763 16.2801 3.0198 16.485 3.1036C16.6898 3.1874 16.8759 3.31116 17.0324 3.46765C17.1889 3.62414 17.3126 3.81022 17.3964 4.01505C17.4802 4.21988 17.5224 4.43934 17.5205 4.66064C17.5185 4.88194 17.4726 5.10064 17.3852 5.30398C17.2979 5.50732 17.1709 5.69123 17.0117 5.84497L9.85671 13H7.50004V10.6433L14.655 3.48831Z" stroke="#2E65F3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </button>
     </td>
   </tr>
@@ -211,9 +232,27 @@
     }
   }
 
-  // Fonction pour modifier un enseignant
+  // Fonction pour modifier un étudiant
   function editStudent(idStudent) {
-    window.location.href = `${pageContext.request.contextPath}${window.location.pathname.replace("TeacherPageAdmin.jsp", "EditTeacher.jsp")}?idTeacher=${idTeacher}`;
+    if (idStudent) {
+      // Créez un formulaire HTML de manière dynamique
+      const form = document.createElement("form");
+      form.method = "GET";
+      form.action = `${pageContext.request.contextPath}/UpdateStudentAdminController`;
+
+      // Ajoutez un champ caché contenant l'ID de l'enseignant
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "idStudent";
+      input.value = idStudent;
+      form.appendChild(input);
+
+      // Ajoutez le formulaire à la page et soumettez-le
+      document.body.appendChild(form);
+      form.submit();
+    } else {
+      console.error("Aucun ID étudiant n'a été transmis.");
+    }
   }
 
 </script>

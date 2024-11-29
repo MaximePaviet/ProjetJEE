@@ -22,13 +22,13 @@ public class Student {
     @Column(name = "surname")
     private String surname;
 
-    @Column(name = "dateBirth")
+    @Column(name = "date_birth")
     private Date dateBirth;
 
     @Column(name = "contact")
     private String contact;
 
-    @Column(name = "schoolYear")
+    @Column(name = "school_year")
     private String schoolYear;
 
     @Column(name = "login")

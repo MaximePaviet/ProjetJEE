@@ -1,5 +1,6 @@
 package com.projetjee.projetjeespringboot.repositories;
 
+import com.projetjee.projetjeespringboot.models.Administrator;
 import com.projetjee.projetjeespringboot.models.Course;
 import com.projetjee.projetjeespringboot.models.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
             String name, String surname, String contact);
 
     List<Student> findByCourseListContaining(Course course);
+
+    Student findByLoginAndPassword(String login, String password);
 }

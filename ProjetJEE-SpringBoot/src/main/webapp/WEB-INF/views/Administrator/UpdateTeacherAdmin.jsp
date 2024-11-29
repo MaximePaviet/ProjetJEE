@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -110,7 +109,7 @@
 %>
 <form action="${pageContext.request.contextPath}/UpdateTeacherAdminController" method="POST">
     <div class="container">
-        <input type="hidden" name="id" value="<%= teacher != null ? teacher.getIdTeacher() : "" %>" />
+        <input type="hidden" name="idTeacher" value="<%= teacher != null ? teacher.getIdTeacher() : "" %>" />
 
         <label>Nom :</label>
         <input type="text" name="surname" value="<%= teacher != null ? teacher.getSurname() : "" %>" />

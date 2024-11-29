@@ -1,4 +1,6 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="models.Course, models.Assessment, java.util.List, java.util.Map" %>
 <html>
 <head>
     <title>Relevé de notes</title>
@@ -6,13 +8,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
-
     <style>
         body {
             background-color: #f5f5f5;
         }
 
-        a {
+        .hiddenForm {
+            position: relative;
+            visibility: hidden;
+        }
+
+        .returnButton {
+            all: unset;
             color: #4F2BEC;
             font-family: "DM Sans", sans-serif;
             font-size: 50px;
@@ -20,6 +27,8 @@
             margin: 20px;
             cursor: pointer;
             text-decoration: none;
+            visibility: visible;
+            position: relative;
         }
 
         h1 {
@@ -27,90 +36,128 @@
             color: #4F2BEC;
             font-family: 'DM Sans', serif;
             font-weight: bold;
-            font-style: normal;
             text-align: center;
-            margin: 0;
+            margin: 20px 0;
         }
 
-        .profileInfo{
-            color: #2B3674;
-            border: 2px solid #3965FF;
-            border-radius:16px;
-            font-family: 'DM Sans', serif;
-            width: 300px;
-            padding: 10px;
-            margin-left:150px;
-            margin-top:30px;
-        }
-
-        .container{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 30px;
-        }
-
-        .right{
-            display: flex;
-            justify-content: flex-end;
-            margin-right: 132px;
-        }
-
-        h2{
-            font-size: 24px;
-            color: #4F2BEC;
-            font-family: 'DM Sans', serif;
-            font-weight: bold;
-            font-style: normal;
-            margin-top: 30px;
-            margin-left: 150px;
-        }
-
-        button {
-            color: white;
-            background-color: #4F2BEC;
-            border: none;
-            border-radius: 20px;
-            font-family: "DM Sans", sans-serif;
-            font-size: 1rem;
-            font-weight: normal;
-            cursor: pointer;
-            text-decoration: none;
-            margin: 20px;
-            padding: 5px 20px;
-        }
-
-        button:hover{
-            opacity: 90%;
-        }
-
-        /* Style du tableau */
         table {
-            color: #4F2BEC;
-            width: 80%;
-            border-collapse: collapse;
+            width: 50%;
             margin: 20px auto;
+            border-collapse: separate;
+            border-spacing: 0;
             font-family: "DM Sans", sans-serif;
+            color: #2B3674;
+            font-weight: bold;
+            border-radius: 12px; /* Arrondir les 4 coins principaux du tableau */
+            overflow: hidden; /* Cache les bords arrondis */
         }
 
-        table, th, td {
+        table tr {
+            height: 40px; /* Réduction de la hauteur des lignes */
+        }
+
+        td, th {
             border: 2px solid #AAC2FF;
+            padding: 15px;
         }
 
-        td {
-            padding: 12px;
-            text-align: left;
+        /* Lignes des cours */
+        .course-row td {
+            background-color: #AAC2FF;
         }
 
-        th {
-            padding: 12px;
-            text-align: center;
+        /* Alignement du texte des notes */
+        .right-align {
+            text-align: right;
+        }
+
+        /* Évaluations */
+        .assessment-row td {
+            background-color: #f9f9f9;
         }
 
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Teacher/ConnexionTeacher.jsp"><</a>
+<%
+    models.Student student = (models.Student) session.getAttribute("student");
+%>
+<form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileStudentServlet" method="GET">
+    <button class="returnButton" type="submit"><</button>
+</form>
 <h1>Relevé de notes</h1>
+
+<%
+    // Récupération des maps transmises par le servlet
+    Map<models.Course, Double> coursesWithAverages = (Map<models.Course, Double>) request.getAttribute("coursesWithAverages");
+    Map<Integer, Map<models.Assessment, Double>> assessmentsWithGradesByCourse = (Map<Integer, Map<models.Assessment, Double>>) request.getAttribute("assessmentsWithGradesByCourse");
+%>
+
+<%-- Vérifiez si des données sont présentes --%>
+<%
+    if (coursesWithAverages != null && !coursesWithAverages.isEmpty()) {
+%>
+<table>
+    <%
+        // Parcourir chaque cours
+        for (Map.Entry<models.Course, Double> courseEntry : coursesWithAverages.entrySet()) {
+            models.Course course = courseEntry.getKey();
+            Double courseAverage = courseEntry.getValue();
+
+            // Obtenir les évaluations et les notes pour ce cours
+            Map<models.Assessment, Double> assessmentsWithGrades = assessmentsWithGradesByCourse.get(course.getIdCourse());
+
+            // Vérifier si le cours a des évaluations
+            boolean hasAssessments = (assessmentsWithGrades != null && !assessmentsWithGrades.isEmpty());
+    %>
+    <tr class="course-row">
+        <td><%= course.getName() %></td>
+        <td class="right-align"><%
+            String displayAverage;
+            if (hasAssessments) {
+                displayAverage = (courseAverage != null && courseAverage > 0) ? String.format("%.2f", courseAverage) : "Pas encore de notes";
+            } else {
+                displayAverage = "Pas encore de notes";
+            }
+        %>
+            <%= displayAverage %>
+        </td>
+    </tr>
+
+    <%
+        // Afficher les évaluations uniquement si elles existent
+        if (hasAssessments) {
+            for (Map.Entry<models.Assessment, Double> assessmentEntry : assessmentsWithGrades.entrySet()) {
+                models.Assessment assessment = assessmentEntry.getKey();
+                Double grade = assessmentEntry.getValue();
+    %>
+    <tr class="assessment-row">
+        <td>&nbsp;&nbsp;&nbsp; <%= assessment.getName() %></td>
+        <td class="right-align"><%= grade != null ? String.format("%.2f", grade) : "Non notée" %></td>
+    </tr>
+    <%
+            }
+        }
+    %>
+    <%
+        // Si aucune évaluation pour le cours, afficher un message dans le tableau
+        if (!hasAssessments) {
+    %>
+    <tr>
+        <td colspan="2" style="text-align: center;">Aucune évaluation pour ce cours.</td>
+    </tr>
+    <%
+            }
+        }
+    %>
+</table>
+<%
+} else {
+%>
+<p style="text-align: center; color: #4F2BEC;">Aucune donnée disponible pour cet étudiant.</p>
+<%
+    }
+%>
+
 </body>
 </html>

@@ -1,21 +1,7 @@
-<%@ page import="com.projetjee.projetjeespringboot.models.Teacher" %>
-<%@ page import="com.projetjee.projetjeespringboot.models.Student" %>
-<%@ page import="com.projetjee.projetjeespringboot.models.Course" %><%--
-  Created by IntelliJ IDEA.
-  User: CYTech Student
-  Date: 11/27/2024
-  Time: 3:51 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
 
-</body>
-</html>
+<%@ page import="com.projetjee.projetjeespringboot.models.Course" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -84,6 +70,24 @@
             margin-left: 150px;
         }
 
+        button {
+            color: white;
+            background-color: #4F2BEC;
+            border: none;
+            border-radius: 20px;
+            font-family: "DM Sans", sans-serif;
+            font-size: 1rem;
+            font-weight: normal;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 20px;
+            padding: 5px 20px;
+        }
+
+        button:hover{
+            opacity: 90%;
+        }
+
         .button {
             color: white;
             background-color: #4F2BEC;
@@ -132,9 +136,8 @@
 <h1>Mon Profil</h1>
 
 <%
-    Student student = (Student) session.getAttribute("student");
-    java.util.List<Course> courses = student.getCourseList();
-    Teacher teacher =(Teacher) session.getAttribute("teacher");
+    com.projetjee.projetjeespringboot.models.Student student = ( com.projetjee.projetjeespringboot.models.Student) session.getAttribute("student");
+    List<Course> courses = student.getCourseList();
 %>
 <div class="profileInfo">
     <p><strong>Nom :</strong> <span id="studentName"><%= student.getSurname() %></span></p>
@@ -145,8 +148,8 @@
 <div class="container">
     <h2>Liste des cours :</h2>
     <div class="right">
-        <a class="button" href="${pageContext.request.contextPath}/view/Student/TranscriptStudent.jsp">Relevé de notes</a>
-        <a class="button" href="${pageContext.request.contextPath}/studentProfile">S'inscrire à un cours</a>
+        <button onclick="transcritpStudent()">Relevé de notes</button>
+        <button onclick="assignmentCourse(<%= student.getIdStudent() %>)" class="button" >S'inscrire à un cours</button>
     </div>
 </div>
 
@@ -167,15 +170,16 @@
     </tr>
     </thead>
     <tbody>
-    <% for (Course course : courses) {
-        Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
+    <%  Map<Integer, String> courseAverages = (Map<Integer, String>) request.getAttribute("courseAverages");
+        for ( com.projetjee.projetjeespringboot.models.Course course : courses) {
+            com.projetjee.projetjeespringboot.models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
     %>
     <tr>
         <td><%= course.getName() %></td>
         <td>
             <%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %>
         </td>
-        <td>Chargement...</td>
+        <td><%= courseAverages.get(course.getIdCourse()) %></td>
     </tr>
     <% } %>
     </tbody>
@@ -183,5 +187,41 @@
 <%
     }
 %>
+<script>
+    // Fonction pour que l'étudiant s'inscrive aux cours
+    function assignmentCourse(idStudent) {
+        if (idStudent) {
+            // Créez un formulaire HTML de manière dynamique
+            const form = document.createElement("form");
+            form.method = "GET";
+            form.action = `${pageContext.request.contextPath}/AssignmentCourseStudentServlet`;
+
+            // Ajoutez un champ caché contenant l'ID de l'enseignant
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "idStudent"; // Le nom doit correspondre à ce que le servlet attend
+            input.value = idStudent;
+            form.appendChild(input);
+
+            // Ajoutez le formulaire à la page et soumettez-le
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            console.error("Aucun ID étudiant n'a été transmis.");
+        }
+    }
+
+    //Fonction pour afficher le relevé de note
+    function transcritpStudent(){
+        // Créez un formulaire HTML de manière dynamique
+        const form = document.createElement("form");
+        form.method = "GET";
+        form.action = `${pageContext.request.contextPath}/TranscriptStudentServlet`;
+
+        // Ajoutez le formulaire à la page et soumettez-le
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
 </body>
 </html>
