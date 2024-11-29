@@ -28,6 +28,6 @@ public class AddCourseAdminController {
 
         // Redirection vers la page de gestion des cours avec un message
         redirectAttributes.addFlashAttribute("message", "Cours ajouté avec succès");
-        return "redirect:/AddCourseAdminController";  // Redirection vers la page des cours
+        return "redirect:/CoursePageAdminController";  // Redirection vers la page des cours
     }
 }

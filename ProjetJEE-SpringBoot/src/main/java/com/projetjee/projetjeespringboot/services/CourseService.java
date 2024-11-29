@@ -54,6 +54,10 @@ public class CourseService {
     public List<Course> readCourseList() {
         return courseRepository.findAll();  // Récupère tous les cours via Spring Data JPA
     }
+    // Récupérer un cours par ID
+    public Course readCourse(Integer idCourse) {
+        return courseRepository.findById(idCourse).orElse(null); // Renvoie null si le cours n'existe pas
+    }
 
     // Méthode pour attribuer un étudiant à un cours (commentée dans l'exemple, peut être activée si nécessaire)
     /*

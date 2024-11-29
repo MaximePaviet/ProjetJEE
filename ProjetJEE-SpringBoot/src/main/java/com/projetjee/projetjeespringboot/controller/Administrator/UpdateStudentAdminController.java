@@ -32,7 +32,7 @@ public class UpdateStudentAdminController {
             return "Administrator/UpdateStudentAdmin"; // Vue JSP ou Thymeleaf
         } else {
             model.addAttribute("error", "Étudiant introuvable");
-            return "Administrator/ErrorPage"; // Vue d'erreur
+            return "StudentPageAdminController"; // Vue d'erreur
         }
     }
 
