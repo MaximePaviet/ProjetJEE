@@ -1,6 +1,7 @@
 package com.projetjee.projetjeespringboot.services;
 
 import com.projetjee.projetjeespringboot.models.Assessment;
+import com.projetjee.projetjeespringboot.models.Course;
 import com.projetjee.projetjeespringboot.models.Grade;
 import com.projetjee.projetjeespringboot.models.Student;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,62 +11,73 @@ import com.projetjee.projetjeespringboot.repositories.AssessmentRepository;
 import com.projetjee.projetjeespringboot.repositories.GradeRepository;
 import com.projetjee.projetjeespringboot.repositories.StudentRepository;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class AssessmentService {
 
-    @Autowired
-    private AssessmentRepository assessmentRepository;
+    private final AssessmentRepository assessmentRepository;
+    private final GradeRepository gradeRepository;
 
     @Autowired
-    private StudentRepository studentRepository;
+    public AssessmentService(AssessmentRepository assessmentRepository, GradeRepository gradeRepository) {
+        this.assessmentRepository = assessmentRepository;
+        this.gradeRepository = gradeRepository;
+    }
 
-    @Autowired
-    private GradeRepository gradeRepository;
+    // Créer une évaluation
+    public void createAssessment(Course course, String name) {
+        if (assessmentRepository.existsByNameAndCourse_IdCourse(name, course.getIdCourse())) {
+            throw new IllegalArgumentException("An assessment with this name already exists for the course.");
+        }
 
-    // Méthode pour créer un nouvel Assessment
-    @Transactional
-    public Assessment createAssessment(Long courseId, String name) {
-        // Vous pouvez récupérer le Course via son ID si nécessaire (par exemple avec un `CourseRepository`)
-        // Mais dans cet exemple, l'ID du cours n'est pas utilisé directement.
-
-        // Création d'un nouvel Assessment
         Assessment assessment = new Assessment();
+        assessment.setCourse(course);
         assessment.setName(name);
-
-        // Sauvegarde de l'évaluation dans la base de données
-        return assessmentRepository.save(assessment);
+        assessmentRepository.save(assessment);
     }
 
-    // Méthode pour créer une note (Grade) pour un étudiant dans une évaluation
-    @Transactional
-    public Grade createGrade(Integer studentId, Integer assessmentId, float gradeValue) {
-        // Récupérer l'étudiant et l'évaluation à partir de leurs IDs
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+    // Ajouter une note à une évaluation
+    public void createGrade(Student student, int assessmentId, float gradeValue) {
         Assessment assessment = assessmentRepository.findById(assessmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Assessment not found"));
 
-        // Création de la note
         Grade grade = new Grade();
-        grade.setGrade(gradeValue);
-        grade.setAssessment(assessment);
         grade.setStudent(student);
+        grade.setAssessment(assessment);
+        grade.setGrade(gradeValue);
+        gradeRepository.save(grade);
 
-        // Sauvegarde de la note dans la base de données
-        return gradeRepository.save(grade);
+        updateAssessmentAverage(assessmentId); // Met à jour la moyenne
     }
 
-    // Méthode pour calculer la moyenne des notes d'une évaluation
-    @Transactional(readOnly = true)
-    public double calculateAverageGrade(Integer assessmentId) {
-        // Récupérer toutes les notes pour une évaluation donnée
-        Assessment assessment = assessmentRepository.findById(assessmentId)
-                .orElseThrow(() -> new IllegalArgumentException("Assessment not found"));
+    // Met à jour la moyenne d'une évaluation
+    public void updateAssessmentAverage(int assessmentId) {
+        List<Grade> grades = gradeRepository.findByAssessment_IdAssessment(assessmentId);
 
-        // Calculer la moyenne des notes
-        return assessment.getGradeList().stream()
+        double average = grades.stream()
                 .mapToDouble(Grade::getGrade)
                 .average()
-                .orElse(0.0); // Retourne 0 si aucune note n'est présente
+                .orElse(0.0);
+
+        Assessment assessment = assessmentRepository.findById(assessmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Assessment not found"));
+        assessment.setAverage(average);
+        assessmentRepository.save(assessment);
+    }
+
+    // Récupérer les évaluations et les notes pour un étudiant dans un cours
+    public Map<Assessment, Double> getAssessmentsAndGradesByCourseAndStudent(int courseId, int studentId) {
+        List<Object[]> results = assessmentRepository.findAssessmentsWithGradesByCourseAndStudent(courseId, studentId);
+
+        Map<Assessment, Double> assessmentsWithGrades = new HashMap<>();
+        for (Object[] row : results) {
+            Assessment assessment = (Assessment) row[0];
+            Double grade = (Double) row[1];
+            assessmentsWithGrades.put(assessment, grade);
+        }
+        return assessmentsWithGrades;
     }
 }

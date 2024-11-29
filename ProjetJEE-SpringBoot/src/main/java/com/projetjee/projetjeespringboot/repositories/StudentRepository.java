@@ -15,4 +15,6 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
             String name, String surname, String contact);
 
     List<Student> findByCourseListContaining(Course course);
+
+    Student findByLoginAndPassword(String login, String password);
 }

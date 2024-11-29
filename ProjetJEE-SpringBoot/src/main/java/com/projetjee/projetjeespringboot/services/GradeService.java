@@ -3,45 +3,47 @@ package com.projetjee.projetjeespringboot.services;
 import com.projetjee.projetjeespringboot.models.Grade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import com.projetjee.projetjeespringboot.repositories.GradeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class GradeService {
 
-    private final GradeRepository gradeRepository;
-
     @Autowired
-    public GradeService(GradeRepository gradeRepository) {
-        this.gradeRepository = gradeRepository;
-    }
+    private GradeRepository gradeRepository;
 
-    // Méthode pour lire les notes d'un étudiant pour un cours spécifique
+    // Lire les grades d'un étudiant pour un cours
     public List<Grade> readGrade(int idStudent, int idCourse) {
-        return gradeRepository.findByStudentAndCourse(idStudent, idCourse);
+        return gradeRepository.findGradesByStudentAndCourse(idStudent, idCourse);
     }
 
-    // Méthode pour calculer la moyenne des notes d'un étudiant pour un cours spécifique
+    // Calculer la moyenne d'un étudiant pour un cours
     public float calculateAverage(int idStudent, int idCourse) {
-        List<Grade> grades = gradeRepository.findByStudentAndCourse(idStudent, idCourse);
+        List<Grade> grades = readGrade(idStudent, idCourse);
+
         if (grades.isEmpty()) {
             return 0.0f;
         }
 
         float sum = 0.0f;
         for (Grade grade : grades) {
-            sum += grade.getGrade();  // Additionner toutes les notes
+            sum += grade.getGrade();
         }
-        return sum / grades.size();  // Retourner la moyenne
+        return sum / grades.size();
     }
 
-    // Méthode pour récupérer le relevé de notes complet d'un étudiant
-    @Transactional
+    // Lire le relevé de notes d'un étudiant
     public List<Grade> readTranscript(int idStudent) {
-        List<Grade> transcript = gradeRepository.findByStudent(idStudent);
-        return transcript;  // Retourner toutes les notes de l'étudiant
+        List<Integer> courseIds = gradeRepository.findCourseIdsByStudent(idStudent);
+        List<Grade> transcript = new ArrayList<>();
+
+        for (Integer courseId : courseIds) {
+            transcript.addAll(readGrade(idStudent, courseId));
+        }
+
+        return transcript;
     }
 }
-

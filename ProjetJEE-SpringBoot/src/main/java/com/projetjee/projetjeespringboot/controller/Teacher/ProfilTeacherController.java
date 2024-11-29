@@ -21,7 +21,7 @@ public class ProfilTeacherController {
     public ProfilTeacherController(CourseService courseService) {
         this.courseService = courseService;
     }
-
+/*
     @GetMapping("/ProfileTeacher")
     public String showTeacherProfile(HttpSession session, Model model) {
         // Récupérer l'objet Teacher depuis la session
@@ -52,5 +52,5 @@ public class ProfilTeacherController {
 
         // Retourner la vue ProfileTeacher
         return "Teacher/ProfileTeacher";
-    }
+    }*/
 }
