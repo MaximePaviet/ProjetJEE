@@ -24,16 +24,12 @@ public class StudentPageAdminServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // Initialisation des services
         studentService = new StudentService();
-
-        // Initialisation de la SessionFactory Hibernate pour les opérations liées à la base de données
         sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
     @Override
     public void destroy() {
-        // Libération des ressources
         if (sessionFactory != null) {
             sessionFactory.close();
         }
@@ -44,13 +40,28 @@ public class StudentPageAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gestion de l'affichage de la liste des enseignants
-        List<Student> students = studentService.readStudentList();
+        String searchTerm = request.getParameter("search");
+        String promoParam = request.getParameter("promo");
 
-        // Ajout des enseignants en tant qu'attribut de la requête
+        List<Student> students;
+
+        // Si un terme de recherche est fourni
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            students = studentService.searchStudent(searchTerm);
+        } else {
+            // Sinon, rechercher tous les étudiants (ou appliquer le filtre)
+            if (promoParam != null && !promoParam.trim().isEmpty()) {
+                // Traiter les promotions sélectionnées
+                String[] promoArray = promoParam.split(",");
+                students = studentService.getStudentsByPromo(promoArray);
+            } else {
+                // Pas de filtre sur les promotions
+                students = studentService.readStudentList();
+            }
+        }
+
+        // Ajouter les étudiants comme attribut
         request.setAttribute("students", students);
-
-        // Transfert vers la page JSP correspondante
         request.getRequestDispatcher("/view/Administrator/StudentPageAdmin.jsp").forward(request, response);
     }
 }

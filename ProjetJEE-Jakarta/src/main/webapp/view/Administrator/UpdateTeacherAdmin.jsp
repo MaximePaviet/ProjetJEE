@@ -122,7 +122,44 @@
     </div>
     <button type="submit">Mettre à jour</button>
 </form>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector("form").addEventListener("submit", function (event) {
+            // Récupération des champs
+            const surnameInput = document.querySelector('input[name="surname"]');
+            const nameInput = document.querySelector('input[name="name"]');
+            const contactInput = document.querySelector('input[name="contact"]');
 
+            // Expression régulière pour valider les noms/prénoms
+            const nameRegex = /^[a-zA-Z\s-]+$/; // Lettres, espaces et tirets
+            // Expression régulière pour valider un email
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+            // Messages d'erreur
+            let errorMessage = "";
+
+            // Validation du nom
+            if (!nameRegex.test(surnameInput.value)) {
+                errorMessage += "Le nom ne doit contenir que des lettres, des espaces ou des tirets.\n";
+            }
+
+            // Validation du prénom
+            if (!nameRegex.test(nameInput.value)) {
+                errorMessage += "Le prénom ne doit contenir que des lettres, des espaces ou des tirets.\n";
+            }
+
+            // Validation du contact (email)
+            if (!emailRegex.test(contactInput.value)) {
+                errorMessage += "Le contact doit être un email valide.\n";
+            }
+
+            // Si des erreurs sont trouvées, afficher un message et empêcher l'envoi
+            if (errorMessage) {
+                alert(errorMessage);
+                event.preventDefault(); // Empêche l'envoi du formulaire
+            }
+        });
+    });
+</script>
 </body>
 </html>

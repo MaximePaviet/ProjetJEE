@@ -38,15 +38,25 @@ public class TeacherPageAdminServlet extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gestion de l'affichage de la liste des enseignants
-        List<Teacher> teachers = teacherService.readTeacherList();
+        String searchTerm = request.getParameter("search");
+        List<Teacher> teachers;
 
-        // Ajout des enseignants en tant qu'attribut de la requête
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            // Effectuer la recherche avec le terme
+            teachers = teacherService.searchTeacher(searchTerm);
+        } else {
+            // Retourner tous les enseignants si aucun terme de recherche n'est fourni
+            teachers = teacherService.readTeacherList();
+        }
+
+        // Ajouter les enseignants comme attribut
         request.setAttribute("teachers", teachers);
 
-        // Transfert vers la page JSP correspondante
+        // Transférer vers la JSP
         request.getRequestDispatcher("/view/Administrator/TeacherPageAdmin.jsp").forward(request, response);
     }
+
+
 }
 
 

@@ -8,9 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import java.sql.Date;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
 
 
 public class StudentService {
@@ -31,9 +29,10 @@ public class StudentService {
             throw new RuntimeException("Erreur d'initialisation de l'EntityManagerFactory ou SessionFactory : " + e.getMessage());
         }
     }
-    public void createStudent(String name, String surname, Date dateBirth, String contact, String schoolYear) {
+    public Map<String, String> createStudent(String name, String surname, Date dateBirth, String contact, String schoolYear) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
+        Map<String, String> generatedInfo = new HashMap<>();
 
         try {
             transaction.begin();// Démarre la transaction
@@ -56,6 +55,10 @@ public class StudentService {
 
             entityManager.persist(student);    // Persiste l'objet Student dans la base de données
             transaction.commit();              // Valide la transaction
+
+            // Ajoute les informations générées dans la Map
+            generatedInfo.put("login", login);
+            generatedInfo.put("password", password);
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();        // Annule la transaction en cas d'erreur
@@ -64,6 +67,7 @@ public class StudentService {
         } finally {
             entityManager.close();             // Ferme l'EntityManager pour libérer les ressources
         }
+        return generatedInfo; // Retourne les informations générées
     }
 
 
@@ -285,6 +289,23 @@ public class StudentService {
 
         return courses; // Retourne la liste des cours
     }
+
+    public List<Student> getStudentsByPromo(String[] promos) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        // Utilisation de la clause IN pour rechercher plusieurs promotions
+        List<Student> students = session.createQuery("FROM Student WHERE schoolYear IN :promos", Student.class)
+                .setParameter("promos", Arrays.asList(promos)) // Conversion du tableau en liste
+                .getResultList();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return students;
+    }
+
+
 
     // Ferme l'EntityManagerFactory
     public void close() {

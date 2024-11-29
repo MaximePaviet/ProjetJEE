@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import models.Assessment;
 import models.Course;
 import models.Grade;
+import models.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -184,6 +185,35 @@ public class CourseService {
         }
 
         return count > 0 ? total / count : 0.0; // Retourne 0.0 si aucune note
+    }
+
+    // Méthode de recherche flexible pour les enseignants par nom, prénom ou contact
+    public List<Course> searchCourse(String searchTerm) {
+        // Utilisation de sessionFactory pour obtenir la session
+        Session session = sessionFactory.openSession();
+        List<Course> courses = null;
+
+        try {
+            System.out.println("Executing search for: " + searchTerm);
+
+            // Requête HQL avec gestion de la sensibilité à la casse
+            String hql = "FROM Course c WHERE LOWER(c.name) LIKE LOWER(:searchTerm) ";
+            TypedQuery<Course> query = session.createQuery(hql, Course.class);
+            query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
+
+            // Exécuter la requête
+            courses = query.getResultList();
+
+            // Journal des résultats
+            System.out.println("Search results for '" + searchTerm + "':");
+            courses.forEach(course -> System.out.println("Found: " + course.getName() + " " + course.getTeacher()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close(); // Ferme la session après l'exécution
+        }
+
+        return courses != null ? courses : List.of(); // Retourne une liste vide si aucun résultat
     }
 
 

@@ -1,3 +1,4 @@
+<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -101,8 +102,9 @@
 %>
 <h2>Liste des cours :</h2>
 <%
-    java.util.List<models.Course> courses = (java.util.List<models.Course>) request.getAttribute("courses");
-    if (courses == null || courses.isEmpty()) {
+    // Récupération des moyennes par cours
+    Map<models.Course, Double> coursesWithAverages = (Map<models.Course, Double>) request.getAttribute("coursesWithAverages");
+    if (coursesWithAverages == null || coursesWithAverages.isEmpty()) {
 %>
 <p style="text-align: center;">Aucun cours trouvé pour cet étudiant.</p>
 <%
@@ -117,20 +119,35 @@
     </tr>
     </thead>
     <tbody>
-    <% for (models.Course course : courses) {
+    <% for (Map.Entry<models.Course, Double> entry : coursesWithAverages.entrySet()) {
+        models.Course course = entry.getKey();
+        Double average = entry.getValue();
         models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
     %>
     <tr>
         <td><%= course.getName() %></td>
-        <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->
-        <td> Chargement ...</td> <!-- Si vous avez une méthode pour calculer la moyenne -->
+        <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %></td>
+        <td>
+            <%
+                // Vérification de la validité de la moyenne
+                if (average == null || average <= 0) {
+            %>
+            Pas encore de notes
+            <%
+            } else {
+            %>
+            <%= String.format("%.2f", average) %>
+            <%
+                }
+            %>
+        </td>
     </tr>
     <% } %>
     </tbody>
-    <!-- Générer la case moyenne générale avec du JavaScript -->
 </table>
 <%
     }
 %>
+
 </body>
 </html>

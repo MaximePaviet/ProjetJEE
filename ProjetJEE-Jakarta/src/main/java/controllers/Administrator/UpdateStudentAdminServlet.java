@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
 import models.Student;
 import models.Teacher;
+import services.EmailSenderService;
 import services.StudentService;
 import services.TeacherService;
 
@@ -20,7 +21,7 @@ import java.util.List;
 public class UpdateStudentAdminServlet extends HttpServlet {
 
     private StudentService studentService;
-
+    private EmailSenderService emailSenderService;
     @Override
     public void init() throws ServletException {
         // Initialisation des services
@@ -75,7 +76,18 @@ public class UpdateStudentAdminServlet extends HttpServlet {
 
 
         Integer idStudent = Integer.parseInt(idStudentParam);
+        Student student = studentService.readStudent(idStudent);
+        String htmlContent = "<html>" +
+                "<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">" +
+                "<h2>Bonjour " + student.getName() + " " + student.getSurname() + ",</h2>" +
+                "<p>Bonjour,\n\n</p>" +
+                "Votre compte CyScolarité à été modifié. \n</p>" +
+                "<p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>" +
+                "<p style=\"color: #999; font-size: 0.9em;\">--<br>L'équipe CyScolarité</p>" +
+                "</body>" +
+                "</html>";
 
+        emailSenderService.sendEmail(student.getContact(), student.getName() + " " + student.getSurname() + "- Modification de votre compte !", htmlContent);
         studentService.updateStudent(idStudent, nameStudent, surnameStudent, Date.valueOf(birthDateStudent), contactStudent, promoYearStudent);
 
         response.sendRedirect(request.getContextPath() + "/StudentPageAdminServlet");

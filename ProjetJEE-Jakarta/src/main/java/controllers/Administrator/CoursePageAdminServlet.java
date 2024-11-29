@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
+import models.Teacher;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import services.CourseService;
@@ -41,13 +42,21 @@ public class CoursePageAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gestion de l'affichage de la liste des cours
-        List<Course> courses = courseService.readCourseList();
+        String searchTerm = request.getParameter("search");
+        List<Course> courses;
 
-        // Ajout des cours en tant qu'attribut de la requête
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            // Effectuer la recherche avec le terme
+            courses = courseService.searchCourse(searchTerm);
+        } else {
+            // Retourner tous les enseignants si aucun terme de recherche n'est fourni
+            courses = courseService.readCourseList();
+        }
+
+        // Ajouter les enseignants comme attribut
         request.setAttribute("courses", courses);
 
-        // Transfert vers la page JSP correspondante
+        // Transférer vers la JSP
         request.getRequestDispatcher("/view/Administrator/CoursePageAdmin.jsp").forward(request, response);
     }
 

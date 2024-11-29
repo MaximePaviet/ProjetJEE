@@ -134,21 +134,23 @@
 <a href="${pageContext.request.contextPath}/view/Administrator/HomeAdministrator.jsp"><</a>
 <h1>Page enseignants</h1>
 <div class="container">
-    <div class="searchBar">
-        <span>🔍︎</span>
-        <input oninput="teachersearch(this.value)" ontype="text" name="search" placeholder="Recherche">
-    </div>
+    <form id="searchForm" action="${pageContext.request.contextPath}/TeacherPageAdminServlet" method="GET">
+        <div class="searchBar">
+            <span>🔍︎</span>
+            <input type="text"
+                   name="search"
+                   placeholder="Recherche"
+                   oninput="performSearch(this.value)"
+                   value="${param.search}">
+        </div>
+    </form>
+
     <div class="right">
         <a href="${pageContext.request.contextPath}/view/Administrator/AddTeacherAdmin.jsp" class="button">Ajouter Enseignant</a>
     </div>
 </div>
 <%
     java.util.List<models.Teacher> teachers = (java.util.List<models.Teacher>) request.getAttribute("teachers");
-    if (teachers == null || teachers.isEmpty()) {
-%>
-<p>Aucun enseignant trouvé.</p>
-<%
-} else {
 %>
 <table id="studentsTable">
     <thead>
@@ -160,25 +162,28 @@
     </tr>
     </thead>
     <tbody>
+    <% if (teachers != null && !teachers.isEmpty()) { %>
     <% for (models.Teacher teacher : teachers) { %>
     <tr onclick="viewProfile(<%= teacher.getIdTeacher() %>)">
         <td style="cursor: pointer;"><%= teacher.getSurname() %></td>
         <td style="cursor: pointer;"><%= teacher.getName()%></td>
         <td style="cursor: pointer;"><%= teacher.getContact() %></td>
-        <td  onclick="event.stopPropagation()" class="action">
+        <td onclick="event.stopPropagation()" class="action">
             <button onclick="editTeacher(<%= teacher.getIdTeacher() %>)">
                 <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.16671 4.66664H5.00004C4.55801 4.66664 4.13409 4.84223 3.82153 5.15479C3.50897 5.46736 3.33337 5.89128 3.33337 6.33331V15.5C3.33337 15.942 3.50897 16.3659 3.82153 16.6785C4.13409 16.991 4.55801 17.1666 5.00004 17.1666H14.1667C14.6087 17.1666 15.0327 16.991 15.3452 16.6785C15.6578 16.3659 15.8334 15.942 15.8334 15.5V11.3333M14.655 3.48831C14.8088 3.32912 14.9927 3.20215 15.196 3.1148C15.3994 3.02746 15.6181 2.98148 15.8394 2.97956C16.0607 2.97763 16.2801 3.0198 16.485 3.1036C16.6898 3.1874 16.8759 3.31116 17.0324 3.46765C17.1889 3.62414 17.3126 3.81022 17.3964 4.01505C17.4802 4.21988 17.5224 4.43934 17.5205 4.66064C17.5185 4.88194 17.4726 5.10064 17.3852 5.30398C17.2979 5.50732 17.1709 5.69123 17.0117 5.84497L9.85671 13H7.50004V10.6433L14.655 3.48831Z" stroke="#2E65F3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                    <path d="M9.16671 4.66664H5.00004C4.55801 4.66664 4.13409 4.84223 3.82153 5.15479C3.50897 5.46736 3.33337 5.89128 3.33337 6.33331V15.5C3.33337 15.942 3.50897 16.3659 3.82153 16.6785C4.13409 16.991 4.55801 17.1666 5.00004 17.1666H14.1667C14.6087 17.1666 15.0327 16.991 15.3452 16.6785C15.6578 16.3659 15.8334 15.942 15.8334 15.5V11.3333M14.655 3.48831C14.8088 3.32912 14.9927 3.20215 15.196 3.1148C15.3994 3.02746 15.6181 2.98148 15.8394 2.97956C16.0607 2.97763 16.2801 3.0198 16.485 3.1036C16.6898 3.1874 16.8759 3.31116 17.0324 3.46765C17.1889 3.62414 17.3126 3.81022 17.3964 4.01505C17.4802 4.21988 17.5224 4.43934 17.5205 4.66064C17.5185 4.88194 17.4726 5.10064 17.3852 5.30398C17.2979 5.50732 17.1709 5.69123 17.0117 5.84497L9.85671 13H7.50004V10.6433L14.655 3.48831Z" stroke="#2E65F3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>                </svg>
             </button>
         </td>
     </tr>
     <% } %>
+    <% } else { %>
+    <tr>
+        <td colspan="4" style="text-align: center;">Aucun enseignant trouvé.</td>
+    </tr>
+    <% } %>
     </tbody>
 </table>
-<%
-    }
-%>
+
 
 <script>
     // Fonction pour rediriger vers la page de profil
@@ -227,7 +232,28 @@
         }
     }
 
+    function performSearch(searchTerm) {
+        const form = document.getElementById("searchForm");
+        const formData = new FormData(form);
 
+        // Utilisation de fetch pour envoyer une requête au serveur
+        fetch(form.action + '?' + new URLSearchParams(formData), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(html => {
+                // Remplacement du contenu de la table
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                const newTable = doc.querySelector("#studentsTable");
+                const oldTable = document.querySelector("#studentsTable");
+
+                if (newTable && oldTable) {
+                    oldTable.innerHTML = newTable.innerHTML;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
 
 </script>
