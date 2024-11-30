@@ -189,10 +189,10 @@
 <script>
     function transcriptStudent(button) {
         // Récupérer l'ID de l'étudiant depuis l'attribut data-student-id
-        var studentId = button.getAttribute('data-student-id');
+        var idStudent = button.getAttribute('data-student-id');
 
         // Rediriger vers la page de relevé de notes
-        window.location.href = "/TranscriptStudentController?studentId=" + studentId;
+        window.location.href = "/TranscriptStudentController?idStudent=" + idStudent;
     }
     // Fonction pour que l'étudiant s'inscrive aux cours
     function assignmentCourse(idStudent) {

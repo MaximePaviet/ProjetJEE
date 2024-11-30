@@ -107,7 +107,8 @@
 <%
   com.projetjee.projetjeespringboot.models.Student student = (com.projetjee.projetjeespringboot.models.Student) request.getAttribute("student");
 %>
-<form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileStudentController" method="GET">
+<form class="hiddenForm" action="/ProfileStudentController" method="GET">
+  <input type="hidden" name="idStudent" value="${idStudent}">
   <button class="returnButton" type="submit"><</button>
 </form>
 

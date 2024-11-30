@@ -38,7 +38,7 @@ public class LoginStudentController {
                 model.addAttribute("student", student);
 
                 // Redirection vers la page de profil de l'étudiant
-                return "redirect:/ProfileStudentController?studentId=" + student.getIdStudent();
+                return "redirect:/ProfileStudentController?idStudent=" + student.getIdStudent();
             } else {
                 // Si l'étudiant n'est pas trouvé
                 model.addAttribute("errorMessage", "Étudiant introuvable !");

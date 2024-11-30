@@ -29,9 +29,9 @@ public class TranscriptStudentController {
     private StudentService studentService;  // Service pour récupérer l'étudiant par son ID
 
     @GetMapping("/TranscriptStudentController")
-    public String showTranscriptStudent(@RequestParam(name = "studentId") int studentId, Model model) {
+    public String showTranscriptStudent(@RequestParam(name = "idStudent") int idStudent, Model model) {
         // Récupérer l'objet Student via le service
-        Student student = studentService.readStudent(studentId);
+        Student student = studentService.readStudent(idStudent);
 
         if (student == null) {
             return "redirect:/LoginStudentController";  // Rediriger si l'étudiant n'est pas trouvé
@@ -55,6 +55,7 @@ public class TranscriptStudentController {
         }
 
         // Passer les informations à la vue
+        model.addAttribute("idStudent", idStudent);
         model.addAttribute("coursesWithAverages", coursesWithAverages);
         model.addAttribute("assessmentsWithGradesByCourse", assessmentsWithGradesByCourse);
 

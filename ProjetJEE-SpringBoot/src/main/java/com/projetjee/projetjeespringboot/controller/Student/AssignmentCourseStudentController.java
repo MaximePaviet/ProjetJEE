@@ -41,7 +41,7 @@ public class AssignmentCourseStudentController {
                 courses.add(course);
             }
         }
-
+        model.addAttribute("idStudent", studentId);
         model.addAttribute("student", student);
         model.addAttribute("courses", courses);
         return "Student/AssignmentCourseStudent"; // Vue Thymeleaf

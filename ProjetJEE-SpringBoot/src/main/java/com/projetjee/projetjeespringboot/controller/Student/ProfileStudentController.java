@@ -25,9 +25,9 @@ public class ProfileStudentController {
     private StudentService studentService;  // Service pour récupérer l'étudiant par son ID
 
     @GetMapping("/ProfileStudentController")
-    public String showStudentProfile(@RequestParam(name = "studentId") int studentId, Model model) {
+    public String showStudentProfile(@RequestParam(name = "idStudent") int idStudent, Model model) {
         // Récupérer l'objet Student via le service, en utilisant l'ID passé en paramètre
-        Student student = studentService.readStudent(studentId);
+        Student student = studentService.readStudent(idStudent);
 
         if (student == null) {
             return "redirect:/LoginStudentController";  // Rediriger si l'étudiant n'est pas trouvé
