@@ -40,16 +40,18 @@ public class AddStudentAdminServlet extends HttpServlet {
 
         // Email formatting
         int maxLength = 10;
+        String mailName = name.toLowerCase();
+        String mailSurname = surname.toLowerCase();
 
         if (surname.length() >= maxLength) {
-            surname = surname.substring(0, maxLength);
-            name = "";
+            mailSurname = mailSurname.substring(0, maxLength);
+            mailName = "";
         } else {
-            int maxNameLength = maxLength - surname.length();
-            name = name.length() > maxNameLength ? name.substring(0, maxNameLength) : name;
+            int maxNameLength = maxLength - mailSurname.length();
+            mailName = mailName.length() > maxNameLength ? mailName.substring(0, maxNameLength) : mailName;
         }
 
-        String contact = surname + name + "@cy-tech.fr";
+        String contact = mailSurname + mailName + "@cy-tech.fr";
 
         //Formatting the date of birth
         String dateBirthParam = request.getParameter("dateBirth"); // Expected format: YYYY-MM-DD
