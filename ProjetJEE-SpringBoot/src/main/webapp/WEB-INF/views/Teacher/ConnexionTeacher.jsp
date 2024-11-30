@@ -134,7 +134,7 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/views/index.jsp"><</a>
+<a href="${pageContext.request.contextPath}/"><</a>
 <h1>CYSCOLARITÉ</h1>
 <h2>Espace Enseignant</h2>
 <hr>

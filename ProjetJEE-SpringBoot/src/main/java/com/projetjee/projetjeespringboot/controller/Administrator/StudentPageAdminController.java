@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -21,14 +22,30 @@ public class StudentPageAdminController {
     }
 
     @GetMapping("/StudentPageAdminController")  // URL correspondant à la requête GET
-    public String getStudentPage(Model model) {
-        // Récupération de la liste des étudiants
-        List<Student> students = studentService.readStudentList();
+    public String getStudentPage(
+            @RequestParam(value = "search", required = false, defaultValue = "") String searchTerm,
+            @RequestParam(value = "promo", required = false, defaultValue = "") String promoParam,
+            Model model) {
 
-        // Ajout de la liste des étudiants au modèle
+        List<Student> students;
+
+        if (!searchTerm.isBlank()) {
+            // Recherche par terme
+            students = studentService.searchStudent(searchTerm.trim());
+        } else if (!promoParam.isBlank()) {
+            // Recherche par promotion
+            String[] promoArray = promoParam.split(",");
+            students = studentService.getStudentsByPromo(promoArray);
+        } else {
+            // Aucun filtre, récupérer tous les étudiants
+            students = studentService.readStudentList();
+        }
+
+        // Ajout des données au modèle
+        model.addAttribute("searchTerm", searchTerm);
         model.addAttribute("students", students);
 
         // Retourner la vue JSP
-        return "Administrator/StudentPageAdmin";  // "StudentPageAdmin.jsp" dans src/main/webapp/WEB-INF/views
+        return "Administrator/StudentPageAdmin"; // "StudentPageAdmin.jsp" dans src/main/webapp/WEB-INF/views
     }
 }

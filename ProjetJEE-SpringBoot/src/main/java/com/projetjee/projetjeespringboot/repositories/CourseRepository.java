@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Integer> {
     List<Course> findByTeacherIsNull();
+    List<Course> findByNameContainingIgnoreCase(String name);
 }

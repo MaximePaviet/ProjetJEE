@@ -1,6 +1,8 @@
 package com.projetjee.projetjeespringboot.services;
 
 import com.projetjee.projetjeespringboot.models.Course;
+import com.projetjee.projetjeespringboot.models.Student;
+import com.projetjee.projetjeespringboot.models.Teacher;
 import com.projetjee.projetjeespringboot.repositories.GradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,12 +48,20 @@ public class CourseService {
     @Transactional
     public void deleteCourse(Integer idCourse) {
         Course course = courseRepository.findById(idCourse).orElse(null);
-        if (course != null) {
-            courseRepository.delete(course);  // Supprime le cours de la base de données
-            System.out.println("Course deleted with ID: " + idCourse);
-        } else {
-            System.out.println("Course not found with ID: " + idCourse);
+        // Dissocier les étudiants du cours
+        List<Student> students = course.getStudentList();
+        for (Student student : students) {
+            student.getCourseList().remove(course); // Retirer le cours de chaque étudiant
         }
+
+        // Supprimer la relation avec le professeur
+        Teacher teacher = course.getTeacher();
+        if (teacher != null) {
+            teacher.getCourseList().remove(course);
+        }
+
+        // Supprimer le cours lui-même
+        courseRepository.delete(course);
     }
 
     // Méthode pour récupérer tous les cours
@@ -63,15 +73,26 @@ public class CourseService {
         return courseRepository.findById(idCourse).orElse(null); // Renvoie null si le cours n'existe pas
     }
     public double calculateCourseAverage(int courseId) {
-        // Récupérer les notes pour le cours donné
-        List<Double> grades = gradeRepository.findGradesByCourseId(courseId);
+        double total = 0;
+        int count = 0;
 
-        // Retourner la moyenne des notes ou 0.0 si la liste est vide
-        return grades.stream()
-                .mapToDouble(Double::doubleValue)
-                .average()
-                .orElse(0.0); // Valeur par défaut si aucune note n'est trouvée
+        try {
+            // Rechercher les notes associées au cours
+            List<Double> grades = gradeRepository.findGradesByCourseId(courseId);
+
+            // Calculer la moyenne
+            for (Double grade : grades) {
+                total += grade;
+                count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Retourner la moyenne ou -1.0 si aucune note
+        return count > 0 ? total / count : -1.0;
     }
+
 
 
     // Calcule la moyenne d'un étudiant dans un cours
@@ -82,6 +103,12 @@ public class CourseService {
 
     public List<Course> getCoursesWithoutTeacher() {
         return courseRepository.findByTeacherIsNull();
+    }
+    public List<Course> searchCourse(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return List.of(); // Retourne une liste vide si le terme est null ou vide
+        }
+        return courseRepository.findByNameContainingIgnoreCase(searchTerm);
     }
 
 }

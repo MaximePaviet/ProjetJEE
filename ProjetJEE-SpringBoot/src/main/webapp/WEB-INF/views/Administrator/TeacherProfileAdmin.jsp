@@ -1,4 +1,5 @@
 <%@ page import="com.projetjee.projetjeespringboot.models.Course" %>
+<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -119,11 +120,12 @@
     </tr>
     </thead>
     <tbody>
-    <% for (com.projetjee.projetjeespringboot.models.Course course : courses) { %>
+    <%  Map<Integer, String> courseAverages = (Map<Integer, String>) request.getAttribute("courseAverages");
+        for (com.projetjee.projetjeespringboot.models.Course course : courses) { %>
     <tr>
         <td><%= course.getName() %></td>
         <td><%= course.getStudentList().size() %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->
-        <td> Chargement ...</td> <!-- Si vous avez une méthode pour calculer la moyenne -->
+        <td><%= courseAverages.get(course.getIdCourse()) %></td> <!-- Si vous avez une méthode pour calculer la moyenne -->
     </tr>
     <% } %>
     </tbody>

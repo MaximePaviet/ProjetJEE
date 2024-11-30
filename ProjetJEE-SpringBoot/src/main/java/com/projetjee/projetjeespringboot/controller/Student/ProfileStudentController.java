@@ -43,7 +43,7 @@ public class ProfileStudentController {
                 double courseAverage = courseService.calculateStudentAverageInCourse(course.getIdCourse(), student.getIdStudent());
 
                 // Si la moyenne est calculée, formatée à 2 décimales
-                if (courseAverage > 0) {
+                if (courseAverage >= 0) {
                     courseAverages.put(course.getIdCourse(), String.format("%.2f", courseAverage));
                 } else {
                     courseAverages.put(course.getIdCourse(), "Pas encore de notes");

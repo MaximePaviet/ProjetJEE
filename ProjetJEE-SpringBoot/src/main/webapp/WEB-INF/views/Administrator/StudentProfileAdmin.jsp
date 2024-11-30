@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.Map" %>
+
 <html>
 <head>
     <title>Profil étudiant</title>
@@ -101,8 +103,9 @@
 %>
 <h2>Liste des cours :</h2>
 <%
-    java.util.List<com.projetjee.projetjeespringboot.models.Course> courses = (java.util.List<com.projetjee.projetjeespringboot.models.Course>) request.getAttribute("courses");
-    if (courses == null || courses.isEmpty()) {
+    // Récupération des moyennes par cours
+    Map<com.projetjee.projetjeespringboot.models.Course, Double> coursesWithAverages = (Map<com.projetjee.projetjeespringboot.models.Course, Double>) request.getAttribute("coursesWithAverages");
+    if (coursesWithAverages == null || coursesWithAverages.isEmpty()) {
 %>
 <p style="text-align: center;">Aucun cours trouvé pour cet étudiant.</p>
 <%
@@ -117,13 +120,28 @@
     </tr>
     </thead>
     <tbody>
-    <% for (com.projetjee.projetjeespringboot.models.Course course : courses) {
+    <% for (Map.Entry<com.projetjee.projetjeespringboot.models.Course, Double> entry : coursesWithAverages.entrySet()) {
+        com.projetjee.projetjeespringboot.models.Course course = entry.getKey();
+        Double average = entry.getValue();
         com.projetjee.projetjeespringboot.models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
     %>
     <tr>
         <td><%= course.getName() %></td>
-        <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->
-        <td> Chargement ...</td> <!-- Si vous avez une méthode pour calculer la moyenne -->
+        <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %></td>
+        <td>
+            <%
+                // Vérification de la validité de la moyenne
+                if (average == null || average < 0) {
+            %>
+            Pas encore de notes
+            <%
+            } else {
+            %>
+            <%= String.format("%.2f", average) %>
+            <%
+                }
+            %>
+        </td>
     </tr>
     <% } %>
     </tbody>

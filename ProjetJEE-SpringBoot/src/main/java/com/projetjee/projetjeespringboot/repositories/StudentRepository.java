@@ -19,4 +19,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
     List<Student> findByCourseListContaining(Course course);
 
     Optional<Student> findByLoginAndPassword(String login, String password);
+
+    // Utilisation de la clause IN pour rechercher les étudiants selon plusieurs promotions
+    List<Student> findBySchoolYearIn(List<String> promos);
 }

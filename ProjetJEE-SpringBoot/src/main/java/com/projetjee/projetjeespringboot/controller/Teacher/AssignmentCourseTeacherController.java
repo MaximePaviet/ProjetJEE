@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -21,64 +22,51 @@ public class AssignmentCourseTeacherController {
     @Autowired
     private TeacherService teacherService;
 
-    /**
-     * Affiche les cours disponibles pour être assignés à un enseignant
-     */
     @GetMapping
     public String showCoursesWithoutTeacher(@RequestParam("idTeacher") int idTeacher, Model model) {
-        // Récupérer l'enseignant
         Teacher teacher = teacherService.readTeacher(idTeacher);
         if (teacher == null) {
             return "redirect:/LoginTeacherController";
         }
 
-        // Récupérer les cours sans professeur
         List<Course> courses = courseService.getCoursesWithoutTeacher();
-        model.addAttribute("idStudent", idTeacher);
+        model.addAttribute("idTeacher", idTeacher);
         model.addAttribute("teacher", teacher);
         model.addAttribute("courses", courses);
 
-        return "Teacher/AssignmentCourseTeacher"; // Vue Thymeleaf associée
+        return "Teacher/AssignmentCourseTeacher";
     }
 
-    /**
-     * Traite les affectations des cours sélectionnés à l'enseignant
-     */
     @PostMapping
     public String assignCoursesToTeacher(
             @RequestParam("idTeacher") int idTeacher,
             @RequestParam(value = "courseSelection", required = false) List<Integer> selectedCourseIds,
             Model model) {
 
-        // Vérifier si l'enseignant existe
         Teacher teacher = teacherService.readTeacher(idTeacher);
         if (teacher == null) {
             return "redirect:/LoginTeacherController";
         }
 
-        // Vérifier si des cours ont été sélectionnés
-        if (selectedCourseIds != null && !selectedCourseIds.isEmpty()) {
-            for (Integer courseId : selectedCourseIds) {
-                try {
-                    // Utiliser la méthode qui accepte les IDs
-                    teacherService.assignmentCourseToTeacher(idTeacher, courseId);
-                } catch (IllegalArgumentException e) {
-                    // Ajouter des messages d'erreur spécifiques si une exception est levée
-                    model.addAttribute("error", "Erreur : " + e.getMessage());
-                    return "error";
-                }
-            }
-
-            // Mettre à jour l'enseignant dans le modèle
-            Teacher updatedTeacher = teacherService.readTeacher(idTeacher);
-            model.addAttribute("teacher", updatedTeacher);
-            model.addAttribute("courses", updatedTeacher.getCourseList());
-        } else {
+        if (selectedCourseIds == null || selectedCourseIds.isEmpty()) {
             model.addAttribute("error", "Aucun cours sélectionné.");
+            return "Teacher/AssignmentCourseTeacher";
         }
 
-        // Redirection vers la page de profil
+        List<String> errors = new ArrayList<>();
+        for (Integer courseId : selectedCourseIds) {
+            try {
+                teacherService.assignmentCourseToTeacher(idTeacher, courseId);
+            } catch (IllegalArgumentException e) {
+                errors.add("Erreur avec le cours ID " + courseId + " : " + e.getMessage());
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            model.addAttribute("errors", errors);
+            return "Teacher/AssignmentCourseTeacher";
+        }
+
         return "redirect:/ProfileTeacherController?idTeacher=" + idTeacher;
     }
-
 }

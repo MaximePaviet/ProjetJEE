@@ -117,7 +117,7 @@
         <td class="right-align"><%
             String displayAverage;
             if (hasAssessments) {
-                displayAverage = (courseAverage != null && courseAverage > 0) ? String.format("%.2f", courseAverage) : "Pas encore de notes";
+                displayAverage = (courseAverage != null && courseAverage >= 0) ? String.format("%.2f", courseAverage) : "Pas encore de notes";
             } else {
                 displayAverage = "Pas encore de notes";
             }

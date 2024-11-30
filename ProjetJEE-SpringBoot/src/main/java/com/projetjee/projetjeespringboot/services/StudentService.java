@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.projetjee.projetjeespringboot.repositories.CourseRepository;
 import com.projetjee.projetjeespringboot.repositories.StudentRepository;
-
+import java.util.*;
 import java.sql.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,7 +28,9 @@ public class StudentService {
 
     // Création d'un étudiant
     @Transactional
-    public void createStudent(String name, String surname, Date dateBirth, String contact, String schoolYear) {
+    public Map<String, String> createStudent(String name, String surname, Date dateBirth, String contact, String schoolYear) {
+        Map<String, String> generatedInfo = new HashMap<>();
+
         String login = administratorService.generateUniqueLoginStudent(name, surname);
         String password = administratorService.generatePassword();
 
@@ -41,7 +43,12 @@ public class StudentService {
         student.setLogin(login);
         student.setPassword(password);
 
+        generatedInfo.put("login", login);
+        generatedInfo.put("password", password);
+
         studentRepository.save(student);
+
+        return generatedInfo;
     }
 
     // Mise à jour des informations d'un étudiant
@@ -121,5 +128,12 @@ public class StudentService {
     }
     public boolean loginExist(String login, String password) {
         return studentRepository.findByLoginAndPassword(login, password) != null;
+    }
+    public List<Student> getStudentsByPromo(String[] promos) {
+        // Conversion du tableau en liste
+        List<String> promoList = Arrays.asList(promos);
+
+        // Utilisation de la méthode du repository pour récupérer les étudiants en fonction des promotions
+        return studentRepository.findBySchoolYearIn(promoList);
     }
 }

@@ -145,6 +145,7 @@
     <% } %>
     </tbody>
   </table>
+  <input type="hidden" name="idTeacher" value="${idTeacher}">
   <button class="button" type="submit">S'inscrire</button>
 </form>
 <%

@@ -26,6 +26,9 @@ public class AssessmentService {
         this.assessmentRepository = assessmentRepository;
         this.gradeRepository = gradeRepository;
     }
+    public List<Assessment> getAssessmentsByCourseId(Integer idCourse) {
+        return assessmentRepository.findByCourseId(idCourse);
+    }
 
     // Créer une évaluation
     public void createAssessment(Course course, String name) {
@@ -79,6 +82,26 @@ public class AssessmentService {
             assessmentsWithGrades.put(assessment, grade);
         }
         return assessmentsWithGrades;
+    }
+    public Map<Integer, Map<String, Float>> calculateMinMaxGrades(List<Assessment> assessments) {
+        Map<Integer, Map<String, Float>> result = new HashMap<>();
+
+        for (Assessment assessment : assessments) {
+            Map<String, Float> minMax = new HashMap<>();
+            List<Grade> grades = assessment.getGradeList();
+
+            if (grades == null || grades.isEmpty()) {
+                minMax.put("min", null); // Aucune note
+                minMax.put("max", null);
+            } else {
+                float min = (float) grades.stream().mapToDouble(Grade::getGrade).min().orElse(0.0);
+                float max = (float) grades.stream().mapToDouble(Grade::getGrade).max().orElse(0.0);
+                minMax.put("min", min);
+                minMax.put("max", max);
+            }
+            result.put(assessment.getIdAssessment(), minMax);
+        }
+        return result;
     }
 }
 
