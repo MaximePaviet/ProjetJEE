@@ -199,7 +199,7 @@ public class CourseService {
             // Requête HQL avec gestion de la sensibilité à la casse
             String hql = "FROM Course c WHERE LOWER(c.name) LIKE LOWER(:searchTerm) ";
             TypedQuery<Course> query = session.createQuery(hql, Course.class);
-            query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
+            query.setParameter("searchTerm",searchTerm.toLowerCase() + "%");
 
             // Exécuter la requête
             courses = query.getResultList();

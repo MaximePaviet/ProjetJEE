@@ -176,7 +176,7 @@ public class StudentService {
                     "OR LOWER(t.surname) LIKE LOWER(:searchTerm) " +
                     "OR LOWER(t.contact) LIKE LOWER(:searchTerm)";
             TypedQuery<Student> query = session.createQuery(hql, Student.class);
-            query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
+            query.setParameter("searchTerm",searchTerm.toLowerCase() + "%");
 
             // Exécuter la requête
             students = query.getResultList();
