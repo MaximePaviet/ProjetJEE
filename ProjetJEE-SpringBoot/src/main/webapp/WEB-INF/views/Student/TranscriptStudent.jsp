@@ -1,6 +1,5 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="models.Course, models.Assessment, java.util.List, java.util.Map" %>
+<%@ page import="com.projetjee.projetjeespringboot.models.Course, com.projetjee.projetjeespringboot.models.Assessment, java.util.List, java.util.Map" %>
 <html>
 <head>
     <title>Relevé de notes</title>
@@ -80,17 +79,17 @@
 </head>
 <body>
 <%
-    models.Student student = (models.Student) session.getAttribute("student");
+    com.projetjee.projetjeespringboot.models.Student student = (com.projetjee.projetjeespringboot.models.Student) session.getAttribute("student");
 %>
-<form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileStudentServlet" method="GET">
+<form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileStudentController" method="GET">
     <button class="returnButton" type="submit"><</button>
 </form>
 <h1>Relevé de notes</h1>
 
 <%
     // Récupération des maps transmises par le servlet
-    Map<models.Course, Double> coursesWithAverages = (Map<models.Course, Double>) request.getAttribute("coursesWithAverages");
-    Map<Integer, Map<models.Assessment, Double>> assessmentsWithGradesByCourse = (Map<Integer, Map<models.Assessment, Double>>) request.getAttribute("assessmentsWithGradesByCourse");
+    Map<com.projetjee.projetjeespringboot.models.Course, Double> coursesWithAverages = (Map<com.projetjee.projetjeespringboot.models.Course, Double>) request.getAttribute("coursesWithAverages");
+    Map<Integer, Map<com.projetjee.projetjeespringboot.models.Assessment, Double>> assessmentsWithGradesByCourse = (Map<Integer, Map<com.projetjee.projetjeespringboot.models.Assessment, Double>>) request.getAttribute("assessmentsWithGradesByCourse");
 %>
 
 <%-- Vérifiez si des données sont présentes --%>
@@ -100,12 +99,12 @@
 <table>
     <%
         // Parcourir chaque cours
-        for (Map.Entry<models.Course, Double> courseEntry : coursesWithAverages.entrySet()) {
-            models.Course course = courseEntry.getKey();
+        for (Map.Entry<com.projetjee.projetjeespringboot.models.Course, Double> courseEntry : coursesWithAverages.entrySet()) {
+            com.projetjee.projetjeespringboot.models.Course course = courseEntry.getKey();
             Double courseAverage = courseEntry.getValue();
 
             // Obtenir les évaluations et les notes pour ce cours
-            Map<models.Assessment, Double> assessmentsWithGrades = assessmentsWithGradesByCourse.get(course.getIdCourse());
+            Map<com.projetjee.projetjeespringboot.models.Assessment, Double> assessmentsWithGrades = assessmentsWithGradesByCourse.get(course.getIdCourse());
 
             // Vérifier si le cours a des évaluations
             boolean hasAssessments = (assessmentsWithGrades != null && !assessmentsWithGrades.isEmpty());
@@ -127,8 +126,8 @@
     <%
         // Afficher les évaluations uniquement si elles existent
         if (hasAssessments) {
-            for (Map.Entry<models.Assessment, Double> assessmentEntry : assessmentsWithGrades.entrySet()) {
-                models.Assessment assessment = assessmentEntry.getKey();
+            for (Map.Entry<com.projetjee.projetjeespringboot.models.Assessment, Double> assessmentEntry : assessmentsWithGrades.entrySet()) {
+                com.projetjee.projetjeespringboot.models.Assessment assessment = assessmentEntry.getKey();
                 Double grade = assessmentEntry.getValue();
     %>
     <tr class="assessment-row">

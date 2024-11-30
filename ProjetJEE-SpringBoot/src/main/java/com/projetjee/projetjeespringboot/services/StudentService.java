@@ -15,22 +15,22 @@ import java.util.Optional;
 @Service // Indique que cette classe est un service Spring
 public class StudentService {
 
-    @Autowired
-    private StudentRepository studentRepository; // Injection du repository pour Student
 
     @Autowired
-    private CourseRepository courseRepository; // Injection du repository pour Course
+    private StudentRepository studentRepository;
 
     @Autowired
-    private AdministratorService administratorService; // Injection du service administrateur pour générer login et password
+    private CourseRepository courseRepository;
 
-    // Crée un nouvel étudiant avec login et mot de passe générés
+    @Autowired
+    private AdministratorService administratorService;
+
+    // Création d'un étudiant
     @Transactional
     public void createStudent(String name, String surname, Date dateBirth, String contact, String schoolYear) {
         String login = administratorService.generateUniqueLoginStudent(name, surname);
         String password = administratorService.generatePassword();
 
-        // Création de l'objet Student
         Student student = new Student();
         student.setName(name);
         student.setSurname(surname);
@@ -40,15 +40,13 @@ public class StudentService {
         student.setLogin(login);
         student.setPassword(password);
 
-        // Sauvegarde dans la base de données
         studentRepository.save(student);
     }
 
-    // Met à jour un étudiant
+    // Mise à jour des informations d'un étudiant
     @Transactional
     public void updateStudent(Integer id, String name, String surname, Date dateBirth, String contact, String schoolYear) {
         Optional<Student> optionalStudent = studentRepository.findById(id);
-
         if (optionalStudent.isPresent()) {
             Student student = optionalStudent.get();
             student.setName(name);
@@ -57,13 +55,13 @@ public class StudentService {
             student.setContact(contact);
             student.setSchoolYear(schoolYear);
 
-            studentRepository.save(student); // Mise à jour de l'étudiant
+            studentRepository.save(student);
         } else {
             throw new IllegalArgumentException("Student not found with ID: " + id);
         }
     }
 
-    // Supprime un étudiant par son ID
+    // Suppression d'un étudiant par ID
     @Transactional
     public void deleteStudent(Integer idStudent) {
         if (studentRepository.existsById(idStudent)) {
@@ -73,54 +71,59 @@ public class StudentService {
         }
     }
 
-    // Récupère tous les étudiants
+    // Récupération de tous les étudiants
     public List<Student> readStudentList() {
-        return studentRepository.findAll(); // Utilise le repository pour récupérer tous les étudiants
+        return studentRepository.findAll();
     }
 
-    // Récupère un étudiant par son ID
+    // Récupération d'un étudiant par ID
     public Student readStudent(Integer idStudent) {
         return studentRepository.findById(idStudent)
                 .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + idStudent));
     }
 
-    // Recherche des étudiants par nom, prénom ou contact
+    // Recherche flexible des étudiants
     public List<Student> searchStudent(String searchTerm) {
         return studentRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCaseOrContactContainingIgnoreCase(
                 searchTerm, searchTerm, searchTerm);
     }
 
-    // Filtrage des étudiants associés à un cours donné
+    // Filtrage des étudiants inscrits à un cours spécifique
     public List<Student> filtering(Course course) {
-        return studentRepository.findByCourseListContaining(course); // Utilise une méthode custom du repository
+        return studentRepository.findByCourseListContaining(course);
     }
 
     // Inscription d'un étudiant à un cours
     @Transactional
     public void registrationCourse(Course course, Student student) {
-        Course existingCourse = courseRepository.findById(course.getIdCourse())
-                .orElseThrow(() -> new IllegalArgumentException("Course not found with ID: " + course.getIdCourse()));
-
         Student existingStudent = studentRepository.findById(student.getIdStudent())
                 .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + student.getIdStudent()));
+
+        Course existingCourse = courseRepository.findById(course.getIdCourse())
+                .orElseThrow(() -> new IllegalArgumentException("Course not found with ID: " + course.getIdCourse()));
 
         if (!existingStudent.getCourseList().contains(existingCourse)) {
             existingStudent.getCourseList().add(existingCourse);
             existingCourse.getStudentList().add(existingStudent);
 
-            studentRepository.save(existingStudent); // Sauvegarde des modifications
-            courseRepository.save(existingCourse);   // Sauvegarde des modifications
+            studentRepository.save(existingStudent);
+            courseRepository.save(existingCourse);
         } else {
             throw new IllegalStateException("Student is already assigned to the course.");
         }
     }
 
-    // Récupère la liste des cours d'un étudiant
+    // Récupération des cours suivis par un étudiant
     public List<Course> readCourse(int idStudent) {
         Student student = studentRepository.findById(idStudent)
                 .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + idStudent));
-
         return student.getCourseList();
+    }
+
+    public Integer getStudentIdByLoginAndPassword(String login, String password) {
+        // Utiliser JpaRepository pour obtenir l'ID de l'étudiant
+        Optional<Student> studentOpt = studentRepository.findByLoginAndPassword(login, password);
+        return studentOpt.map(Student::getIdStudent).orElse(null);
     }
     public boolean loginExist(String login, String password) {
         return studentRepository.findByLoginAndPassword(login, password) != null;

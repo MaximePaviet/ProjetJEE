@@ -1,4 +1,4 @@
-<%@ page import="models.Course" %>
+<%@ page import="com.projetjee.projetjeespringboot.models.Course" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -105,7 +105,7 @@
 <body>
 
 <%
-  models.Student student = (models.Student) session.getAttribute("student");
+  com.projetjee.projetjeespringboot.models.Student student = (com.projetjee.projetjeespringboot.models.Student) session.getAttribute("student");
 %>
 <form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileStudentServlet" method="GET">
   <button class="returnButton" type="submit"><</button>
@@ -130,7 +130,7 @@
     </tr>
     </thead>
     <tbody>
-    <% for (models.Course course : courses) { %>
+    <% for (com.projetjee.projetjeespringboot.models.Course course : courses) { %>
     <tr>
       <td><%= course.getName() %></td>
 

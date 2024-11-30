@@ -1,5 +1,6 @@
 package com.projetjee.projetjeespringboot.services;
 
+import com.projetjee.projetjeespringboot.repositories.CourseRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import com.projetjee.projetjeespringboot.models.Course;
@@ -14,20 +15,23 @@ import com.projetjee.projetjeespringboot.repositories.TeacherRepository;
 import java.util.List;
 
 @Service
-@Transactional
 public class TeacherService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final TeacherRepository teacherRepository;
+    private final CourseRepository courseRepository;
+    private final AdministratorService administratorService;
 
     @Autowired
-    private TeacherRepository teacherRepository;
-    private  StudentRepository studentRepository;
-    private AdministratorRepository administratorRepository;
+    public TeacherService(TeacherRepository teacherRepository,
+                          CourseRepository courseRepository,
+                          AdministratorService administratorService) {
+        this.teacherRepository = teacherRepository;
+        this.courseRepository = courseRepository;
+        this.administratorService = administratorService;
+    }
 
-    public void createTeacher(String name, String surname, String contact) {
-        // Génération de login et password
-        AdministratorService administratorService = new AdministratorService(teacherRepository,studentRepository,administratorRepository); // Si existant
+    // Créer un enseignant
+    public Teacher createTeacher(String name, String surname, String contact) {
         String login = administratorService.generateUniqueLogin(name, surname);
         String password = administratorService.generatePassword();
 
@@ -38,48 +42,50 @@ public class TeacherService {
         teacher.setLogin(login);
         teacher.setPassword(password);
 
-        entityManager.persist(teacher); // Sauvegarde l'enseignant
-        System.out.println("Teacher created successfully with login: " + login);
+        return teacherRepository.save(teacher);
     }
 
-    public Teacher readTeacher(int idTeacher) {
-        return entityManager.find(Teacher.class, idTeacher);
+    // Lire un enseignant par ID
+    public Teacher readTeacher(Integer idTeacher) {
+        return teacherRepository.findById(idTeacher)
+                .orElseThrow(() -> new IllegalArgumentException("Teacher not found with ID: " + idTeacher));
     }
 
-    public void updateTeacher(Integer id, String name, String surname, String contact) {
-        Teacher teacher = entityManager.find(Teacher.class, id);
-        if (teacher == null) {
-            throw new IllegalArgumentException("Teacher not found with ID: " + id);
-        }
+    // Lire la liste des enseignants
+    public List<Teacher> readTeacherList() {
+        return teacherRepository.findAll();
+    }
+
+    // Recherche d'enseignants
+    public List<Teacher> searchTeacher(String searchTerm) {
+        return teacherRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCaseOrContactContainingIgnoreCase(
+                searchTerm, searchTerm, searchTerm);
+    }
+
+    // Mettre à jour un enseignant
+    public Teacher updateTeacher(Integer id, String name, String surname, String contact) {
+        Teacher teacher = readTeacher(id);
 
         if (name != null) teacher.setName(name);
         if (surname != null) teacher.setSurname(surname);
         if (contact != null) teacher.setContact(contact);
 
-        entityManager.merge(teacher);
+        return teacherRepository.save(teacher);
     }
 
-    public void assignmentCourseToTeacher(Teacher teacher, Course course) {
-        Teacher existingTeacher = entityManager.find(Teacher.class, teacher.getIdTeacher());
-        Course existingCourse = entityManager.find(Course.class, course.getIdCourse());
+    // Assigner un cours à un enseignant
+    public void assignmentCourseToTeacher(Integer teacherId, Integer courseId) {
+        Teacher teacher = readTeacher(teacherId);
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found with ID: " + courseId));
 
-        if (existingTeacher == null || existingCourse == null) {
-            throw new IllegalArgumentException("Teacher or Course not found");
+        if (!teacher.getCourseList().contains(course)) {
+            teacher.getCourseList().add(course);
+            course.setTeacher(teacher);
+            teacherRepository.save(teacher); // Cascade effect handles course update
+        } else {
+            throw new IllegalArgumentException("Course is already assigned to the teacher.");
         }
-
-        if (!existingTeacher.getCourseList().contains(existingCourse)) {
-            existingTeacher.getCourseList().add(existingCourse);
-            existingCourse.setTeacher(existingTeacher);
-        }
-    }
-
-    public List<Teacher> searchTeacher(String searchTerm) {
-        return teacherRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCaseOrContactContainingIgnoreCase(searchTerm, searchTerm, searchTerm);
-    }
-
-    // Méthode pour lire la liste des enseignants
-    public List<Teacher> readTeacherList() {
-        return teacherRepository.findAll();
     }
 }
 

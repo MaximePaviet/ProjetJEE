@@ -1,6 +1,7 @@
 package com.projetjee.projetjeespringboot.services;
 
 import com.projetjee.projetjeespringboot.models.Course;
+import com.projetjee.projetjeespringboot.repositories.GradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +14,12 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
 
+    private final GradeRepository gradeRepository;
+
     @Autowired
-    public CourseService(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository, GradeRepository gradeRepository) {
         this.courseRepository = courseRepository;
+        this.gradeRepository = gradeRepository;
     }
 
     // Méthode pour créer un cours
@@ -58,25 +62,16 @@ public class CourseService {
     public Course readCourse(Integer idCourse) {
         return courseRepository.findById(idCourse).orElse(null); // Renvoie null si le cours n'existe pas
     }
-
-    // Méthode pour attribuer un étudiant à un cours (commentée dans l'exemple, peut être activée si nécessaire)
-    /*
-    @Transactional
-    public void assignStudentToCourse(Integer courseId, Integer studentId) {
-        Course course = courseRepository.findById(courseId).orElse(null);
-        if (course != null) {
-            Student student = studentRepository.findById(studentId).orElse(null);
-            if (student != null) {
-                course.getStudentList().add(student);  // Ajoute l'étudiant à la liste des étudiants du cours
-                student.getCourseList().add(course);  // Ajoute le cours à la liste des cours de l'étudiant
-                courseRepository.save(course);  // Enregistre le cours mis à jour
-                studentRepository.save(student);  // Enregistre l'étudiant mis à jour
-            } else {
-                System.out.println("Student not found with ID: " + studentId);
-            }
-        } else {
-            System.out.println("Course not found with ID: " + courseId);
-        }
+    // Calcule la moyenne totale du cours
+    public double calculateCourseAverage(int courseId) {
+        List<Double> grades = gradeRepository.findGradesByCourseId(courseId);
+        return grades.isEmpty() ? 0.0 : grades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
     }
-    */
+
+    // Calcule la moyenne d'un étudiant dans un cours
+    public double calculateStudentAverageInCourse(int courseId, int studentId) {
+        List<Double> grades = gradeRepository.findGradesByCourseIdAndStudentId(courseId, studentId);
+        return grades.isEmpty() ? 0.0 : grades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+    }
+
 }

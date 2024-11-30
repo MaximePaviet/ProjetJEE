@@ -1,4 +1,3 @@
-
 <%@ page import="com.projetjee.projetjeespringboot.models.Course" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
@@ -132,11 +131,11 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Student/ConnexionStudent.jsp"><</a>
+<a href="${pageContext.request.contextPath}/views/Student/ConnexionStudent"><</a>
 <h1>Mon Profil</h1>
 
 <%
-    com.projetjee.projetjeespringboot.models.Student student = ( com.projetjee.projetjeespringboot.models.Student) session.getAttribute("student");
+    com.projetjee.projetjeespringboot.models.Student student = (com.projetjee.projetjeespringboot.models.Student) request.getAttribute("student");
     List<Course> courses = student.getCourseList();
 %>
 <div class="profileInfo">
@@ -148,7 +147,7 @@
 <div class="container">
     <h2>Liste des cours :</h2>
     <div class="right">
-        <button onclick="transcritpStudent()">Relevé de notes</button>
+        <button onclick="transcriptStudent(this)" data-student-id="${student.idStudent}">Relevé de notes</button>
         <button onclick="assignmentCourse(<%= student.getIdStudent() %>)" class="button" >S'inscrire à un cours</button>
     </div>
 </div>
@@ -171,7 +170,7 @@
     </thead>
     <tbody>
     <%  Map<Integer, String> courseAverages = (Map<Integer, String>) request.getAttribute("courseAverages");
-        for ( com.projetjee.projetjeespringboot.models.Course course : courses) {
+        for (com.projetjee.projetjeespringboot.models.Course course : courses) {
             com.projetjee.projetjeespringboot.models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
     %>
     <tr>
@@ -188,13 +187,20 @@
     }
 %>
 <script>
+    function transcriptStudent(button) {
+        // Récupérer l'ID de l'étudiant depuis l'attribut data-student-id
+        var studentId = button.getAttribute('data-student-id');
+
+        // Rediriger vers la page de relevé de notes
+        window.location.href = "/TranscriptStudentController?studentId=" + studentId;
+    }
     // Fonction pour que l'étudiant s'inscrive aux cours
     function assignmentCourse(idStudent) {
         if (idStudent) {
             // Créez un formulaire HTML de manière dynamique
             const form = document.createElement("form");
             form.method = "GET";
-            form.action = `${pageContext.request.contextPath}/AssignmentCourseStudentServlet`;
+            form.action = `${pageContext.request.contextPath}/AssignmentCourseStudentController`;
 
             // Ajoutez un champ caché contenant l'ID de l'enseignant
             const input = document.createElement("input");
@@ -216,7 +222,7 @@
         // Créez un formulaire HTML de manière dynamique
         const form = document.createElement("form");
         form.method = "GET";
-        form.action = `${pageContext.request.contextPath}/TranscriptStudentServlet`;
+        form.action = `${pageContext.request.contextPath}/TranscriptStudentController`;
 
         // Ajoutez le formulaire à la page et soumettez-le
         document.body.appendChild(form);
