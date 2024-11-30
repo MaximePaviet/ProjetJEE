@@ -8,11 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Assessment;
 import models.Course;
-import models.Student;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import services.*;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,20 +25,22 @@ public class CoursePageTeacherServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        // Initialization of services
         courseService = new CourseService();
         assessmentService = new AssessmentService();
     }
 
     @Override
     public void destroy() {
+        // Release of resources
         courseService.close();
         assessmentService.close();
     }
 
+    //Retrieve the list of evaluations for a course from its id
     private List<Assessment> getAssessmentFromIdCourse(int idCourse) {
         List<Assessment> assessments = new ArrayList<>();
 
-        // HQL pour récupérer l'ID en fonction du login et du mot de passe
         String hql = "FROM Assessment a WHERE a.course.idCourse = :idCourse";
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -57,25 +57,28 @@ public class CoursePageTeacherServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Get the course id
         String idCourseParam = request.getParameter("idCourse");
 
         if (idCourseParam != null && !idCourseParam.isEmpty()) {
             try {
+                //Course recovery
                 int idCourse = Integer.parseInt(idCourseParam);
                 Course course = courseService.readCourse(idCourse);
 
+                //Retrieve the evaluations of a course
                 List<Assessment> assessments = getAssessmentFromIdCourse(idCourse);
 
-                // Calcul des pires et meilleures notes
+                // Calculation of worst and best marks
                 Map<Integer, Map<String, Float>> minMaxGrades = assessmentService.calculateMinMaxGrades(assessments);
 
-
+                //Add the data
                 request.setAttribute("assessments", assessments);
                 request.setAttribute("course", course);
                 request.setAttribute("minMaxGrades", minMaxGrades);
 
+                //Redirection to a teacher's course page
                 request.getRequestDispatcher("/view/Teacher/CoursePageTeacher.jsp").forward(request, response);
-
             } catch (NumberFormatException e) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID cours invalide");
             }
@@ -84,26 +87,29 @@ public class CoursePageTeacherServlet extends HttpServlet {
         }
     }
 
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Get the course id
         String idCourseParam = request.getParameter("idCourse");
 
         if (idCourseParam != null && !idCourseParam.isEmpty()) {
             try {
+                //Course recovery
                 int idCourse = Integer.parseInt(idCourseParam);
                 Course course = courseService.readCourse(idCourse);
 
+                //Retrieve the evaluations of a course
                 List<Assessment> assessments = getAssessmentFromIdCourse(Integer.parseInt(idCourseParam));
 
-                // Calcul des pires et meilleures notes
+                // Calculation of worst and best marks
                 Map<Integer, Map<String, Float>> minMaxGrades = assessmentService.calculateMinMaxGrades(assessments);
 
-
+                //Add the data
                 request.setAttribute("assessments", assessments);
                 request.setAttribute("course", course);
                 request.setAttribute("minMaxGrades", minMaxGrades);
 
+                //Redirection to a teacher's course page
                 request.getRequestDispatcher("/view/Teacher/CoursePageTeacher.jsp").forward(request, response);
 
             } catch (NumberFormatException e) {

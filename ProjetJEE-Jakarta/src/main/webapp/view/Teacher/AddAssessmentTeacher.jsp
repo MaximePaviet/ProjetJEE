@@ -1,7 +1,6 @@
 <%@ page import="models.Student" %>
 <%@ page import="java.util.List" %>
 <%@ page import="models.Course" %>
-<%@ page import="models.Assessment" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -96,7 +95,6 @@
             opacity: 90%;
         }
 
-        /* Style du tableau */
         table {
             color: #4F2BEC;
             width: 80%;

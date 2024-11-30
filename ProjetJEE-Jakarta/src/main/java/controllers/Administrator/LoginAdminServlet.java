@@ -10,7 +10,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
-
 import java.io.IOException;
 
 @WebServlet("/LoginAdminServlet")
@@ -20,31 +19,30 @@ public class LoginAdminServlet extends HttpServlet {
 
     @Override
     public void init() {
-        // Initialisation de la SessionFactory Hibernate
+        // Session initialization
         sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
     @Override
     public void destroy() {
+        //Closing the session
         if (sessionFactory != null) {
             sessionFactory.close();
         }
     }
 
-    private boolean loginExist(String login, String password) {
+    //Method to check login and password
+    private boolean accountExist(String login, String password) {
         boolean isValid = false;
 
-        // HQL pour vérifier les identifiants
         String hql = "FROM Administrator WHERE login = :login AND password = :password";
 
         try (Session session = sessionFactory.openSession()) {
-            // Création de la requête
             Query<Administrator> query = session.createQuery(hql, Administrator.class);
             query.setParameter("login", login);
             query.setParameter("password", password);
 
-            // Vérifiez si un résultat existe
-            isValid = query.uniqueResult() != null; // Retourne true si un résultat est trouvé
+            isValid = query.uniqueResult() != null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,14 +52,16 @@ public class LoginAdminServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Récupération des paramètres de login et password
+        // Recovery of login and password
         String login = request.getParameter("login");
         String password = request.getParameter("password");
 
-        // Validation des identifiants
-        if (loginExist(login, password)) {
+        // Redirect
+        if (accountExist(login, password)) {
+            //To the home page
             request.getRequestDispatcher("/view/Administrator/HomeAdministrator.jsp").forward(request, response);
         } else {
+            //In case of error
             request.setAttribute("errorMessage", "Login ou mot de passe incorrect !");
             request.getRequestDispatcher("/view/Administrator/ConnexionAdministrator.jsp").forward(request, response);
         }

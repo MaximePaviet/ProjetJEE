@@ -2,10 +2,6 @@ package models;
 
 import jakarta.persistence.*;
 
-import java.beans.ConstructorProperties;
-
-import jakarta.persistence.*;
-
 @Entity
 @Table(name = "grade")
 public class Grade {
@@ -26,14 +22,6 @@ public class Grade {
     private Student student;
 
     // Getters et Setters
-
-    public int getIdGrade() {
-        return idGrade;
-    }
-
-    public void setIdGrade(int id) {
-        this.idGrade = id;
-    }
 
     public double getGrade() {
         return grade;

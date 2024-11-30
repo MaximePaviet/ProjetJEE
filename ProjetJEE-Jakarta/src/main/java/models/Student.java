@@ -2,11 +2,8 @@ package models;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
-
 import java.sql.Date;
 import java.util.List;
-import java.util.Objects;
-
 
 @Entity
 @Table(name = "student")
@@ -113,9 +110,4 @@ public class Student {
     public List<Course> getCourseList() {
         return courseList;
     }
-
-    public void setCourseList(List<Course> courseList) {
-        this.courseList = courseList;
-    }
-
 }

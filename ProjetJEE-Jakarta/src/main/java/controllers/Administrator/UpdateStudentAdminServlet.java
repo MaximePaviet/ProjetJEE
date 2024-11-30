@@ -6,31 +6,27 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import models.Course;
 import models.Student;
-import models.Teacher;
 import services.EmailSenderService;
 import services.StudentService;
-import services.TeacherService;
-
 import java.io.IOException;
 import java.sql.Date;
-import java.util.List;
 
 @WebServlet("/UpdateStudentAdminServlet")
 public class UpdateStudentAdminServlet extends HttpServlet {
 
     private StudentService studentService;
     private EmailSenderService emailSenderService;
+
     @Override
     public void init() throws ServletException {
-        // Initialisation des services
+        // Initialization of services
         studentService = new StudentService();
     }
 
     @Override
     public void destroy() {
-        // Libération des ressources
+        // Release of resources
         if (studentService != null) {
             studentService.close();
         }
@@ -38,20 +34,20 @@ public class UpdateStudentAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Récupérer les paramètres envoyés par le formulaire
+        // Get the student id
         String idStudentParam = request.getParameter("idStudent");
-
 
         if (idStudentParam != null && !idStudentParam.isEmpty()) {
             try {
                 int idStudent = Integer.parseInt(idStudentParam);
 
-                // Récupération de l'enseignant
+                // Student recovery
                 Student student = studentService.readStudent(idStudent);
                 if (student != null) {
-
+                    //Add the data
                     request.setAttribute("student", student);
 
+                    //Redirects to student edit page
                     request.getRequestDispatcher("/view/Administrator/UpdateStudentAdmin.jsp").forward(request, response);
                 } else {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND, "Étudiant introuvable");
@@ -66,7 +62,7 @@ public class UpdateStudentAdminServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gestion de l'affichage de la liste des enseignants
+        // Get the form data
         String idStudentParam = request.getParameter("id");
         String surnameStudent = request.getParameter("surname");
         String nameStudent = request.getParameter("name");
@@ -74,7 +70,7 @@ public class UpdateStudentAdminServlet extends HttpServlet {
         String contactStudent = request.getParameter("contact");
         String promoYearStudent = request.getParameter("promoYear");
 
-
+        //Send an email to the student
         Integer idStudent = Integer.parseInt(idStudentParam);
         Student student = studentService.readStudent(idStudent);
         String htmlContent = "<html>" +
@@ -86,12 +82,13 @@ public class UpdateStudentAdminServlet extends HttpServlet {
                 "<p style=\"color: #999; font-size: 0.9em;\">--<br>L'équipe CyScolarité</p>" +
                 "</body>" +
                 "</html>";
-
         emailSenderService.sendEmail(student.getContact(), student.getName() + " " + student.getSurname() + "- Modification de votre compte !", htmlContent);
+
+        //Student Update
         studentService.updateStudent(idStudent, nameStudent, surnameStudent, Date.valueOf(birthDateStudent), contactStudent, promoYearStudent);
 
+        //Redirection to the student page
         response.sendRedirect(request.getContextPath() + "/StudentPageAdminServlet");
     }
-
 }
 

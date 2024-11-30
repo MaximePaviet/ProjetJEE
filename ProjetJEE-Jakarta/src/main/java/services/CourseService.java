@@ -5,7 +5,6 @@ import models.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,95 +13,95 @@ public class CourseService {
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
 
-    // Constructeur pour initialiser l'EntityManagerFactory
+    // Initialize the EntityManagerFactory and the SessionFactory
     public CourseService() {
         try {
-            // Initialisation de EntityManagerFactory pour JPA
             entityManagerFactory = Persistence.createEntityManagerFactory("default");
-
-            // Initialisation de SessionFactory pour Hibernate
-            org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration().configure(); // Charge hibernate.cfg.xml
+            org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration().configure();
             sessionFactory = configuration.buildSessionFactory();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Erreur d'initialisation de l'EntityManagerFactory ou SessionFactory : " + e.getMessage());
         }
     }
+
+    //Creation of a course
     public void createCourse(String name) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
-            transaction.begin();// Démarre la transaction
+            transaction.begin();
 
-            // Création de l'objet Course
+            // Creation of the Race object
             Course course = new Course();
             course.setName(name);
+            entityManager.persist(course);
+            transaction.commit();
 
-            entityManager.persist(course);    // Persiste l'objet Course dans la base de données
-            transaction.commit();              // Valide la transaction
         } catch (Exception e) {
             if (transaction.isActive()) {
-                transaction.rollback();        // Annule la transaction en cas d'erreur
+                transaction.rollback();
             }
             e.printStackTrace();
+
         } finally {
-            entityManager.close();             // Ferme l'EntityManager pour libérer les ressources
+            entityManager.close();
         }
     }
-    // Méthode pour mettre à jour les informations d'un cours avec des paramètres spécifiques
+
+    // Update course information
     public void updateCourse(Integer idCourse, String courseName) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
-            transaction.begin();// Démarre la transaction
+            transaction.begin();
 
-            // Recherche du cours par son ID
+            // Get the course
             Course course = entityManager.find(Course.class, idCourse);
             if (course != null) {
-                // Mise à jour des informations de l'étudiant
+                // Mise à jour des informations du cours
                 course.setName(courseName);
-
-                entityManager.merge(course);  // Met à jour l'objet Course dans la base de données
-                transaction.commit();          // Valide la transaction
+                entityManager.merge(course);
+                transaction.commit();
             } else {
                 System.out.println("Course not found with ID: " + idCourse);
             }
         } catch (Exception e) {
             if (transaction.isActive()) {
-                transaction.rollback(); // Annule la transaction en cas d'erreur
+                transaction.rollback();
             }
             e.printStackTrace();
         } finally {
-            entityManager.close(); // Ferme l'EntityManager
+            entityManager.close();
         }
     }
+
+    //Delete a course
     public void deleteCourse(Integer idCourse) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
-            transaction.begin(); // Démarre la transaction
+            transaction.begin();
 
-            // Recherche du cours par son ID
+            // Get the course
             Course course = entityManager.find(Course.class, idCourse);
             if (course != null) {
-                // Dissocier les étudiants du cours
+                // Retire les étudiants du cours
                 List<Student> students = course.getStudentList();
                 for (Student student : students) {
-                    student.getCourseList().remove(course); // Retirer le cours de chaque étudiant
+                    student.getCourseList().remove(course);
                 }
 
-                // Supprimer la relation avec le professeur
+                // Remove the teacher from the class
                 Teacher teacher = course.getTeacher();
                 if (teacher != null) {
                     teacher.getCourseList().remove(course);
-
-                    // Re-attacher l'entité au contexte Hibernate avant suppression
                     course = entityManager.merge(course);
                 }
-                // Supprimer le cours lui-même
+                // Delete the course
                 entityManager.remove(course);
 
                 System.out.println("Course deleted with ID: " + idCourse);
@@ -110,54 +109,53 @@ public class CourseService {
                 System.out.println("Course not found with ID: " + idCourse);
             }
 
-            transaction.commit(); // Valide la transaction
+            transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
-                transaction.rollback(); // Annule la transaction en cas d'erreur
+                transaction.rollback();
             }
             e.printStackTrace();
         } finally {
-            entityManager.close(); // Ferme l'EntityManager
+            entityManager.close();
         }
     }
 
-    // Méthode pour récupérer les informations d'un cours par son identifiant
+    // Retrieve a course by its identifier
     public Course readCourse(int idCourse) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         Course course = null;
 
         try {
-            course = entityManager.find(Course.class, idCourse); // Recherche le cours par ID
+            course = entityManager.find(Course.class, idCourse);
         } finally {
-            entityManager.close(); // Ferme l'EntityManager
+            entityManager.close();
         }
 
-        return course; // Retourne l'objet Course trouvé ou null si non trouvé
+        return course;
     }
 
-    // Méthode pour récupérer tous les cours
+    // Retrieve all courses
     public List<Course> readCourseList() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Course> courses = new ArrayList<>();
 
         try {
-            // Utilise HQL pour récupérer tous les cours
             courses = entityManager.createQuery("FROM Course", Course.class).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            entityManager.close(); // Ferme l'EntityManager
+            entityManager.close();
         }
         return courses;
     }
 
-    //Calcule la moyenne totale du cours
+    //Calculate the total course average
     public double calculateCourseAverage(int courseId) {
         double total = 0;
         int count = 0;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // Requête pour obtenir les notes du cours
+            //Calculate the total course average
             String hql = "SELECT g.grade FROM Grade g WHERE g.assessment.course.idCourse = :courseId";
             Query<Double> query = session.createQuery(hql, Double.class);
             query.setParameter("courseId", courseId);
@@ -170,17 +168,17 @@ public class CourseService {
         } catch (NoResultException e) {
             e.printStackTrace();
         }
-
-        return count > 0 ? total / count : -1.0; // Retourne 0.0 si aucune note
+        // Return -1.0 if no rating
+        return count > 0 ? total / count : -1.0;
     }
 
-    // Calcule la moyenne d'un élève dans un cours
+    // Calculate the average of a student in a course
     public double calculateStudentAverageInCourse(int courseId, int studentId) {
         double total = 0;
         int count = 0;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // Requête pour obtenir les notes d'un étudiant spécifique dans un cours
+            // Retrieve all grades for a student in a course
             String hql = "SELECT g.grade FROM Grade g " +
                     "WHERE g.assessment.course.idCourse = :courseId " +
                     "AND g.student.idStudent = :studentId";
@@ -197,42 +195,37 @@ public class CourseService {
             e.printStackTrace();
         }
 
-        return count > 0 ? total / count : -1.0; // Retourne 0.0 si aucune note
+        // Return -1.0 if no rating
+        return count > 0 ? total / count : -1.0;
     }
 
-    // Méthode de recherche flexible pour les enseignants par nom, prénom ou contact
+    // Flexible search method for course
     public List<Course> searchCourse(String searchTerm) {
-        // Utilisation de sessionFactory pour obtenir la session
         Session session = sessionFactory.openSession();
         List<Course> courses = null;
 
         try {
             System.out.println("Executing search for: " + searchTerm);
 
-            // Requête HQL avec gestion de la sensibilité à la casse
             String hql = "FROM Course c WHERE LOWER(c.name) LIKE LOWER(:searchTerm) ";
             TypedQuery<Course> query = session.createQuery(hql, Course.class);
             query.setParameter("searchTerm",searchTerm.toLowerCase() + "%");
 
-            // Exécuter la requête
             courses = query.getResultList();
 
-            // Journal des résultats
             System.out.println("Search results for '" + searchTerm + "':");
             courses.forEach(course -> System.out.println("Found: " + course.getName() + " " + course.getTeacher()));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            session.close(); // Ferme la session après l'exécution
+            session.close();
         }
 
-        return courses != null ? courses : List.of(); // Retourne une liste vide si aucun résultat
+        // Return an empty list if no results
+        return courses != null ? courses : List.of();
     }
 
-
-
-
-    // Ferme l'EntityManagerFactory
+    // Close the EntityManagerFactory
     public void close() {
         if (entityManagerFactory != null) {
             entityManagerFactory.close();

@@ -9,10 +9,7 @@ import models.Student;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import services.StudentService;
-
 import java.io.IOException;
-import java.sql.Date;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -24,12 +21,14 @@ public class StudentPageAdminServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        // Initialization of services
         studentService = new StudentService();
         sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
     @Override
     public void destroy() {
+        // Release of resources
         if (sessionFactory != null) {
             sessionFactory.close();
         }
@@ -40,28 +39,30 @@ public class StudentPageAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Get the contents of the search bar
         String searchTerm = request.getParameter("search");
+
+        //Get the selected filters
         String promoParam = request.getParameter("promo");
 
         List<Student> students;
 
-        // Si un terme de recherche est fourni
+        //Performs search based on filters
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
             students = studentService.searchStudent(searchTerm);
         } else {
-            // Sinon, rechercher tous les étudiants (ou appliquer le filtre)
             if (promoParam != null && !promoParam.trim().isEmpty()) {
-                // Traiter les promotions sélectionnées
                 String[] promoArray = promoParam.split(",");
                 students = studentService.getStudentsByPromo(promoArray);
             } else {
-                // Pas de filtre sur les promotions
                 students = studentService.readStudentList();
             }
         }
 
-        // Ajouter les étudiants comme attribut
+        // Show students
         request.setAttribute("students", students);
+
+        //Redirection to the student page
         request.getRequestDispatcher("/view/Administrator/StudentPageAdmin.jsp").forward(request, response);
     }
 }

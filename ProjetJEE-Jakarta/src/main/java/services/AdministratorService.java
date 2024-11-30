@@ -10,26 +10,25 @@ public class AdministratorService {
 
     private EntityManagerFactory entityManagerFactory;
 
-    // Constructeur pour initialiser l'EntityManagerFactory
+    //Initializing the EntityManagerFactory
     public AdministratorService() {
         this.entityManagerFactory = Persistence.createEntityManagerFactory("default");
     }
 
-    // Méthode pour fermer EntityManagerFactory lorsque plus nécessaire
+    //Closing the EntityManagerFactory
     public void close() {
         if (entityManagerFactory != null) {
             entityManagerFactory.close();
         }
     }
 
-    // Génère un login unique basé sur le prénom et le nom
-    public String generateUniqueLogin(String firstName, String lastName) {
+    // Generates a unique login from the first and last name for a teacher
+    public String generateUniqueLoginTeacher(String firstName, String lastName) {
         String baseLogin = firstName.substring(0, 1).toLowerCase() + lastName.toLowerCase();
         String uniqueLogin = baseLogin;
         int count = 1;
 
-        // Vérifie si le login existe déjà dans la base de données
-        while (isLoginExists(uniqueLogin)) {
+        while (isLoginExistsTeacher(uniqueLogin)) {
             uniqueLogin = baseLogin + count;
             count++;
         }
@@ -37,8 +36,8 @@ public class AdministratorService {
         return uniqueLogin;
     }
 
-    // Vérifie dans la base de données si le login existe déjà
-    public boolean isLoginExists(String login) {
+    // Check if the login already exists in the database for a teacher
+    public boolean isLoginExistsTeacher(String login) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         long count = 0;
 
@@ -54,7 +53,7 @@ public class AdministratorService {
         return count > 0;
     }
 
-    // Génère un login unique basé sur le prénom et le nom
+    // Generates a unique login from the first and last name for a student
     public String generateUniqueLoginStudent(String firstName, String lastName) {
         String baseLogin = firstName.substring(0, 1).toLowerCase() + lastName.toLowerCase();
         String uniqueLogin = baseLogin;
@@ -69,7 +68,7 @@ public class AdministratorService {
         return uniqueLogin;
     }
 
-    // Vérifie dans la base de données si le login existe déjà
+    // Check if the login already exists in the database for a student
     public boolean isLoginExistsStudent(String login) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         long count = 0;
@@ -86,13 +85,13 @@ public class AdministratorService {
         return count > 0;
     }
 
-    // Génère un mot de passe aléatoire de 9 caractères
+    // Generate a random 9 character password
     public String generatePassword() {
         final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom random = new SecureRandom();
-        StringBuilder password = new StringBuilder(9); // Longueur fixe de 9 caractères
+        StringBuilder password = new StringBuilder(9);
 
-        for (int i = 0; i < 9; i++) { // Génère exactement 9 caractères
+        for (int i = 0; i < 9; i++) {
             int index = random.nextInt(CHARACTERS.length());
             password.append(CHARACTERS.charAt(index));
         }

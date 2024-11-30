@@ -9,17 +9,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap"
+          rel="stylesheet">
 
     <style>
         body {
             background-color: #f5f5f5;
         }
 
-        .hiddenForm{
+        .hiddenForm {
             position: relative;
             visibility: hidden;
         }
+
         .returnButton {
             all: unset;
             color: #4F2BEC;
@@ -43,14 +45,14 @@
             margin: 0;
         }
 
-        .container{
+        .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 30px;
         }
 
-        h2{
+        h2 {
             font-size: 24px;
             color: #4F2BEC;
             font-family: 'DM Sans', serif;
@@ -60,7 +62,7 @@
             margin-left: 150px;
         }
 
-        .right{
+        .right {
             display: flex;
             justify-content: flex-end;
             margin-right: 132px;
@@ -85,7 +87,6 @@
             opacity: 90%;
         }
 
-        /* Style du tableau */
         table {
             color: #4F2BEC;
             width: 80%;
@@ -117,11 +118,11 @@
 <%
     Course course = (Course) request.getAttribute("course");
     List<Assessment> assessments = (List<Assessment>) request.getAttribute("assessments");
-    // Récupérer les informations des pires et meilleures notes
     Map<Integer, Map<String, Float>> minMaxGrades = (Map<Integer, Map<String, Float>>) request.getAttribute("minMaxGrades");
 
 %>
-<h1><%= course.getName() %></h1>
+<h1><%= course.getName() %>
+</h1>
 <div class="container">
     <h2>Liste des évaluations :</h2>
     <div class="right">
@@ -142,44 +143,48 @@
         <th>Évaluation</th>
         <th>Meilleure note</th>
         <th>Pire note</th>
-        <th>Moyennne</th>
+        <th>Moyenne</th>
     </tr>
     </thead>
     <tbody>
-        <% for ( Assessment assessment : assessments) {
-            Map<String, Float> gradesData = minMaxGrades.get(assessment.getIdAssessment());
-            Float bestGrade = gradesData != null ? gradesData.get("max") : null;
-            Float worstGrade = gradesData != null ? gradesData.get("min") : null;
-        %>
-        <tr>
-            <td><%= assessment.getName() %></td>
-            <td><%= bestGrade != null ? bestGrade : "Pas de notes" %></td>
-            <td><%= worstGrade != null ? worstGrade : "Pas de notes" %></td>
-            <td><%=assessment.getAverage()%></td>
-        </tr>
-        <% } %>
+    <% for (Assessment assessment : assessments) {
+        Map<String, Float> gradesData = minMaxGrades.get(assessment.getIdAssessment());
+        Float bestGrade = gradesData != null ? gradesData.get("max") : null;
+        Float worstGrade = gradesData != null ? gradesData.get("min") : null;
+    %>
+    <tr>
+        <td><%= assessment.getName() %>
+        </td>
+        <td><%= bestGrade != null ? bestGrade : "Pas de notes" %>
+        </td>
+        <td><%= worstGrade != null ? worstGrade : "Pas de notes" %>
+        </td>
+        <td><%=assessment.getAverage()%>
+        </td>
+    </tr>
+    <% } %>
     </tbody>
 </table>
 <%
     }
 %>
 <script>
-    // Fonction pour rediriger vers la page de profil
+    // Function to redirect to the page to add a review
     function addAssessment(idCourse) {
         if (idCourse) {
-            // Créez un formulaire HTML de manière dynamique
+            // Create an HTML form dynamically
             const form = document.createElement("form");
             form.method = "GET";
             form.action = `${pageContext.request.contextPath}/AddAssessmentTeacherServlet`;
 
-            // Ajoutez un champ caché contenant l'ID de l'enseignant
+            // Add a hidden field containing the course ID
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = "idCourse"; // Le nom doit correspondre à ce que le servlet attend
+            input.name = "idCourse";
             input.value = idCourse;
             form.appendChild(input);
 
-            // Ajoutez le formulaire à la page et soumettez-le
+            // Add the form to the page and submit it
             document.body.appendChild(form);
             form.submit();
         } else {

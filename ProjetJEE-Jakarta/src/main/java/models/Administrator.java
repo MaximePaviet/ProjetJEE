@@ -17,14 +17,6 @@ public class Administrator {
     private String password;
 
     // Getters et Setters
-    public int getIdAdministrator() {
-        return idAdministrator;
-    }
-
-    public void setIdAdministrator(int idAdministrator) {
-        this.idAdministrator = idAdministrator;
-    }
-
     public String getLogin() {
         return login;
     }

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="models.Course, models.Assessment, java.util.List, java.util.Map" %>
+<%@ page import=" java.util.Map" %>
 <html>
 <head>
     <title>Relevé de notes</title>
@@ -47,12 +47,12 @@
             font-family: "DM Sans", sans-serif;
             color: #2B3674;
             font-weight: bold;
-            border-radius: 12px; /* Arrondir les 4 coins principaux du tableau */
-            overflow: hidden; /* Cache les bords arrondis */
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         table tr {
-            height: 40px; /* Réduction de la hauteur des lignes */
+            height: 40px;
         }
 
         td, th {
@@ -60,17 +60,14 @@
             padding: 15px;
         }
 
-        /* Lignes des cours */
         .course-row td {
             background-color: #AAC2FF;
         }
 
-        /* Alignement du texte des notes */
         .right-align {
             text-align: right;
         }
 
-        /* Évaluations */
         .assessment-row td {
             background-color: #f9f9f9;
         }
@@ -87,26 +84,21 @@
 <h1>Relevé de notes</h1>
 
 <%
-    // Récupération des maps transmises par le servlet
     Map<models.Course, Double> coursesWithAverages = (Map<models.Course, Double>) request.getAttribute("coursesWithAverages");
     Map<Integer, Map<models.Assessment, Double>> assessmentsWithGradesByCourse = (Map<Integer, Map<models.Assessment, Double>>) request.getAttribute("assessmentsWithGradesByCourse");
 %>
 
-<%-- Vérifiez si des données sont présentes --%>
 <%
     if (coursesWithAverages != null && !coursesWithAverages.isEmpty()) {
 %>
 <table>
     <%
-        // Parcourir chaque cours
         for (Map.Entry<models.Course, Double> courseEntry : coursesWithAverages.entrySet()) {
             models.Course course = courseEntry.getKey();
             Double courseAverage = courseEntry.getValue();
 
-            // Obtenir les évaluations et les notes pour ce cours
             Map<models.Assessment, Double> assessmentsWithGrades = assessmentsWithGradesByCourse.get(course.getIdCourse());
 
-            // Vérifier si le cours a des évaluations
             boolean hasAssessments = (assessmentsWithGrades != null && !assessmentsWithGrades.isEmpty());
     %>
     <tr class="course-row">
@@ -124,7 +116,6 @@
     </tr>
 
     <%
-        // Afficher les évaluations uniquement si elles existent
         if (hasAssessments) {
             for (Map.Entry<models.Assessment, Double> assessmentEntry : assessmentsWithGrades.entrySet()) {
                 models.Assessment assessment = assessmentEntry.getKey();
@@ -139,7 +130,6 @@
         }
     %>
     <%
-        // Si aucune évaluation pour le cours, afficher un message dans le tableau
         if (!hasAssessments) {
     %>
     <tr>

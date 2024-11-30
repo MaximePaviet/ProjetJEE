@@ -6,7 +6,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap"
+          rel="stylesheet">
 
     <style>
         body {
@@ -33,18 +34,18 @@
             margin: 0;
         }
 
-        .profileInfo{
+        .profileInfo {
             color: #2B3674;
             border: 2px solid #3965FF;
-            border-radius:16px;
+            border-radius: 16px;
             font-family: 'DM Sans', serif;
             width: 300px;
             padding: 10px;
-            margin-left:150px;
-            margin-top:30px;
+            margin-left: 150px;
+            margin-top: 30px;
         }
 
-        h2{
+        h2 {
             font-size: 24px;
             color: #4F2BEC;
             font-family: 'DM Sans', serif;
@@ -54,7 +55,6 @@
             margin-left: 150px;
         }
 
-        /* Style du tableau */
         table {
             color: #4F2BEC;
             width: 80%;
@@ -102,7 +102,6 @@
 %>
 <h2>Liste des cours :</h2>
 <%
-    // Récupération des moyennes par cours
     Map<models.Course, Double> coursesWithAverages = (Map<models.Course, Double>) request.getAttribute("coursesWithAverages");
     if (coursesWithAverages == null || coursesWithAverages.isEmpty()) {
 %>
@@ -122,14 +121,15 @@
     <% for (Map.Entry<models.Course, Double> entry : coursesWithAverages.entrySet()) {
         models.Course course = entry.getKey();
         Double average = entry.getValue();
-        models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
+        models.Teacher courseTeacher = course.getTeacher();
     %>
     <tr>
-        <td><%= course.getName() %></td>
-        <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %></td>
+        <td><%= course.getName() %>
+        </td>
+        <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %>
+        </td>
         <td>
             <%
-                // Vérification de la validité de la moyenne
                 if (average == null || average < 0) {
             %>
             Pas encore de notes

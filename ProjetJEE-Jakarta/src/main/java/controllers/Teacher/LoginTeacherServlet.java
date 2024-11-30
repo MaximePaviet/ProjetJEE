@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-
 import java.io.IOException;
 
 @WebServlet("/LoginTeacherServlet")
@@ -22,23 +21,22 @@ public class LoginTeacherServlet extends HttpServlet {
 
     @Override
     public void init() {
-        // Initialisation des services
+        // Initialization of services
         teacherService = new TeacherService();
     }
 
     @Override
     public void destroy() {
+        // Release of resources
         if (teacherService != null) {
             teacherService.close();
         }
-        // Fermeture de la SessionFactory via HibernateUtil
-        HibernateUtil.shutdown();
     }
 
+    //Method to retrieve a teacher's ID from their login and password
     private Integer getTeacherIdByLoginAndPassword(String login, String password) {
         Integer teacherId = null;
 
-        // HQL pour récupérer l'ID en fonction du login et du mot de passe
         String hql = "SELECT t.idTeacher FROM Teacher t WHERE t.login = :login AND t.password = :password";
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -46,35 +44,33 @@ public class LoginTeacherServlet extends HttpServlet {
             query.setParameter("login", login);
             query.setParameter("password", password);
 
-            // Récupérer l'ID si un résultat est trouvé
             teacherId = query.uniqueResult();
         } catch (NoResultException e) {
             System.out.println("Aucun professeur trouvé avec ces identifiants.");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return teacherId;
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Recovery of login and password
         String login = request.getParameter("login");
         String password = request.getParameter("password");
 
+        //Get the teacher id
         Integer idTeacherParam = getTeacherIdByLoginAndPassword(login, password);
 
         if (idTeacherParam != null) {
+            //Recover the teacher
             Teacher teacher = teacherService.readTeacher(idTeacherParam);
 
             if (teacher != null) {
-                // Charger explicitement les cours si nécessaire
-                Hibernate.initialize(teacher.getCourseList());
-
-                // Stocker dans la session
+                // Add the data
                 request.getSession().setAttribute("teacher", teacher);
 
-                // Redirection
+                // Redirection to the teacher profile page
                 response.sendRedirect(request.getContextPath() + "/ProfileTeacherServlet");
             } else {
                 request.setAttribute("errorMessage", "Enseignant introuvable !");
@@ -85,5 +81,4 @@ public class LoginTeacherServlet extends HttpServlet {
             request.getRequestDispatcher("/view/Teacher/ConnexionTeacher.jsp").forward(request, response);
         }
     }
-
 }

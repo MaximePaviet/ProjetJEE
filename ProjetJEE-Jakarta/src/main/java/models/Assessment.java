@@ -1,11 +1,9 @@
 package models;
 
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +21,8 @@ public class Assessment {
     @Column(name = "average")
     private Double average;
 
-    @ManyToOne(optional = false) // Relation obligatoire avec Course
-    @JoinColumn(name = "idCourse", nullable = false) // Clé étrangère non nullable
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "idCourse", nullable = false)
     private Course course;
 
     @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -34,10 +32,6 @@ public class Assessment {
 
     public int getIdAssessment() {
         return idAssessment;
-    }
-
-    public void setIdAssessment(int idAssessment) {
-        this.idAssessment = idAssessment;
     }
 
     public String getName() {
@@ -66,9 +60,5 @@ public class Assessment {
 
     public List<Grade> getGradeList() {
         return gradeList;
-    }
-
-    public void setGradeList(List<Grade> gradeList) {
-        this.gradeList = gradeList;
     }
 }

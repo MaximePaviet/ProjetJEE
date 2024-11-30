@@ -75,7 +75,6 @@
             opacity: 90%;
         }
 
-        /* Style du tableau */
         table {
             color: #4F2BEC;
             width: 60%;
@@ -144,9 +143,6 @@
 <%
     }
 %>
-
-
-
 </body>
 </html>
 

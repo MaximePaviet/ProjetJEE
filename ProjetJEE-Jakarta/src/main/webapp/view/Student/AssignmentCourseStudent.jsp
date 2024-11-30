@@ -7,14 +7,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap"
+          rel="stylesheet">
 
     <style>
         body {
             background-color: #f5f5f5;
         }
 
-        .hiddenForm{
+        .hiddenForm {
             position: relative;
             visibility: hidden;
         }
@@ -42,7 +43,7 @@
             margin: 0;
         }
 
-        h2{
+        h2 {
             font-size: 24px;
             color: #4F2BEC;
             font-family: 'DM Sans', serif;
@@ -132,10 +133,12 @@
         <tbody>
         <% for (models.Course course : courses) { %>
         <tr>
-            <td><%= course.getName() %></td>
+            <td><%= course.getName() %>
+            </td>
 
             <td style="text-align: center; padding: 10px;">
-                <input type="checkbox" name="courseSelection" value="<%= course.getIdCourse() %>" style="text-align: center; padding: 10px;">
+                <input type="checkbox" name="courseSelection" value="<%= course.getIdCourse() %>"
+                       style="text-align: center; padding: 10px;">
             </td>
         </tr>
         <% } %>
@@ -146,9 +149,6 @@
 <%
     }
 %>
-
-
-
 </body>
 </html>
 

@@ -5,7 +5,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap"
+          rel="stylesheet">
 
     <style>
         body {
@@ -32,7 +33,7 @@
             margin: 0;
         }
 
-        form{
+        form {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -63,7 +64,7 @@
             margin-bottom: 15px;
         }
 
-        input{
+        input {
             flex-grow: 1;
             background-color: #FFFFFF;
             border: 3px solid #4F2BEC;
@@ -72,9 +73,9 @@
             margin-left: 20px;
         }
 
-        input:focus{
-            outline:none;
-            border:3px solid #4F2BEC;;
+        input:focus {
+            outline: none;
+            border: 3px solid #4F2BEC;;
         }
 
         button {
@@ -109,14 +110,12 @@
 %>
 <form action="${pageContext.request.contextPath}/UpdateCourseAdminServlet" method="POST">
     <div class="container">
-        <input type="hidden" name="id" value="<%= course != null ? course.getIdCourse() : "" %>" />
+        <input type="hidden" name="id" value="<%= course != null ? course.getIdCourse() : "" %>"/>
 
         <label>Nom :</label>
-        <input type="text" name="name" value="<%= course != null ? course.getName() : "" %>" />
+        <input type="text" name="name" value="<%= course != null ? course.getName() : "" %>"/>
     </div>
     <button type="submit">Mettre à jour</button>
 </form>
-
-
 </body>
 </html>

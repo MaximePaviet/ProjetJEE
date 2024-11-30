@@ -8,14 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
 import models.Student;
-import models.Teacher;
 import services.CourseService;
 import services.EmailSenderService;
-import services.StudentService;
-import services.TeacherService;
-
 import java.io.IOException;
-import java.sql.Date;
 import java.util.List;
 
 @WebServlet("/DeleteCourseAdminServlet")
@@ -26,13 +21,13 @@ public class DeleteCourseAdminServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // Initialisation des services
+        // Initialization of services
         courseService = new CourseService();
     }
 
     @Override
     public void destroy() {
-        // Libération des ressources
+        // Release of resources
         if (courseService != null) {
             courseService.close();
         }
@@ -40,19 +35,19 @@ public class DeleteCourseAdminServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Get the course
         String idCourseParam = request.getParameter("idCourse");
-
         Integer idCourse = Integer.parseInt(idCourseParam);
-
-        // Récupérer le cours avant suppression pour obtenir les informations nécessaires
         Course course = courseService.readCourse(idCourse);
-        if (course != null) {
-            List<Student> enrolledStudents = course.getStudentList(); // Récupérer les étudiants inscrits
 
-            // Supprimer le cours
+        //Management of events linked to the deletion of a course
+        if (course != null) {
+
+            //Delete the course
+            List<Student> enrolledStudents = course.getStudentList();
             courseService.deleteCourse(idCourse);
 
-            // Envoyer un email à chaque étudiant inscrit
+            // Send email to each registered student
             String subject = "Suppression du cours " + course.getName();
             String bodyTemplate = "<html>" +
                     "<body>" +
@@ -71,7 +66,7 @@ public class DeleteCourseAdminServlet extends HttpServlet {
             }
         }
 
-        // Rediriger vers la page des cours après suppression
+        // Redirect to course page after deletion
         response.sendRedirect(request.getContextPath() + "/CoursePageAdminServlet");
     }
 }

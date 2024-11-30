@@ -1,6 +1,5 @@
 package controllers.Administrator;
 
-
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -19,16 +18,16 @@ public class TeacherPageAdminServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // Initialisation des services
+        // Initialization of services
         teacherService = new TeacherService();
 
-        // Initialisation de la SessionFactory Hibernate pour les opérations liées à la base de données
+        // Session initialization
         sessionFactory = new Configuration().configure().buildSessionFactory();
     }
 
     @Override
     public void destroy() {
-        // Libération des ressources
+        // Release of resources
         if (sessionFactory != null) {
             sessionFactory.close();
         }
@@ -38,25 +37,23 @@ public class TeacherPageAdminServlet extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //Recovering the contents of the search bar
         String searchTerm = request.getParameter("search");
-        List<Teacher> teachers;
 
+        //Search for teachers
+        List<Teacher> teachers;
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-            // Effectuer la recherche avec le terme
             teachers = teacherService.searchTeacher(searchTerm);
         } else {
-            // Retourner tous les enseignants si aucun terme de recherche n'est fourni
             teachers = teacherService.readTeacherList();
         }
 
-        // Ajouter les enseignants comme attribut
+        // Add teachers
         request.setAttribute("teachers", teachers);
 
-        // Transférer vers la JSP
+        // Redirection to the teacher page
         request.getRequestDispatcher("/view/Administrator/TeacherPageAdmin.jsp").forward(request, response);
     }
-
-
 }
 
 

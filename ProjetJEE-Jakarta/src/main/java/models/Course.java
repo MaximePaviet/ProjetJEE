@@ -1,14 +1,8 @@
 package models;
 
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import models.Teacher;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.*;
-
 import java.util.List;
-import java.util.Objects;
-
 
 @Entity
 @Table(name = "course")
@@ -26,7 +20,7 @@ public class Course {
     private List<Student> studentList;
 
     @ManyToOne
-    @JoinColumn(name = "idTeacher", nullable = true) // idTeacher peut être null
+    @JoinColumn(name = "idTeacher", nullable = true)
     private Teacher teacher;
 
     public int getIdCourse() {
@@ -47,10 +41,6 @@ public class Course {
 
     public List<Student> getStudentList() {
         return studentList;
-    }
-
-    public void setStudentList(List<Student> studentList) {
-        this.studentList = studentList;
     }
 
     public Teacher getTeacher() {

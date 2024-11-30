@@ -5,7 +5,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap"
+          rel="stylesheet">
 
     <style>
         body {
@@ -32,7 +33,7 @@
             margin: 0;
         }
 
-        form{
+        form {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -63,8 +64,8 @@
             margin-bottom: 15px;
         }
 
-        input{
-            flex-grow: 1; /* Permet à l'input de prendre tout l'espace restant */
+        input {
+            flex-grow: 1;
             background-color: #FFFFFF;
             border: 3px solid #4F2BEC;
             border-radius: 16px;
@@ -72,9 +73,9 @@
             margin-left: 20px;
         }
 
-        input:focus{
-            outline:none;
-            border:3px solid #4F2BEC;;
+        input:focus {
+            outline: none;
+            border: 3px solid #4F2BEC;;
         }
 
         button {
@@ -99,7 +100,7 @@
 <body>
 <a href="${pageContext.request.contextPath}/StudentPageAdminServlet"><</a>
 <h1>Ajouter étudiant</h1>
-<form  action="${pageContext.request.contextPath}/AddStudentAdminServlet" method="POST">
+<form action="${pageContext.request.contextPath}/AddStudentAdminServlet" method="POST">
     <div class="container">
         <label>Nom :<input type="text" name="surname" placeholder="Doe" required></label><br>
         <label>Prénom :<input type="text" name="name" placeholder="John" required></label><br>
@@ -108,34 +109,34 @@
     <button type="submit">Ajouter</button>
 </form>
 <script>
-    document.querySelector("form").addEventListener("submit", function(event) {
-        // Récupération des champs
+    document.querySelector("form").addEventListener("submit", function (event) {
+        // Retrieve fields
         const surnameInput = document.querySelector('input[name="surname"]');
         const nameInput = document.querySelector('input[name="name"]');
         const dateBirthInput = document.querySelector('input[name="dateBirth"]');
 
-        // Expressions régulières
-        const nameRegex = /^[a-zA-Z\s-]+$/; // Lettres, espaces, tirets
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Format YYYY-MM-DD
+        // Regular expressions
+        const nameRegex = /^[a-zA-Z\s-]+$/;
+        // Format YYYY-MM-DD
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
-        // Messages d'erreur
         let errorMessage = "";
 
-        // Validation du nom
+        // Name validation
         if (!nameRegex.test(surnameInput.value)) {
             errorMessage += "Le nom ne doit contenir que des lettres, des espaces ou des tirets.\n";
         }
 
-        // Validation du prénom
+        // First name validation
         if (!nameRegex.test(nameInput.value)) {
             errorMessage += "Le prénom ne doit contenir que des lettres, des espaces ou des tirets.\n";
         }
 
-        // Validation de la date
+        // Validate the date
         if (!dateRegex.test(dateBirthInput.value)) {
             errorMessage += "La date de naissance doit être au format YYYY-MM-DD.\n";
         } else {
-            // Vérification de la validité de la date (logique)
+            // Checking the validity of the date
             const dateParts = dateBirthInput.value.split("-");
             const year = parseInt(dateParts[0], 10);
             const month = parseInt(dateParts[1], 10);
@@ -149,7 +150,7 @@
             ) {
                 errorMessage += "La date de naissance est invalide.\n";
             } else {
-                // Vérification que la date est antérieure à aujourd'hui
+                // Checking that the date is before today
                 const today = new Date();
                 if (date >= today) {
                     errorMessage += "La date de naissance doit être antérieure à la date du jour.\n";
@@ -157,10 +158,9 @@
             }
         }
 
-        // Si des erreurs sont trouvées, afficher un message et empêcher l'envoi
         if (errorMessage) {
             alert(errorMessage);
-            event.preventDefault(); // Empêche l'envoi du formulaire
+            event.preventDefault();
         }
     });
 </script>

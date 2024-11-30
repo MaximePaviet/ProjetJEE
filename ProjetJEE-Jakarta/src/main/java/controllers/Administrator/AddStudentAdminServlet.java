@@ -7,8 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import services.EmailSenderService;
 import services.StudentService;
-import services.TeacherService;
-
 import java.io.IOException;
 import java.sql.Date;
 import java.util.Calendar;
@@ -22,41 +20,44 @@ public class AddStudentAdminServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // Initialisation des services
+        // Initialization of services
         studentService = new StudentService();
     }
 
     @Override
     public void destroy() {
-        // Libération des ressources
+        // Release of resources
         if (studentService != null) {
             studentService.close();
-        }
-        if (emailSenderService != null) {
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gestion de l'ajout d'un nouvel enseignant via un formulaire
-
-        // Récupération des paramètres du formulaire
+        // Retrieve form parameters
         String surname = request.getParameter("surname");
         String name = request.getParameter("name");
 
-        // Calcul pour ajuster la longueur totale à 10 caractères
-        int maxNameLength = 10 - surname.length();
-        String adjustedName = name.length() > maxNameLength ? name.substring(0, maxNameLength) : name;
+        // Email formatting
+        int maxLength = 10;
 
-        // Génération de l'email
-        String contact = surname + adjustedName + "@cy-tech.fr";
-        String dateBirthParam = request.getParameter("dateBirth"); // Format attendu : YYYY-MM-DD
+        if (surname.length() >= maxLength) {
+            surname = surname.substring(0, maxLength);
+            name = "";
+        } else {
+            int maxNameLength = maxLength - surname.length();
+            name = name.length() > maxNameLength ? name.substring(0, maxNameLength) : name;
+        }
 
-        // Conversion en java.sql.Date
+        String contact = surname + name + "@cy-tech.fr";
+
+        //Formatting the date of birth
+        String dateBirthParam = request.getParameter("dateBirth"); // Expected format: YYYY-MM-DD
+
         Date dateBirth = null;
         try {
             if (dateBirthParam != null && !dateBirthParam.isEmpty()) {
-                dateBirth = Date.valueOf(dateBirthParam); // Conversion directe depuis une chaîne YYYY-MM-DD
+                dateBirth = Date.valueOf(dateBirthParam);
             }
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -64,17 +65,19 @@ public class AddStudentAdminServlet extends HttpServlet {
             request.getRequestDispatcher("/formPage.jsp").forward(request, response);
             return;
         }
-        Calendar calendar = Calendar.getInstance(); // Crée une instance du calendrier configurée sur la date actuelle
-        String promoYear = String.valueOf(calendar.get(Calendar.YEAR) + 3); // Récupère l'année actuelle
 
+        //Promo generation
+        Calendar calendar = Calendar.getInstance();
+        String promoYear = String.valueOf(calendar.get(Calendar.YEAR) + 3); //Get the current year
 
-        // Création de l'enseignant via le service
+        // Creation of the student
         Map<String, String> generatedInfo = studentService.createStudent(name, surname,dateBirth, contact,promoYear);
-        // Récupération des informations générées
+
+        // Recovery of the generated password and login
         String login = generatedInfo.get("login");
         String password = generatedInfo.get("password");
 
-// Envoi de l'email avec les informations
+        // Sending the email with the information
         String htmlContent = "<html>" +
                 "<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">" +
                 "<h2>Bonjour " + name + " " + surname + ",</h2>" +
@@ -93,8 +96,7 @@ public class AddStudentAdminServlet extends HttpServlet {
         emailSenderService.sendEmail(contact, name + " " + surname + " - Vos codes d'accès !", htmlContent);
 
 
-
-        // Redirection ou transfert vers la page des enseignants pour afficher la liste mise à jour
+        //Redirection to the students page
         response.sendRedirect(request.getContextPath() + "/StudentPageAdminServlet");
     }
 }

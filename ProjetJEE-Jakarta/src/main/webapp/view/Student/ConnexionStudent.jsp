@@ -5,7 +5,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap"
+          rel="stylesheet">
     <style>
         body {
             background-color: #f5f5f5;
@@ -35,7 +36,7 @@
         h2 {
             font-size: 36px;
             color: #4F2BEC;
-            font-family:'DM Sans', serif;
+            font-family: 'DM Sans', serif;
             text-align: center;
         }
 
@@ -48,7 +49,7 @@
         }
 
         form {
-            font-family:'DM Sans', serif;
+            font-family: 'DM Sans', serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -56,19 +57,19 @@
             height: 50%;
         }
 
-        label{
+        label {
             font-size: 14px;
             font-weight: 500;
             color: #2B3674;
         }
 
-        .asterisque{
+        .asterisque {
             font-size: 14px;
             font-weight: 500;
             color: #4318FF
         }
 
-        input{
+        input {
             color: #A3AED0;
             background-color: #f5f5f5;
             padding: 10px 40px 10px 10px;
@@ -115,7 +116,7 @@
             color: #4F2BEC;
         }
 
-        button{
+        button {
             color: white;
             background-color: #4F2BEC;
             border: none;
@@ -141,7 +142,6 @@
 <h2>Espace Étudiant</h2>
 <hr>
 <form action="${pageContext.request.contextPath}/LoginStudentServlet" method="POST">
-    <!-- Afficher le message d'erreur si l'attribut errorMessage existe -->
     <div class="error-message">
         ${errorMessage}
     </div>
@@ -163,9 +163,9 @@
     function togglePassword() {
         const passwordField = document.querySelector('.password-container input');
         if (passwordField.type === 'password') {
-            passwordField.type = 'text'; // Affiche le texte
+            passwordField.type = 'text';
         } else {
-            passwordField.type = 'password'; // Masque le texte
+            passwordField.type = 'password';
         }
     }
 </script>

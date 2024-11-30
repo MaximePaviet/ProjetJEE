@@ -6,32 +6,26 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import models.Course;
 import models.Student;
-import models.Teacher;
-import services.CourseService;
 import services.EmailSenderService;
 import services.StudentService;
-import services.TeacherService;
-
 import java.io.IOException;
-import java.sql.Date;
-import java.util.List;
 
 @WebServlet("/DeleteStudentAdminServlet")
 public class DeleteStudentAdminServlet extends HttpServlet {
 
     private StudentService studentService;
     private EmailSenderService emailSenderService;
+
     @Override
     public void init() throws ServletException {
-        // Initialisation des services
+        // Initialization of services
         studentService = new StudentService();
     }
 
     @Override
     public void destroy() {
-        // Libération des ressources
+        // Release of resources
         if (studentService != null) {
             studentService.close();
         }
@@ -39,10 +33,12 @@ public class DeleteStudentAdminServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gestion de l'affichage de la liste des enseignants
+        // Get the student
         String idStudentParam = request.getParameter("idStudent");
         Integer idStudent = Integer.parseInt(idStudentParam);
         Student student = studentService.readStudent(idStudent);
+
+        //Send email to the student
         String htmlContent = "<html>" +
                 "<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">" +
                 "<h2>Bonjour " + student.getName() + " " + student.getSurname() + ",</h2>" +
@@ -55,8 +51,10 @@ public class DeleteStudentAdminServlet extends HttpServlet {
 
         emailSenderService.sendEmail(student.getContact(), student.getName() + " " + student.getSurname() + "- Suppression de votre compte !", htmlContent);
 
+        //Delete the student
         studentService.deleteStudent(idStudent);
 
+        //Redirection to student page after deletion
         response.sendRedirect(request.getContextPath() + "/StudentPageAdminServlet");
     }
 }

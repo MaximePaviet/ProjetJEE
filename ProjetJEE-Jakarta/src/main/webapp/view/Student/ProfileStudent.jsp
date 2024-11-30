@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap"
+          rel="stylesheet">
 
     <style>
         body {
@@ -35,31 +36,31 @@
             margin: 0;
         }
 
-        .profileInfo{
+        .profileInfo {
             color: #2B3674;
             border: 2px solid #3965FF;
-            border-radius:16px;
+            border-radius: 16px;
             font-family: 'DM Sans', serif;
             width: 300px;
             padding: 10px;
-            margin-left:150px;
-            margin-top:30px;
+            margin-left: 150px;
+            margin-top: 30px;
         }
 
-        .container{
+        .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 30px;
         }
 
-        .right{
+        .right {
             display: flex;
             justify-content: flex-end;
             margin-right: 132px;
         }
 
-        h2{
+        h2 {
             font-size: 24px;
             color: #4F2BEC;
             font-family: 'DM Sans', serif;
@@ -83,7 +84,7 @@
             padding: 5px 20px;
         }
 
-        button:hover{
+        button:hover {
             opacity: 90%;
         }
 
@@ -101,11 +102,10 @@
             padding: 5px 20px;
         }
 
-        .button:hover{
+        .button:hover {
             opacity: 90%;
         }
 
-        /* Style du tableau */
         table {
             color: #4F2BEC;
             width: 80%;
@@ -148,7 +148,7 @@
     <h2>Liste des cours :</h2>
     <div class="right">
         <button onclick="transcritpStudent()">Relevé de notes</button>
-        <button onclick="assignmentCourse(<%= student.getIdStudent() %>)" class="button" >S'inscrire à un cours</button>
+        <button onclick="assignmentCourse(<%= student.getIdStudent() %>)" class="button">S'inscrire à un cours</button>
     </div>
 </div>
 
@@ -169,16 +169,18 @@
     </tr>
     </thead>
     <tbody>
-    <%  Map<Integer, String> courseAverages = (Map<Integer, String>) request.getAttribute("courseAverages");
+    <% Map<Integer, String> courseAverages = (Map<Integer, String>) request.getAttribute("courseAverages");
         for (models.Course course : courses) {
-        models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
+            models.Teacher courseTeacher = course.getTeacher();
     %>
     <tr>
-        <td><%= course.getName() %></td>
+        <td><%= course.getName() %>
+        </td>
         <td>
             <%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %>
         </td>
-        <td><%= courseAverages.get(course.getIdCourse()) %></td>
+        <td><%= courseAverages.get(course.getIdCourse()) %>
+        </td>
     </tr>
     <% } %>
     </tbody>
@@ -187,22 +189,22 @@
     }
 %>
 <script>
-    // Fonction pour que l'étudiant s'inscrive aux cours
+    // Function for the student to register for courses
     function assignmentCourse(idStudent) {
         if (idStudent) {
-            // Créez un formulaire HTML de manière dynamique
+            // Create an HTML form dynamically
             const form = document.createElement("form");
             form.method = "GET";
             form.action = `${pageContext.request.contextPath}/AssignmentCourseStudentServlet`;
 
-            // Ajoutez un champ caché contenant l'ID de l'enseignant
+            // Add a hidden field containing the student ID
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = "idStudent"; // Le nom doit correspondre à ce que le servlet attend
+            input.name = "idStudent";
             input.value = idStudent;
             form.appendChild(input);
 
-            // Ajoutez le formulaire à la page et soumettez-le
+            // Add the form to the page and submit it
             document.body.appendChild(form);
             form.submit();
         } else {
@@ -210,14 +212,14 @@
         }
     }
 
-    //Fonction pour afficher le relevé de note
-    function transcritpStudent(){
-        // Créez un formulaire HTML de manière dynamique
+    //Function to display the grade report
+    function transcritpStudent() {
+        // Create an HTML form dynamically
         const form = document.createElement("form");
         form.method = "GET";
         form.action = `${pageContext.request.contextPath}/TranscriptStudentServlet`;
 
-        // Ajoutez le formulaire à la page et soumettez-le
+        // Add the form to the page and submit it
         document.body.appendChild(form);
         form.submit();
     }

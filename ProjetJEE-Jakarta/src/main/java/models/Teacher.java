@@ -1,14 +1,8 @@
 package models;
 
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
-import org.hibernate.type.SqlTypes;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "teacher")
@@ -40,10 +34,6 @@ public class Teacher {
     // Getters et Setters
     public int getIdTeacher() {
         return idTeacher;
-    }
-
-    public void setIdTeacher(int id) {
-        this.idTeacher = id;
     }
 
     public String getName() {
@@ -88,9 +78,5 @@ public class Teacher {
 
     public List<Course> getCourseList() {
         return courseList;
-    }
-
-    public void setCourseList(List<Course> courseList) {
-        this.courseList = courseList;
     }
 }

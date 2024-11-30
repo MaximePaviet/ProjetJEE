@@ -27,49 +27,40 @@ public class ProfileTeacherServlet extends HttpServlet {
 
     @Override
     public void init() {
-        // Initialisation des services
+        // Initialization of services
         courseService = new CourseService();
     }
 
     @Override
     public void destroy() {
+        // Release of resources
         if (courseService != null) {
             courseService.close();
         }
-        // Fermeture de la SessionFactory via HibernateUtil
-        HibernateUtil.shutdown();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Récupérer l'objet Teacher depuis la session
+        // Retrieve the session teacher
         Teacher teacher = (Teacher) request.getSession().getAttribute("teacher");
 
-        // Structure pour stocker les moyennes ou les messages
+        //Calculation of averages for each course
         Map<Integer, String> courseAverages = new HashMap<>();
-
         if (teacher != null && teacher.getCourseList() != null) {
-            // Parcourir tous les cours de l'enseignant
             for (Course course : teacher.getCourseList()) {
-                // Calculer la moyenne pour chaque cours
                 double courseAverage = courseService.calculateCourseAverage(course.getIdCourse());
-
                 if (courseAverage >= 0) {
-                    // Stocker la moyenne avec 2 décimales
                     courseAverages.put(course.getIdCourse(), String.format("%.2f", courseAverage));
                 } else {
-                    // Si pas de notes, afficher un message
                     courseAverages.put(course.getIdCourse(), "Pas encore de notes");
                 }
             }
         }
 
-        // Mettre à jour les attributs de la requête
+        // Add the data
         request.setAttribute("courses", teacher.getCourseList());
         request.setAttribute("courseAverages", courseAverages);
 
-        // Rediriger vers la page JSP
+        // Redirection to the teacher profile page
         request.getRequestDispatcher("/view/Teacher/ProfileTeacher.jsp").forward(request, response);
     }
-
-
 }

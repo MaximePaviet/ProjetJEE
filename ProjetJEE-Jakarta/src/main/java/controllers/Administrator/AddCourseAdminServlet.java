@@ -6,12 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import services.CourseService;
-import services.StudentService;
-import services.TeacherService;
-
 import java.io.IOException;
-import java.sql.Date;
-import java.util.Calendar;
 
 @WebServlet("/AddCourseAdminServlet")
 public class AddCourseAdminServlet extends HttpServlet {
@@ -19,13 +14,13 @@ public class AddCourseAdminServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // Initialisation des services
+        // Initialization of services
         courseService = new CourseService();
     }
 
     @Override
     public void destroy() {
-        // Libération des ressources
+        // Release of resources
         if (courseService != null) {
             courseService.close();
         }
@@ -33,15 +28,13 @@ public class AddCourseAdminServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gestion de l'ajout d'un nouveau cours via un formulaire
-
-        // Récupération des paramètres du formulaire
+        // Retrieve form parameters
         String name = request.getParameter("courseName");
 
-        // Création du cours via le service
+        // Course creation
         courseService.createCourse(name);
 
-        // Redirection ou transfert vers la page des enseignants pour afficher la liste mise à jour
+        // Redirection to the courses page
         response.sendRedirect(request.getContextPath() + "/CoursePageAdminServlet");
     }
 }

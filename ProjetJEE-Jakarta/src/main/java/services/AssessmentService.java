@@ -4,68 +4,61 @@ import jakarta.persistence.*;
 import models.Assessment;
 import models.Grade;
 import models.Student;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import models.Course;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 public class AssessmentService {
 
-    // Constructeur pour initialiser l'EntityManagerFactory
+    //Initializing the EntityManagerFactory
     public AssessmentService() {
         entityManagerFactory = Persistence.createEntityManagerFactory("default");
     }
 
-
     private EntityManagerFactory entityManagerFactory;
     private SessionFactory sessionFactory;
 
-    // Méthode pour créer un nouvel Assessment
+    // Creation of an assessment
     public void createAssessment(Course course, String name) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
-            transaction.begin(); // Démarrer une transaction
+            transaction.begin();
 
-            // Vérifier si le Course est valide
+            // Check if the Course is valid
             if (course == null || course.getIdCourse() == 0) {
                 System.out.println("Course is null or has idCourse = 0");
                 throw new IllegalArgumentException("Invalid Course object provided.");
             }
 
-
-            // Vérifier si le Course existe dans la base de données
+            // Check if the Course exists in the database
             Course persistedCourse = entityManager.find(Course.class, course.getIdCourse());
             if (persistedCourse == null) {
                 throw new IllegalArgumentException("Course with ID " + course.getIdCourse() + " not found in the database.");
             }
 
-            // Création de l'objet Assessment
+            // Adding the assessment to the database
             Assessment assessment = new Assessment();
-            assessment.setCourse(persistedCourse); // Associer l'objet Course
+            assessment.setCourse(persistedCourse);
             assessment.setName(name);
-
-            // Persiste l'objet Assessment dans la base de données
             entityManager.persist(assessment);
-            transaction.commit(); // Valider la transaction
+            transaction.commit();
             System.out.println("Assessment created successfully!");
         } catch (Exception e) {
             if (transaction.isActive()) {
-                transaction.rollback(); // Annuler la transaction en cas d'erreur
+                transaction.rollback();
             }
             e.printStackTrace();
         } finally {
-            entityManager.close(); // Fermer l'EntityManager
+            entityManager.close();
         }
     }
 
-
+    //Creating a note for an assessment
     public void createGrade(Student student, int idAssessment, float gradeValue) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -73,35 +66,32 @@ public class AssessmentService {
         try {
             transaction.begin();
 
-            // Récupérer l'Assessment
+            // Retrieve the assessment
             Assessment assessment = entityManager.find(Assessment.class, idAssessment);
             if (assessment == null) {
                 throw new IllegalArgumentException("Assessment with ID " + idAssessment + " not found.");
             }
 
-            // Récupérer l'étudiant
+            // Retrieve the student
             Student persistedStudent = entityManager.find(Student.class, student.getIdStudent());
             if (persistedStudent == null) {
                 throw new IllegalArgumentException("Student with ID " + student.getIdStudent() + " not found.");
             }
 
-            // Créer le grade
+            // Adding the note to the database
             Grade grade = new Grade();
             grade.setStudent(persistedStudent);
             grade.setAssessment(assessment);
             grade.setGrade(gradeValue);
 
-            // Ajouter le grade à l'évaluation
+            // Add the grade to the evaluation
             assessment.getGradeList().add(grade);
-
-            // Persister les objets
             entityManager.persist(grade);
             entityManager.merge(assessment);
-
             transaction.commit();
 
-            // Mettre à jour la moyenne de l'évaluation
-            updateAssessmentAverage(idAssessment); // Appel après la transaction pour recalculer la moyenne
+            // Updates the rating average
+            updateAssessmentAverage(idAssessment);
 
         } catch (Exception e) {
             if (transaction.isActive()) {
@@ -113,7 +103,7 @@ public class AssessmentService {
         }
     }
 
-
+    // Updates the rating average
     public void updateAssessmentAverage(int idAssessment) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -121,25 +111,25 @@ public class AssessmentService {
         try {
             transaction.begin();
 
-            // Récupérer l'Assessment
+            // Retrieve the evaluation
             Assessment assessment = entityManager.find(Assessment.class, idAssessment);
             if (assessment == null) {
                 throw new IllegalArgumentException("Assessment with ID " + idAssessment + " not found.");
             }
 
-            // Calculer la moyenne des grades associés
+            // Calculate the average of the evaluation scores
             List<Grade> gradeList = assessment.getGradeList();
             if (gradeList == null || gradeList.isEmpty()) {
-                assessment.setAverage(0.0); // Aucune note, moyenne à 0
+                assessment.setAverage(-1.0);
             } else {
                 double average = gradeList.stream()
                         .mapToDouble(Grade::getGrade)
                         .average()
-                        .orElse(0.0);
-                assessment.setAverage(average); // Mettre à jour la moyenne
+                        .orElse(-14.0);
+                assessment.setAverage(average);
             }
 
-            // Persister les changements
+            // Add changes to the database
             entityManager.merge(assessment);
             transaction.commit();
             System.out.println("Moyenne mise à jour pour l'évaluation avec ID " + idAssessment);
@@ -153,7 +143,7 @@ public class AssessmentService {
         }
     }
 
-    //Vérifie si il existe une évaluation ayant déjà ce nom dans le cours
+    //Check if there is already an assessment with this name in the course
     public boolean checkAssessmentExists(Course course, String name) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
@@ -165,10 +155,10 @@ public class AssessmentService {
 
         entityManager.close();
 
-        return count > 0; // Retourne true si l'évaluation existe déjà
+        return count > 0;
     }
 
-    //Calcule la meilleure et la pire note
+    //Calculate the best and worst rating
     public Map<Integer, Map<String, Float>> calculateMinMaxGrades(List<Assessment> assessments) {
         Map<Integer, Map<String, Float>> result = new HashMap<>();
 
@@ -177,7 +167,7 @@ public class AssessmentService {
             List<Grade> grades = assessment.getGradeList();
 
             if (grades == null || grades.isEmpty()) {
-                minMax.put("min", null); // Aucune note
+                minMax.put("min", null);
                 minMax.put("max", null);
             } else {
                 float min = (float) grades.stream().mapToDouble(Grade::getGrade).min().orElse(0.0);
@@ -188,9 +178,10 @@ public class AssessmentService {
             result.put(assessment.getIdAssessment(), minMax);
         }
 
-        return result; // Map contenant {idAssessment -> {"min" -> valeur, "max" -> valeur}}
+        return result;
     }
 
+    //Retrieve grades and associated assessments for a student for a course
     public Map<Assessment, Double> getAssessmentsAndGradesByCourseAndStudent(int courseId, int studentId) {
         Map<Assessment, Double> assessmentsWithGrades = new HashMap<>();
 
@@ -215,7 +206,7 @@ public class AssessmentService {
     }
 
 
-    // Ferme l'EntityManagerFactory
+    // Close the EntityManagerFactory
     public void close() {
         if (entityManagerFactory != null) {
             entityManagerFactory.close();

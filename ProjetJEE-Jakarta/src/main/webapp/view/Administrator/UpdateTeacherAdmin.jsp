@@ -5,7 +5,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap"
+          rel="stylesheet">
 
     <style>
         body {
@@ -32,7 +33,7 @@
             margin: 0;
         }
 
-        form{
+        form {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -63,7 +64,7 @@
             margin-bottom: 15px;
         }
 
-        input{
+        input {
             flex-grow: 1;
             background-color: #FFFFFF;
             border: 3px solid #4F2BEC;
@@ -72,9 +73,9 @@
             margin-left: 20px;
         }
 
-        input:focus{
-            outline:none;
-            border:3px solid #4F2BEC;;
+        input:focus {
+            outline: none;
+            border: 3px solid #4F2BEC;;
         }
 
         button {
@@ -109,54 +110,51 @@
 %>
 <form action="${pageContext.request.contextPath}/UpdateTeacherAdminServlet" method="POST">
     <div class="container">
-        <input type="hidden" name="id" value="<%= teacher != null ? teacher.getIdTeacher() : "" %>" />
+        <input type="hidden" name="id" value="<%= teacher != null ? teacher.getIdTeacher() : "" %>"/>
 
         <label>Nom :</label>
-        <input type="text" name="surname" value="<%= teacher != null ? teacher.getSurname() : "" %>" />
+        <input type="text" name="surname" value="<%= teacher != null ? teacher.getSurname() : "" %>"/>
 
         <label>Prénom :</label>
-        <input type="text" name="name" value="<%= teacher != null ? teacher.getName() : "" %>" />
+        <input type="text" name="name" value="<%= teacher != null ? teacher.getName() : "" %>"/>
 
         <label>Contact :</label>
-        <input type="text" name="contact" value="<%= teacher != null ? teacher.getContact() : "" %>" />
+        <input type="text" name="contact" value="<%= teacher != null ? teacher.getContact() : "" %>"/>
     </div>
     <button type="submit">Mettre à jour</button>
 </form>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelector("form").addEventListener("submit", function (event) {
-            // Récupération des champs
+            // Retrieve fields
             const surnameInput = document.querySelector('input[name="surname"]');
             const nameInput = document.querySelector('input[name="name"]');
             const contactInput = document.querySelector('input[name="contact"]');
 
-            // Expression régulière pour valider les noms/prénoms
-            const nameRegex = /^[a-zA-Z\s-]+$/; // Lettres, espaces et tirets
-            // Expression régulière pour valider un email
+            // Regular expressions
+            const nameRegex = /^[a-zA-Z\s-]+$/;
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-            // Messages d'erreur
             let errorMessage = "";
 
-            // Validation du nom
+            // Name validation
             if (!nameRegex.test(surnameInput.value)) {
                 errorMessage += "Le nom ne doit contenir que des lettres, des espaces ou des tirets.\n";
             }
 
-            // Validation du prénom
+            // First name validation
             if (!nameRegex.test(nameInput.value)) {
                 errorMessage += "Le prénom ne doit contenir que des lettres, des espaces ou des tirets.\n";
             }
 
-            // Validation du contact (email)
+            // Contact validation
             if (!emailRegex.test(contactInput.value)) {
                 errorMessage += "Le contact doit être un email valide.\n";
             }
 
-            // Si des erreurs sont trouvées, afficher un message et empêcher l'envoi
             if (errorMessage) {
                 alert(errorMessage);
-                event.preventDefault(); // Empêche l'envoi du formulaire
+                event.preventDefault();
             }
         });
     });

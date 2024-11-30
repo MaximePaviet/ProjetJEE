@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="models.Course, java.util.List" %>
 <%@ page import="java.util.Map" %>
 <html>
 <head>
@@ -7,7 +6,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Monofett&display=swap"
+          rel="stylesheet">
 
     <style>
         body {
@@ -34,25 +34,25 @@
             margin: 0;
         }
 
-        .profileInfo{
+        .profileInfo {
             color: #2B3674;
             border: 2px solid #3965FF;
-            border-radius:16px;
+            border-radius: 16px;
             font-family: 'DM Sans', serif;
             width: 300px;
             padding: 10px;
-            margin-left:150px;
-            margin-top:30px;
+            margin-left: 150px;
+            margin-top: 30px;
         }
 
-        .container{
+        .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 30px;
         }
 
-        h2{
+        h2 {
             font-size: 24px;
             color: #4F2BEC;
             font-family: 'DM Sans', serif;
@@ -62,7 +62,7 @@
             margin-left: 150px;
         }
 
-        .right{
+        .right {
             display: flex;
             justify-content: flex-end;
             margin-right: 132px;
@@ -104,7 +104,6 @@
             opacity: 90%;
         }
 
-        /* Style du tableau */
         table {
             color: #4F2BEC;
             width: 80%;
@@ -150,7 +149,7 @@
     <h2>Liste des cours :</h2>
     <div class="right">
 
-        <button onclick="assignmentCourse(<%= teacher.getIdTeacher() %>)" class="button" >S'inscrire à un cours</button>
+        <button onclick="assignmentCourse(<%= teacher.getIdTeacher() %>)" class="button">S'inscrire à un cours</button>
     </div>
 </div>
 
@@ -175,9 +174,12 @@
         for (models.Course course : courses) {
     %>
     <tr onclick="viewCourse(<%= course.getIdCourse() %>)" style="cursor: pointer;">
-        <td><%= course.getName() %></td>
-        <td><%= course.getStudentList().size() %></td>
-        <td><%= courseAverages.get(course.getIdCourse()) %></td> <!-- Afficher moyenne ou message -->
+        <td><%= course.getName() %>
+        </td>
+        <td><%= course.getStudentList().size() %>
+        </td>
+        <td><%= courseAverages.get(course.getIdCourse()) %>
+        </td>
     </tr>
     <% } %>
     </tbody>
@@ -186,22 +188,22 @@
     }
 %>
 <script>
-    // Fonction pour rediriger vers la page de profil
+    // Function to redirect to the course page
     function viewCourse(idCourse) {
         if (idCourse) {
-            // Créez un formulaire HTML de manière dynamique
+            // Create an HTML form dynamically
             const form = document.createElement("form");
             form.method = "POST";
             form.action = `${pageContext.request.contextPath}/CoursePageTeacherServlet`;
 
-            // Ajoutez un champ caché contenant l'ID de l'enseignant
+            // Add a hidden field containing the course ID
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = "idCourse"; // Le nom doit correspondre à ce que le servlet attend
+            input.name = "idCourse";
             input.value = idCourse;
             form.appendChild(input);
 
-            // Ajoutez le formulaire à la page et soumettez-le
+            // Add the form to the page and submit it
             document.body.appendChild(form);
             form.submit();
         } else {
@@ -209,30 +211,28 @@
         }
     }
 
-        // Fonction pour que le prof s'inscrive aux cours
-        function assignmentCourse(idTeacher) {
+    // Function for the teacher to register for classes
+    function assignmentCourse(idTeacher) {
         if (idTeacher) {
-        // Créez un formulaire HTML de manière dynamique
-        const form = document.createElement("form");
-        form.method = "GET";
-        form.action = `${pageContext.request.contextPath}/AssignmentCourseTeacherServlet`;
+            // Créez un formulaire HTML de manière dynamique
+            const form = document.createElement("form");
+            form.method = "GET";
+            form.action = `${pageContext.request.contextPath}/AssignmentCourseTeacherServlet`;
 
-        // Ajoutez un champ caché contenant l'ID de l'enseignant
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
-        input.value = idTeacher;
-        form.appendChild(input);
+            // Add a hidden field containing the teacher ID
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "idTeacher";
+            input.value = idTeacher;
+            form.appendChild(input);
 
-        // Ajoutez le formulaire à la page et soumettez-le
-        document.body.appendChild(form);
-        form.submit();
+            // Add the form to the page and submit it
+            document.body.appendChild(form);
+            form.submit();
         } else {
-            console.error("Aucun ID étudiant n'a été transmis.");
+            console.error("Aucun ID enseignant n'a été transmis.");
         }
     }
-
-
 </script>
 </body>
 </html>

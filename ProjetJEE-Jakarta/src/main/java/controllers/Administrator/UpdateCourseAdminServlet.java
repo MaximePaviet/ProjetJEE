@@ -1,21 +1,13 @@
 package controllers.Administrator;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Course;
-import models.Student;
-import models.Teacher;
 import services.CourseService;
-import services.StudentService;
-import services.TeacherService;
-
 import java.io.IOException;
-import java.sql.Date;
-import java.util.List;
 
 @WebServlet("/UpdateCourseAdminServlet")
 public class UpdateCourseAdminServlet extends HttpServlet {
@@ -24,13 +16,13 @@ public class UpdateCourseAdminServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // Initialisation des services
+        // Initialization of services
         courseService = new CourseService();
     }
 
     @Override
     public void destroy() {
-        // Libération des ressources
+        // Release of resources
         if (courseService != null) {
             courseService.close();
         }
@@ -38,20 +30,21 @@ public class UpdateCourseAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Récupérer les paramètres envoyés par le formulaire
+        // Get the course id
         String idCourseParam = request.getParameter("idCourse");
-
 
         if (idCourseParam != null && !idCourseParam.isEmpty()) {
             try {
                 int idCourse = Integer.parseInt(idCourseParam);
 
-                // Récupération de l'enseignant
+                // Course recovery
                 Course course = courseService.readCourse(idCourse);
                 if (course != null) {
 
+                    //Add the data
                     request.setAttribute("course", course);
 
+                    //Redirect to the course modification page
                     request.getRequestDispatcher("/view/Administrator/UpdateCourseAdmin.jsp").forward(request, response);
                 } else {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND, "Cours introuvable");
@@ -66,14 +59,16 @@ public class UpdateCourseAdminServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gestion de l'affichage de la liste des enseignants
+        // Get the course name and id
         String idCourseParam = request.getParameter("id");
         String nameCourse = request.getParameter("name");
 
         Integer idCourse = Integer.parseInt(idCourseParam);
 
+        //Course update
         courseService.updateCourse(idCourse, nameCourse);
 
+        //Redirection to the course page
         response.sendRedirect(request.getContextPath() + "/CoursePageAdminServlet");
     }
 

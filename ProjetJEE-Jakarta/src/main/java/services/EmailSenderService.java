@@ -7,19 +7,19 @@ import java.util.Properties;
 public class EmailSenderService {
 
     public static void sendEmail(String recipientEmail, String subject, String  htmlContent) {
-        // Configuration des propriétés SMTP
+        // Configuring SMTP properties
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true"); // Nécessite une authentification
-        props.put("mail.smtp.starttls.enable", "true"); // Active STARTTLS
-        props.put("mail.smtp.host", "smtp.gmail.com"); // Serveur SMTP
-        props.put("mail.smtp.port", "587"); // Port SMTP sécurisé
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
 
 
-        // Informations d'authentification
+        // Authentication information
         String username = "cyscolarite2024@gmail.com";
         String password = "clkg tamv xqpv rtyp";
 
-        // Création de la session avec authentification
+        // Creation of the session with authentication
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -28,14 +28,14 @@ public class EmailSenderService {
         });
 
         try {
-            // Création du message
+            // Creating the message
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username)); // Adresse de l'expéditeur
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail)); // Adresse du destinataire
-            message.setSubject(subject); // Sujet de l'email
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            message.setSubject(subject);
             message.setContent(htmlContent, "text/html");
 
-            // Envoi du message
+            // Send message
             Transport.send(message);
 
             System.out.println("Email envoyé avec succès à : " + recipientEmail);
@@ -44,5 +44,4 @@ public class EmailSenderService {
             e.printStackTrace();
         }
     }
-
 }

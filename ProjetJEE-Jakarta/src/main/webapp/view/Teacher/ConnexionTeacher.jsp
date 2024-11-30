@@ -110,7 +110,7 @@
         }
 
         .toggle-password:hover {
-            color: #4F2BEC; /* Couleur en hover */
+            color: #4F2BEC;
         }
 
         button{
@@ -139,7 +139,6 @@
 <h2>Espace Enseignant</h2>
 <hr>
 <form action="${pageContext.request.contextPath}/LoginTeacherServlet" method="POST">
-    <!-- Afficher le message d'erreur si l'attribut errorMessage existe -->
     <div class="error-message">
         ${errorMessage}
     </div>
@@ -159,9 +158,9 @@
     function togglePassword() {
         const passwordField = document.querySelector('.password-container input');
         if (passwordField.type === 'password') {
-            passwordField.type = 'text'; // Affiche le texte
+            passwordField.type = 'text';
         } else {
-            passwordField.type = 'password'; // Masque le texte
+            passwordField.type = 'password';
         }
     }
 </script>

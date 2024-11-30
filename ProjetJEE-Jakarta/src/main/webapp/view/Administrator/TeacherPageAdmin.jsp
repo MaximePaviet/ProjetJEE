@@ -73,14 +73,14 @@
 
         button {
             display: inline-flex;
-            justify-content: center; /* Centre horizontalement le contenu du bouton */
-            align-items: center; /* Centre verticalement le contenu du bouton */
+            justify-content: center;
+            align-items: center;
             background-color: transparent;
             border: none;
-            padding: 0; /* Supprime les marges internes */
+            padding: 0;
             cursor: pointer;
-            width: auto; /* Taille ajustée au contenu, ici le SVG */
-            height: auto; /* Taille ajustée au contenu */
+            width: auto;
+            height: auto;
         }
 
         .button {
@@ -186,22 +186,23 @@
 
 
 <script>
-    // Fonction pour rediriger vers la page de profil
+
+    // Function to redirect to profile page
     function viewProfile(idTeacher) {
         if (idTeacher) {
-            // Créez un formulaire HTML de manière dynamique
+            // Create an HTML form dynamically
             const form = document.createElement("form");
-            form.method = "POST"; // Utiliser POST au lieu de GET
+            form.method = "POST";
             form.action = `${pageContext.request.contextPath}/TeacherProfileAdminServlet`;
 
-            // Ajoutez un champ caché contenant l'ID de l'enseignant
+            // Add a hidden field containing the teacher ID
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
+            input.name = "idTeacher";
             input.value = idTeacher;
             form.appendChild(input);
 
-            // Ajoutez le formulaire à la page et soumettez-le
+            // Add the form to the page and submit it
             document.body.appendChild(form);
             form.submit();
         } else {
@@ -209,22 +210,22 @@
         }
     }
 
-    // Fonction pour modifier un enseignant
+    // Function to modify a teacher
     function editTeacher(idTeacher) {
         if (idTeacher) {
-            // Créez un formulaire HTML de manière dynamique
+            // Create an HTML form dynamically
             const form = document.createElement("form");
             form.method = "GET";
             form.action = `${pageContext.request.contextPath}/UpdateTeacherAdminServlet`;
 
-            // Ajoutez un champ caché contenant l'ID de l'enseignant
+            // Add a hidden field containing the teacher ID
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
+            input.name = "idTeacher";
             input.value = idTeacher;
             form.appendChild(input);
 
-            // Ajoutez le formulaire à la page et soumettez-le
+            // Add the form to the page and submit it
             document.body.appendChild(form);
             form.submit();
         } else {
@@ -232,17 +233,16 @@
         }
     }
 
+    //Operate to do dynamic search
     function performSearch(searchTerm) {
         const form = document.getElementById("searchForm");
         const formData = new FormData(form);
 
-        // Utilisation de fetch pour envoyer une requête au serveur
         fetch(form.action + '?' + new URLSearchParams(formData), {
             method: 'GET'
         })
             .then(response => response.text())
             .then(html => {
-                // Remplacement du contenu de la table
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, "text/html");
                 const newTable = doc.querySelector("#studentsTable");
