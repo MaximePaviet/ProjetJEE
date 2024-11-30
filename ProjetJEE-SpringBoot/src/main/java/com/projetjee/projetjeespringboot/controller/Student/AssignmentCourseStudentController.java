@@ -23,7 +23,7 @@ public class AssignmentCourseStudentController {
     private StudentService studentService;
 
     @GetMapping
-    public String showAssignmentCoursePage(@RequestParam("studentId") int studentId, Model model) {
+    public String showAssignmentCoursePage(@RequestParam("idStudent") int studentId, Model model) {
         // Récupération de l'étudiant depuis la base de données
         Student student = studentService.readStudent(studentId);
         if (student == null) {
@@ -48,7 +48,7 @@ public class AssignmentCourseStudentController {
     }
 
     @PostMapping
-    public String assignCoursesToStudent(@RequestParam("studentId") int studentId,
+    public String assignCoursesToStudent(@RequestParam("idStudent") int studentId,
                                          @RequestParam(value = "courseSelection", required = false) List<Integer> selectedCourseIds,
                                          Model model) {
         // Récupération de l'étudiant depuis la base de données

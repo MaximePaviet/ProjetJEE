@@ -105,9 +105,9 @@
 <body>
 
 <%
-  com.projetjee.projetjeespringboot.models.Student student = (com.projetjee.projetjeespringboot.models.Student) session.getAttribute("student");
+  com.projetjee.projetjeespringboot.models.Student student = (com.projetjee.projetjeespringboot.models.Student) request.getAttribute("student");
 %>
-<form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileStudentServlet" method="GET">
+<form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileStudentController" method="GET">
   <button class="returnButton" type="submit"><</button>
 </form>
 
@@ -121,7 +121,8 @@
 <%
 } else {
 %>
-<form action=${pageContext.request.contextPath}/AssignmentCourseStudentServlet method="POST">
+<form action=${pageContext.request.contextPath}/AssignmentCourseStudentController method="POST">
+
   <table>
     <thead>
     <tr>
