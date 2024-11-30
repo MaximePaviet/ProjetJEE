@@ -1,10 +1,7 @@
 package services;
 
 import jakarta.persistence.*;
-import models.Assessment;
-import models.Course;
-import models.Grade;
-import models.Teacher;
+import models.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -81,7 +78,6 @@ public class CourseService {
             entityManager.close(); // Ferme l'EntityManager
         }
     }
-    // Méthode pour supprimer un cours par son identifiant
     public void deleteCourse(Integer idCourse) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -89,15 +85,32 @@ public class CourseService {
         try {
             transaction.begin(); // Démarre la transaction
 
-            // Recherche de cours par son ID
-            Course course= entityManager.find(Course.class, idCourse);
+            // Recherche du cours par son ID
+            Course course = entityManager.find(Course.class, idCourse);
             if (course != null) {
-                entityManager.remove(course); // Met à jour l'objet Course dans la base de données
-                transaction.commit();          // Valide la transaction
+                // Dissocier les étudiants du cours
+                List<Student> students = course.getStudentList();
+                for (Student student : students) {
+                    student.getCourseList().remove(course); // Retirer le cours de chaque étudiant
+                }
+
+                // Supprimer la relation avec le professeur
+                Teacher teacher = course.getTeacher();
+                if (teacher != null) {
+                    teacher.getCourseList().remove(course);
+
+                    // Re-attacher l'entité au contexte Hibernate avant suppression
+                    course = entityManager.merge(course);
+                }
+                // Supprimer le cours lui-même
+                entityManager.remove(course);
+
                 System.out.println("Course deleted with ID: " + idCourse);
             } else {
                 System.out.println("Course not found with ID: " + idCourse);
             }
+
+            transaction.commit(); // Valide la transaction
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback(); // Annule la transaction en cas d'erreur
@@ -158,7 +171,7 @@ public class CourseService {
             e.printStackTrace();
         }
 
-        return count > 0 ? total / count : 0.0; // Retourne 0.0 si aucune note
+        return count > 0 ? total / count : -1.0; // Retourne 0.0 si aucune note
     }
 
     // Calcule la moyenne d'un élève dans un cours
@@ -184,7 +197,7 @@ public class CourseService {
             e.printStackTrace();
         }
 
-        return count > 0 ? total / count : 0.0; // Retourne 0.0 si aucune note
+        return count > 0 ? total / count : -1.0; // Retourne 0.0 si aucune note
     }
 
     // Méthode de recherche flexible pour les enseignants par nom, prénom ou contact

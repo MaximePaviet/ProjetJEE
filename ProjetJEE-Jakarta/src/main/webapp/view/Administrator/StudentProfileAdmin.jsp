@@ -130,7 +130,7 @@
         <td>
             <%
                 // Vérification de la validité de la moyenne
-                if (average == null || average <= 0) {
+                if (average == null || average < 0) {
             %>
             Pas encore de notes
             <%

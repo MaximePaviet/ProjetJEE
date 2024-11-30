@@ -15,10 +15,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
-import services.AssessmentService;
-import services.CourseService;
-import services.HibernateUtil;
-import services.StudentService;
+import services.*;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -30,6 +27,7 @@ public class AddAssessmentTeacherServlet extends HttpServlet {
     private AssessmentService assessmentService;
     private CourseService courseService;
     private StudentService studentService;
+    private EmailSenderService emailSenderService;
 
     public void init() throws ServletException {
         // Initialisation des services
@@ -103,22 +101,20 @@ public class AddAssessmentTeacherServlet extends HttpServlet {
         boolean exists = assessmentService.checkAssessmentExists(course, nameAssessment);
 
         if (exists) {
-            // Si l'Assessment existe déjà, renvoyer un message d'erreur
             request.setAttribute("errorMessage", "Une évaluation avec ce nom existe déjà pour ce cours.");
             request.setAttribute("course", course);
-            request.getRequestDispatcher("/view/Teacher/AddAssessmentTeacher.jsp").forward(request, response); // Redirige vers la page d'ajout
+            request.getRequestDispatcher("/view/Teacher/AddAssessmentTeacher.jsp").forward(request, response);
         } else {
             // Créer l'Assessment
-            assessmentService.createAssessment(course, nameAssessment); // Méthode pour créer l'évaluation
+            assessmentService.createAssessment(course, nameAssessment);
 
             // Récupérer toutes les notes envoyées dans la requête
             Enumeration<String> parameterNames = request.getParameterNames();
             while (parameterNames.hasMoreElements()) {
                 String paramName = parameterNames.nextElement();
 
-                // Identifier les champs correspondant aux notes des étudiants
                 if (paramName.startsWith("grade_")) {
-                    String studentIdString = paramName.substring(6); // Extraire l'ID de l'étudiant
+                    String studentIdString = paramName.substring(6);
                     String gradeString = request.getParameter(paramName);
 
                     try {
@@ -129,9 +125,24 @@ public class AddAssessmentTeacherServlet extends HttpServlet {
                         int assessmentId = getAssessmentIdByNameAndCourse(nameAssessment, idCourse);
 
                         // Récupérer l'objet Student et créer la note
-                        Student student = studentService.readStudent(studentId); // Méthode pour récupérer l'étudiant par son ID
+                        Student student = studentService.readStudent(studentId);
                         assessmentService.createGrade(student, assessmentId, gradeValue);
 
+                        // Envoyer un email à l'élève
+                        String toEmail = student.getContact();
+                        String subject = "Nouvelle note pour " + course.getName();
+                        String body = "<html>" +
+                                "<body>" +
+                                "<h2>Bonjour " + student.getName() + " " + student.getSurname() + ",</h2>" +
+                                "<p>Vous avez reçu une nouvelle note pour l'évaluation \"" + nameAssessment + "\" dans le cours \"" + course.getName() + "\":</p>" +
+                                "<p><strong>Note : " + gradeValue + "</strong></p>" +
+                                "<p>Connectez-vous à votre espace étudiant pour plus d'informations.</p>" +
+                                "<p>Cordialement,</p>" +
+                                "<p><strong>L'équipe CyScolarité</strong></p>" +
+                                "</body>" +
+                                "</html>";
+
+                        emailSenderService.sendEmail(toEmail, subject, body);
 
                     } catch (NumberFormatException e) {
                         System.out.println("Erreur de conversion pour " + paramName + ": " + e.getMessage());

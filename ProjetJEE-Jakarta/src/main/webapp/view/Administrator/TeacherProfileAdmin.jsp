@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.Map" %>
 <html>
 <head>
     <title>Profil enseignant</title>
@@ -118,11 +119,12 @@
     </tr>
     </thead>
     <tbody>
-    <% for (models.Course course : courses) { %>
+    <%  Map<Integer, String> courseAverages = (Map<Integer, String>) request.getAttribute("courseAverages");
+        for (models.Course course : courses) { %>
     <tr>
         <td><%= course.getName() %></td>
         <td><%= course.getStudentList().size() %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->
-        <td> Chargement ...</td> <!-- Si vous avez une méthode pour calculer la moyenne -->
+        <td><%= courseAverages.get(course.getIdCourse()) %></td> <!-- Si vous avez une méthode pour calculer la moyenne -->
     </tr>
     <% } %>
     </tbody>

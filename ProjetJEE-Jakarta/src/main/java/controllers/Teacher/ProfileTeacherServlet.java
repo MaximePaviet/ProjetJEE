@@ -53,7 +53,7 @@ public class ProfileTeacherServlet extends HttpServlet {
                 // Calculer la moyenne pour chaque cours
                 double courseAverage = courseService.calculateCourseAverage(course.getIdCourse());
 
-                if (courseAverage > 0) {
+                if (courseAverage >= 0) {
                     // Stocker la moyenne avec 2 décimales
                     courseAverages.put(course.getIdCourse(), String.format("%.2f", courseAverage));
                 } else {
