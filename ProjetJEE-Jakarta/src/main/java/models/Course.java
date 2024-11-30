@@ -20,7 +20,7 @@ public class Course {
     private List<Student> studentList;
 
     @ManyToOne
-    @JoinColumn(name = "idTeacher", nullable = true)
+    @JoinColumn(name = "teacher_id", nullable = true)
     private Teacher teacher;
 
     public int getIdCourse() {
