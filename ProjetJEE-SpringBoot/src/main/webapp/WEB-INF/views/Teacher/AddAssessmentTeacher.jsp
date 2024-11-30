@@ -1,9 +1,10 @@
 <%@ page import="com.projetjee.projetjeespringboot.models.Student" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.projetjee.projetjeespringboot.models.Course" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>Ajouter évaluation</title>
+  <title>Ajouter une évaluation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
@@ -14,14 +15,21 @@
       background-color: #f5f5f5;
     }
 
-    a {
+    .hiddenForm{
+      position: relative;
+      visibility: hidden;
+    }
+    .returnButton {
+      all: unset;
       color: #4F2BEC;
       font-family: "DM Sans", sans-serif;
       font-size: 50px;
       font-weight: bold;
-      margin: 20px;
+      margin: 0 20px;
       cursor: pointer;
       text-decoration: none;
+      visibility: visible;
+      position: relative;
     }
 
     h1 {
@@ -44,7 +52,8 @@
 
     input:focus{
       outline:none;
-      border:none;
+      border:2px solid #4F2BEC;
+    ;
     }
 
     input::placeholder {
@@ -86,7 +95,6 @@
       opacity: 90%;
     }
 
-    /* Style du tableau */
     table {
       color: #4F2BEC;
       width: 80%;
@@ -112,12 +120,37 @@
   </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/Teacher/CoursePageTeacher.jsp"><</a>
-<h1>Ajouter évaluation</h1>
-<form  action="" method="POST">
-  <label><span class="assessmentName">Nom</span> :<input type="text" name="nameCourse" placeholder="Nom de l'évaluation" required></label>
+<% Course course = (Course) request.getAttribute("course"); %>
+<form class="hiddenForm" action="${pageContext.request.contextPath}/CoursePageTeacherController" method="GET">
+  <input type="hidden" name="idCourse" value="<%= course.getIdCourse()%>">
+  <button class="returnButton" type="submit"><</button>
+</form>
+<h1>Ajouter une évaluation</h1>
+
+<%
+  String errorMessage = (String) request.getAttribute("errorMessage");
+  if (errorMessage != null) {
+%>
+<div style="color: red; text-align: center;">
+  <p><strong><%= errorMessage %></strong></p>
+</div>
+<% } else { %>
+
+<%
+  List<Student> students = (List<Student>) request.getAttribute("students");
+
+  if (students == null || students.isEmpty()) {
+%>
+<p style="text-align: center;">Aucun élève n'est inscrit dans cette matière.</p>
+<%
+} else {
+%>
+<form action="${pageContext.request.contextPath}/AddAssessmentTeacherController" method="POST">
+  <label><span class="assessmentName">Nom</span> :
+    <input type="text" name="nameAssessment" placeholder="Nom de l'évaluation" required>
+  </label>
   <div class="container">
-    <table id="studentsTable">
+    <table>
       <thead>
       <tr>
         <th>Nom</th>
@@ -126,13 +159,28 @@
       </tr>
       </thead>
       <tbody>
-
+      <% for (Student student : students) { %>
+      <tr>
+        <td><%= student.getSurname() %>
+        </td>
+        <td><%= student.getName() %>
+        </td>
+        <td style="text-align: center; padding: 10px;">
+          <input type="hidden" name="idCourse" value="<%= course.getIdCourse() %>">
+          <input type="hidden" name="studentId" value="<%= student.getIdStudent() %>">
+          <input type="number" name="grade_<%= student.getIdStudent() %>" step="0.1" min="0" max="20"
+                 placeholder="Note" required>
+        </td>
+      </tr>
+      <% } %>
       </tbody>
     </table>
     <button type="submit">Ajouter</button>
   </div>
 </form>
-
-
+<%
+    }
+  }
+%>
 </body>
 </html>

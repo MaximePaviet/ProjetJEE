@@ -103,5 +103,10 @@ public class AssessmentService {
         }
         return result;
     }
+
+    // Vérifie si une évaluation existe déjà
+    public boolean checkAssessmentExists(Course course, String name) {
+        return assessmentRepository.existsByCourseIdAndName(course.getIdCourse(), name);
+    }
 }
 

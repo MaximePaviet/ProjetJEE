@@ -29,5 +29,8 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Integer>
     @Query("SELECT a FROM Assessment a WHERE a.name = :name AND a.course.idCourse = :idCourse")
     Assessment findByNameAndCourseId(@Param("name") String name, @Param("idCourse") Integer idCourse);
 
+    @Query("SELECT COUNT(a) > 0 FROM Assessment a WHERE a.course.idCourse = :idCourse AND a.name = :name")
+    boolean existsByCourseIdAndName(@Param("idCourse") Integer idCourse, @Param("name") String name);
+
 
 }
