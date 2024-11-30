@@ -62,16 +62,26 @@ public class CourseService {
     public Course readCourse(Integer idCourse) {
         return courseRepository.findById(idCourse).orElse(null); // Renvoie null si le cours n'existe pas
     }
-    // Calcule la moyenne totale du cours
     public double calculateCourseAverage(int courseId) {
+        // Récupérer les notes pour le cours donné
         List<Double> grades = gradeRepository.findGradesByCourseId(courseId);
-        return grades.isEmpty() ? 0.0 : grades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+
+        // Retourner la moyenne des notes ou 0.0 si la liste est vide
+        return grades.stream()
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElse(0.0); // Valeur par défaut si aucune note n'est trouvée
     }
+
 
     // Calcule la moyenne d'un étudiant dans un cours
     public double calculateStudentAverageInCourse(int courseId, int studentId) {
         List<Double> grades = gradeRepository.findGradesByCourseIdAndStudentId(courseId, studentId);
         return grades.isEmpty() ? 0.0 : grades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+    }
+
+    public List<Course> getCoursesWithoutTeacher() {
+        return courseRepository.findByTeacherIsNull();
     }
 
 }

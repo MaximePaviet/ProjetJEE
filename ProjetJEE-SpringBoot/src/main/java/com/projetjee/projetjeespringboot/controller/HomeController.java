@@ -23,13 +23,10 @@ public class HomeController {
         return "Student/ConnexionStudent"; // Correspond au fichier JSP admin.jsp
     }
 
-   /* @GetMapping("/views/Teacher/ConnexionTeacher")
+    @GetMapping("/views/Teacher/ConnexionTeacher")
     public String showTeacherPage() {
         return "Teacher/ConnexionTeacher"; // Correspond au fichier JSP admin.jsp
     }
 
-    @GetMapping("/views/Student/ConnexionStudent")
-    public String showStudentPage() {
-        return "Student/ConnexionStudent"; // Correspond au fichier JSP admin.jsp
-    }*/
+
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.projetjee.projetjeespringboot.models.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 
 @Controller
 @RequestMapping("/LoginStudentController")
@@ -27,11 +29,12 @@ public class LoginStudentController {
     @PostMapping
     public String handleLogin(@RequestParam("login") String login, @RequestParam("password") String password, Model model) {
         // Récupérer l'ID de l'étudiant par le login et le mot de passe
-        Integer studentId = studentService.getStudentIdByLoginAndPassword(login, password);
-
-        if (studentId != null) {
+        Optional<Integer> studentId = studentService.getStudentIdByLoginAndPassword(login, password);
+        System.out.println(studentId);
+        System.out.println("okay");
+        if (studentId.isPresent()) {
             // Récupérer l'étudiant complet à partir de l'ID
-            Student student = studentService.readStudent(studentId);
+            Student student = studentService.readStudent(studentId.orElse(null));
             System.out.println(student.getIdStudent());
             if (student != null) {
                 // Si l'étudiant est trouvé, on le stocke dans la session
@@ -47,6 +50,7 @@ public class LoginStudentController {
         } else {
             // Si les identifiants sont incorrects
             model.addAttribute("errorMessage", "Login ou mot de passe incorrect !");
+            System.out.println(login+password);
             return "Student/ConnexionStudent"; // Renvoie à la page de connexion avec un message d'erreur
         }
     }

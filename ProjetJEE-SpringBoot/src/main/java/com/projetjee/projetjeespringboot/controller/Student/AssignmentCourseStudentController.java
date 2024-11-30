@@ -70,6 +70,6 @@ public class AssignmentCourseStudentController {
         }
 
         // Rediriger vers le profil de l'étudiant
-        return "redirect:/ProfileStudentController?studentId=" + studentId;
+        return "redirect:/ProfileStudentController?idStudent=" + studentId;
     }
 }

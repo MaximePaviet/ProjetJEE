@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -135,11 +134,11 @@
     </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/view/index.jsp"><</a>
+<a href="${pageContext.request.contextPath}/views/index.jsp"><</a>
 <h1>CYSCOLARITÉ</h1>
 <h2>Espace Enseignant</h2>
 <hr>
-<form action="${pageContext.request.contextPath}/teacherLogin" method="POST">
+<form action="${pageContext.request.contextPath}/LoginTeacherController" method="POST">
     <!-- Afficher le message d'erreur si l'attribut errorMessage existe -->
     <div class="error-message">
         ${errorMessage}

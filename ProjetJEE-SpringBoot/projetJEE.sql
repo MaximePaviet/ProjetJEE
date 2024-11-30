@@ -92,7 +92,6 @@ VALUES
 INSERT INTO student (id_student, login, password, name, surname, date_birth, contact, school_year)
 VALUES
     (1, 'sara123', 'pass123', 'Sara', 'Guendouz', '2003-02-12', 'sguendouz@example.com', '2026');
-
 -- Insérer des données dans 'administrator'
 INSERT INTO administrator (id_administrator, login, password)
 VALUES

@@ -1,5 +1,7 @@
+
 <%@ page import="com.projetjee.projetjeespringboot.models.Course" %>
 <%@ page import="com.projetjee.projetjeespringboot.models.Teacher" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -104,25 +106,26 @@
 <body>
 
 <%
-  Teacher teacher = (Teacher) session.getAttribute("teacher");
+  Teacher teacher = (Teacher) request.getAttribute("teacher");
 %>
-<form class="hiddenForm" action="${pageContext.request.contextPath}/teacherLogin" method="POST">
-  <input type="hidden" name="login" value="<%= teacher.getLogin() %>">
-  <input type="hidden" name="password" value="<%= teacher.getPassword() %>">
+<form class="hiddenForm" action="/ProfileTeacherController" method="GET">
+  <input type="hidden" name="idTeacher" value="${idTeacher}">
   <button class="returnButton" type="submit"><</button>
+
 </form>
 
 <h1>S'inscrire à un cours</h1>
 <h2>Liste des cours existants :</h2>
 <%
-  java.util.List<Course> courses = (java.util.List<Course>) request.getAttribute("courses");
+  List<Course> courses = (List<Course>) request.getAttribute("courses");
   if (courses == null || courses.isEmpty()) {
 %>
 <p style="text-align: center">Aucun cours trouvé.</p>
 <%
 } else {
 %>
-<form action=${pageContext.request.contextPath}/assignmentCourseTeacher method="POST">
+<form action="/AssignmentCourseTeacherController" method="POST">
+  <input type="hidden" name="idTeacher" value="${idTeacher}">
   <table id="studentsTable">
     <thead>
     <tr>

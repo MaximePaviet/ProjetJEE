@@ -10,6 +10,7 @@ import com.projetjee.projetjeespringboot.repositories.StudentRepository;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service // Indique que cette classe est un service Spring
@@ -113,17 +114,10 @@ public class StudentService {
         }
     }
 
-    // Récupération des cours suivis par un étudiant
-    public List<Course> readCourse(int idStudent) {
-        Student student = studentRepository.findById(idStudent)
-                .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + idStudent));
-        return student.getCourseList();
-    }
-
-    public Integer getStudentIdByLoginAndPassword(String login, String password) {
-        // Utiliser JpaRepository pour obtenir l'ID de l'étudiant
-        Optional<Student> studentOpt = studentRepository.findByLoginAndPassword(login, password);
-        return studentOpt.map(Student::getIdStudent).orElse(null);
+    public Optional<Integer> getStudentIdByLoginAndPassword(String login, String password) {
+        // Utiliser JpaRepository pour trouver l'étudiant et retourner l'ID
+        return studentRepository.findByLoginAndPassword(login, password)
+                .map(Student::getIdStudent);
     }
     public boolean loginExist(String login, String password) {
         return studentRepository.findByLoginAndPassword(login, password) != null;
