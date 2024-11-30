@@ -52,10 +52,10 @@ CREATE TABLE assessment (
                             id_assessment INT AUTO_INCREMENT PRIMARY KEY, -- Clé primaire auto-incrémentée
                             name VARCHAR(255) NOT NULL,                  -- Nom de l'évaluation (obligatoire)
                             average FLOAT,                               -- Moyenne des notes pour l'évaluation (peut être NULL)
-                            idCourse INT NOT NULL,                       -- Clé étrangère vers la table course
+                            id_course INT NOT NULL,                       -- Clé étrangère vers la table course
 
     -- Contrainte de clé étrangère
-                            CONSTRAINT fk_course_assessment FOREIGN KEY (idCourse) REFERENCES course(id_course) ON DELETE CASCADE
+                            CONSTRAINT fk_course_assessment FOREIGN KEY (id_course) REFERENCES course(id_course) ON DELETE CASCADE
 );
 
 -- Table grade
@@ -108,7 +108,7 @@ VALUES
     (1, 1);
 
 -- Insérer des données dans 'assessment'
-INSERT INTO assessment (id_assessment, name, average, idCourse)
+INSERT INTO assessment (id_assessment, name, average, id_course)
 VALUES
     (1, 'Midterm Exam', NULL, 1);
 

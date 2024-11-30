@@ -8,6 +8,7 @@ import com.projetjee.projetjeespringboot.services.AssessmentService;
 import com.projetjee.projetjeespringboot.services.CourseService;
 import com.projetjee.projetjeespringboot.services.EmailSenderService;
 import com.projetjee.projetjeespringboot.services.StudentService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,19 +20,21 @@ import java.util.Map;
 @RequestMapping("/AddAssessmentTeacherController")
 public class AddAssessmentTeacherController {
 
-    @Autowired
+
     private AssessmentService assessmentService;
-    @Autowired
     private AssessmentRepository assessmentRepository;
-
-    @Autowired
     private CourseService courseService;
-
-    @Autowired
     private StudentService studentService;
+    private EmailSenderService emailSenderService;
 
     @Autowired
-    private EmailSenderService emailSenderService;
+    public AddAssessmentTeacherController(AssessmentService assessmentService,AssessmentRepository assessmentRepository,CourseService courseService, StudentService studentService, EmailSenderService emailSenderService){
+        this.assessmentService=assessmentService;
+        this.assessmentRepository=assessmentRepository;
+        this.courseService=courseService;
+        this.studentService=studentService;
+        this.emailSenderService=emailSenderService;
+    }
 
     /**
      * Affiche la page pour ajouter une évaluation.
@@ -56,9 +59,17 @@ public class AddAssessmentTeacherController {
     @PostMapping
     public String addAssessment(
             @RequestParam("nameAssessment") String nameAssessment,
-            @RequestParam("idCourse") int idCourse,
+            @RequestParam("idCourse") Integer idCourse,
             @RequestParam Map<String, String> allParams,
+            HttpSession session,
             Model model) {
+
+
+        // Étape 1 : Valider la présence d'idCourse
+        if (idCourse == null) {
+            // Récupérer l'ID du cours depuis la session
+            idCourse = (Integer) session.getAttribute("idCourse");
+        }
 
         // Récupérer le cours
         Course course = courseService.readCourse(idCourse);
@@ -66,7 +77,7 @@ public class AddAssessmentTeacherController {
             model.addAttribute("errorMessage", "Cours introuvable.");
             return "error";
         }
-        model.addAttribute("idCourse", course);
+        model.addAttribute("idCourse", idCourse);
         // Vérifier si une évaluation avec le même nom existe déjà
         if (assessmentService.checkAssessmentExists(course, nameAssessment)) {
             model.addAttribute("errorMessage", "Une évaluation avec ce nom existe déjà pour ce cours.");
@@ -79,6 +90,7 @@ public class AddAssessmentTeacherController {
         assessmentService.createAssessment(course, nameAssessment);
 
         // Associer les notes aux étudiants
+        Integer finalIdCourse = idCourse;
         allParams.forEach((paramName, gradeString) -> {
             if (paramName.startsWith("grade_")) {
                 try {
@@ -89,7 +101,7 @@ public class AddAssessmentTeacherController {
                     Student student = studentService.readStudent(studentId);
 
                     // Ajouter la note à l'évaluation
-                    int assessmentId = assessmentRepository.findByNameAndCourseId(nameAssessment, idCourse)
+                    int assessmentId = assessmentRepository.findByNameAndCourseId(nameAssessment, finalIdCourse)
                             .getIdAssessment();
                     assessmentService.createGrade(student, assessmentId, gradeValue);
 
@@ -119,7 +131,10 @@ public class AddAssessmentTeacherController {
             }
         });
 
+
+
         // Rediriger vers la page du cours
+        session.setAttribute("idCourse", idCourse);
         return "redirect:/CoursePageTeacherController?idCourse=" + idCourse;
     }
 }

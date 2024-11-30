@@ -145,7 +145,8 @@
 <%
 } else {
 %>
-<form action="${pageContext.request.contextPath}/AddAssessmentTeacherController" method="POST">
+<form action="${pageContext.request.contextPath}/AddAssessmentTeacherController?idCourse=${course.getIdCourse()}" method="POST">
+  <input type="hidden" name="idCourse" value="<%= course.getIdCourse()%>">
   <label><span class="assessmentName">Nom</span> :
     <input type="text" name="nameAssessment" placeholder="Nom de l'évaluation" required>
   </label>

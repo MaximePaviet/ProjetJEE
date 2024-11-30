@@ -6,6 +6,7 @@ import com.projetjee.projetjeespringboot.models.Student;
 import com.projetjee.projetjeespringboot.services.AssessmentService;
 import com.projetjee.projetjeespringboot.services.CourseService;
 import com.projetjee.projetjeespringboot.services.StudentService;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,11 +23,15 @@ public class TranscriptStudentController {
     @Autowired
     private CourseService courseService;
 
+    private EntityManagerFactory entityManagerFactory;
+
     @Autowired
     private AssessmentService assessmentService;
 
     @Autowired
     private StudentService studentService;  // Service pour récupérer l'étudiant par son ID
+
+
 
     @GetMapping("/TranscriptStudentController")
     public String showTranscriptStudent(@RequestParam(name = "idStudent") int idStudent, Model model) {

@@ -4,6 +4,11 @@ import com.projetjee.projetjeespringboot.models.Assessment;
 import com.projetjee.projetjeespringboot.models.Course;
 import com.projetjee.projetjeespringboot.models.Grade;
 import com.projetjee.projetjeespringboot.models.Student;
+import com.projetjee.projetjeespringboot.repositories.CourseRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,26 +25,46 @@ public class AssessmentService {
 
     private final AssessmentRepository assessmentRepository;
     private final GradeRepository gradeRepository;
+    private final CourseRepository courseRepository;
 
-    @Autowired
-    public AssessmentService(AssessmentRepository assessmentRepository, GradeRepository gradeRepository) {
+
+    public AssessmentService(AssessmentRepository assessmentRepository, GradeRepository gradeRepository,CourseRepository courseRepository) {
         this.assessmentRepository = assessmentRepository;
         this.gradeRepository = gradeRepository;
+        this.courseRepository = courseRepository;
+
     }
+
+
     public List<Assessment> getAssessmentsByCourseId(Integer idCourse) {
         return assessmentRepository.findByCourseId(idCourse);
     }
 
-    // Créer une évaluation
+    @Transactional
     public void createAssessment(Course course, String name) {
-        if (assessmentRepository.existsByNameAndCourse_IdCourse(name, course.getIdCourse())) {
-            throw new IllegalArgumentException("An assessment with this name already exists for the course.");
+        // Check if the Course is valid
+        if (course == null || course.getIdCourse() == 0) {
+            throw new IllegalArgumentException("Invalid Course object provided.");
         }
 
+        // Check if the Course exists in the database
+        Course persistedCourse = courseRepository.findById(course.getIdCourse())
+                .orElseThrow(() -> new IllegalArgumentException("Course with ID " + course.getIdCourse() + " not found in the database."));
+
+        // Adding the assessment to the database
         Assessment assessment = new Assessment();
-        assessment.setCourse(course);
+        assessment.setCourse(persistedCourse);
         assessment.setName(name);
+        assessment.setAverage(-1.0);
+
+        System.out.println("Assessment : " + assessment);
+        System.out.println("Course associé : " + assessment.getCourse());
+        System.out.println("Course ID : " + assessment.getCourse().getIdCourse());
+
+
         assessmentRepository.save(assessment);
+
+        System.out.println("Assessment created successfully!");
     }
 
     // Ajouter une note à une évaluation

@@ -18,11 +18,11 @@ public class Assessment {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "average")
+    @Column(name = "average", nullable = true)
     private Double average;
 
     @ManyToOne(optional = false) // Relation obligatoire avec Course
-    @JoinColumn(name = "idCourse", nullable = false) // Clé étrangère non nullable
+    @JoinColumn(name = "id_course", nullable = false) // Clé étrangère non nullable
     private Course course;
 
     @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
