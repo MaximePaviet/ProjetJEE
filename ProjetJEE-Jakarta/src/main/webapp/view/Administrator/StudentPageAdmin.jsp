@@ -228,7 +228,7 @@
       <tbody>
       <% if (students != null && !students.isEmpty()) { %>
       <% for (models.Student student : students) { %>
-      <tr class="studentRow" data-promo="<%= student.getSchoolYear() %>">
+      <tr onclick="viewProfile(<%=student.getIdStudent()%>)" data-promo="<%= student.getSchoolYear() %>">
           <td style="cursor: pointer;"><%= student.getSurname() %></td>
           <td style="cursor: pointer;"><%= student.getName() %></td>
           <td style="cursor: pointer;"><%= student.getDateBirth() %></td>
