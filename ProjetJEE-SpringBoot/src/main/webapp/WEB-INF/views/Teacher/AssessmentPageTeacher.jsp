@@ -128,7 +128,7 @@
   </style>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/views/Teacher/CoursePageTeacher.jsp"><</a>
+<a href="${pageContext.request.contextPath}/views/Teacher/CoursePageTeacher"><</a>
 <h1>Chargement...</h1>
 <div class="container">
   <div class="searchBar">
