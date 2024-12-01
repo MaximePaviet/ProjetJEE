@@ -111,8 +111,11 @@
     </style>
 </head>
 <body>
-<form class="hiddenForm" action="${pageContext.request.contextPath}/ProfileTeacherController" method="GET">
+
+<form class="hiddenForm" action="/ProfileTeacherController" method="GET">
+    <input type="hidden" name="idTeacher" value="${idTeacher}">
     <button class="returnButton" type="submit"><</button>
+
 </form>
 <%
     Course course = (Course) request.getAttribute("course");

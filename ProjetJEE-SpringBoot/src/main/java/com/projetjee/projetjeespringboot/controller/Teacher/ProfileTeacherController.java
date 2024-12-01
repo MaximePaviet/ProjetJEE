@@ -66,7 +66,7 @@ public class ProfileTeacherController {
                 }
             }
         }
-        //model.addAttribute("idTeacher", idTeacher);
+        model.addAttribute("idTeacher", idTeacher);
         model.addAttribute("teacher", teacher);
         model.addAttribute("courseAverages", courseAverages);
         model.addAttribute("courses", courses);

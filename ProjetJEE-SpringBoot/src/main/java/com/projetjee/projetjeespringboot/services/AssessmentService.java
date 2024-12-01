@@ -55,7 +55,7 @@ public class AssessmentService {
         Assessment assessment = new Assessment();
         assessment.setCourse(persistedCourse);
         assessment.setName(name);
-        assessment.setAverage(-1.0);
+//        assessment.setAverage(-1.0);
 
         System.out.println("Assessment : " + assessment);
         System.out.println("Course associé : " + assessment.getCourse());

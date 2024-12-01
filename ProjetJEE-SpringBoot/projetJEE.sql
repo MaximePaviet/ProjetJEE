@@ -61,14 +61,14 @@ CREATE TABLE assessment (
 -- Table grade
 CREATE TABLE grade (
                        id_grade INT AUTO_INCREMENT PRIMARY KEY,      -- Clé primaire auto-incrémentée
-                       idStudent INT NOT NULL,                      -- Clé étrangère vers la table student
-                       idAssessment INT NOT NULL,                   -- Clé étrangère vers la table assessment
+                       id_student INT NOT NULL,                      -- Clé étrangère vers la table student
+                       id_assessment INT NOT NULL,                   -- Clé étrangère vers la table assessment
                        grade FLOAT NOT NULL,                        -- Note attribuée (obligatoire)
 
 
     -- Contraintes de clé étrangère
-                       CONSTRAINT fk_student_grade FOREIGN KEY (idStudent) REFERENCES student(id_student) ON DELETE CASCADE,
-                       CONSTRAINT fk_assessment_grade FOREIGN KEY (idAssessment) REFERENCES assessment(id_assessment) ON DELETE CASCADE
+                       CONSTRAINT fk_student_grade FOREIGN KEY (id_student) REFERENCES student(id_student) ON DELETE CASCADE,
+                       CONSTRAINT fk_assessment_grade FOREIGN KEY (id_assessment) REFERENCES assessment(id_assessment) ON DELETE CASCADE
 
 );
 
@@ -113,7 +113,7 @@ VALUES
     (1, 'Midterm Exam', NULL, 1);
 
 -- Insérer des données dans 'grade'
-INSERT INTO grade (id_grade, idStudent, idAssessment, grade)
+INSERT INTO grade (id_grade, id_student, id_assessment, grade)
 VALUES
     (1, 1, 1, 18.5);
 

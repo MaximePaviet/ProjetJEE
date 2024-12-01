@@ -35,9 +35,14 @@ public class CoursePageTeacherController {
      * Affiche les détails d'un cours et ses évaluations (GET).
      */
     @GetMapping
-    public String showCourseDetails(@RequestParam("idCourse") Integer idCourse, Model model) {
+    public String showCourseDetails(@RequestParam("idCourse") Integer idCourse, @RequestParam("idTeacher") Integer idTeacher, Model model) {
         if (idCourse == null) {
             model.addAttribute("error", "ID cours manquant");
+            return "error";
+        }
+
+        if (idTeacher == null) {
+            model.addAttribute("error", "ID teacher manquant");
             return "error";
         }
 
@@ -57,6 +62,7 @@ public class CoursePageTeacherController {
 
             // Ajouter les attributs au modèle pour la vue
             model.addAttribute("course", course);
+            model.addAttribute("idTeacher", idTeacher);
             model.addAttribute("assessments", assessments);
             model.addAttribute("minMaxGrades", minMaxGrades);
 
@@ -71,8 +77,8 @@ public class CoursePageTeacherController {
      * Traite les requêtes POST si nécessaire (optionnel).
      */
     @PostMapping
-    public String processCourseDetails(@RequestParam("idCourse") Integer idCourse, Model model) {
-        return showCourseDetails(idCourse, model); // Réutiliser la méthode GET pour éviter la duplication
+    public String processCourseDetails(@RequestParam("idCourse") Integer idCourse, @RequestParam("idTeacher") Integer idTeacher, Model model) {
+        return showCourseDetails(idCourse, idTeacher, model); // Réutiliser la méthode GET pour éviter la duplication
     }
 }
 

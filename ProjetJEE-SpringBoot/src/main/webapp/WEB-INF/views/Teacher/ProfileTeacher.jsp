@@ -187,7 +187,7 @@
         // Parcourir la liste des cours
         for (Course course : courses) {
     %>
-    <tr onclick="viewCourse(<%= course.getIdCourse() %>)" style="cursor: pointer;">
+    <tr onclick="viewCourse(<%= course.getIdCourse() %>, <%= teacher.getIdTeacher() %>)" style="cursor: pointer;">
         <td><%= course.getName() %></td>
         <td><%= course.getStudentList() != null ? course.getStudentList().size() : 0 %></td> <!-- Assurez-vous que `getStudentList()` est non null -->
         <td><%= courseAverages != null ? courseAverages.get(course.getIdCourse()) : "Non disponible" %></td> <!-- Afficher moyenne ou un message -->
@@ -203,12 +203,12 @@
 
 <script>
     // Fonction pour rediriger vers la page de profil
-    function viewCourse(idCourse) {
+    function viewCourse(idCourse, idTeacher) {
         if (idCourse) {
             // Créez un formulaire HTML de manière dynamique
             const form = document.createElement("form");
             form.method = "POST";
-            form.action = `${pageContext.request.contextPath}/CoursePageTeacherController`;
+            form.action = `${pageContext.request.contextPath}/CoursePageTeacherController?idTeacher=`+idTeacher;
 
             // Ajoutez un champ caché contenant l'ID de l'enseignant
             const input = document.createElement("input");

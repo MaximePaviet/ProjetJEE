@@ -28,12 +28,12 @@ public class AddAssessmentTeacherController {
     private EmailSenderService emailSenderService;
 
     @Autowired
-    public AddAssessmentTeacherController(AssessmentService assessmentService,AssessmentRepository assessmentRepository,CourseService courseService, StudentService studentService, EmailSenderService emailSenderService){
-        this.assessmentService=assessmentService;
-        this.assessmentRepository=assessmentRepository;
-        this.courseService=courseService;
-        this.studentService=studentService;
-        this.emailSenderService=emailSenderService;
+    public AddAssessmentTeacherController(AssessmentService assessmentService, AssessmentRepository assessmentRepository, CourseService courseService, StudentService studentService, EmailSenderService emailSenderService) {
+        this.assessmentService = assessmentService;
+        this.assessmentRepository = assessmentRepository;
+        this.courseService = courseService;
+        this.studentService = studentService;
+        this.emailSenderService = emailSenderService;
     }
 
     /**
@@ -91,7 +91,9 @@ public class AddAssessmentTeacherController {
 
         // Associer les notes aux étudiants
         Integer finalIdCourse = idCourse;
-        allParams.forEach((paramName, gradeString) -> {
+        for (Map.Entry<String, String> paramLoop : allParams.entrySet()) {
+            String paramName = paramLoop.getKey();
+            String gradeString = paramLoop.getValue();
             if (paramName.startsWith("grade_")) {
                 try {
                     int studentId = Integer.parseInt(paramName.substring(6)); // Extraire l'ID étudiant
@@ -101,8 +103,7 @@ public class AddAssessmentTeacherController {
                     Student student = studentService.readStudent(studentId);
 
                     // Ajouter la note à l'évaluation
-                    int assessmentId = assessmentRepository.findByNameAndCourseId(nameAssessment, finalIdCourse)
-                            .getIdAssessment();
+                    int assessmentId = assessmentRepository.findByNameAndCourseId(nameAssessment, finalIdCourse).getIdAssessment();
                     assessmentService.createGrade(student, assessmentId, gradeValue);
 
                     // Envoyer un email à l'étudiant
@@ -129,8 +130,7 @@ public class AddAssessmentTeacherController {
                     e.printStackTrace();
                 }
             }
-        });
-
+        }
 
 
         // Rediriger vers la page du cours
