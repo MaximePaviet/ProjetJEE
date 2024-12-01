@@ -40,7 +40,7 @@ public class AddAssessmentTeacherController {
      * Affiche la page pour ajouter une évaluation.
      */
     @GetMapping
-    public String showAddAssessmentForm(@RequestParam("idCourse") int idCourse, Model model) {
+    public String showAddAssessmentForm(@RequestParam("idCourse") int idCourse, @RequestParam("idTeacher") int idTeacher, Model model) {
         // Récupération du cours et des étudiants
         Course course = courseService.readCourse(idCourse);
         if (course == null) {
@@ -48,6 +48,7 @@ public class AddAssessmentTeacherController {
             return "error";
         }
         model.addAttribute("idCourse", idCourse);
+        model.addAttribute("idTeacher", idTeacher);
         model.addAttribute("course", course);
         model.addAttribute("students", course.getStudentList());
         return "Teacher/AddAssessmentTeacher"; // Vue associée
@@ -60,6 +61,7 @@ public class AddAssessmentTeacherController {
     public String addAssessment(
             @RequestParam("nameAssessment") String nameAssessment,
             @RequestParam("idCourse") Integer idCourse,
+            @RequestParam("idTeacher") Integer idTeacher,
             @RequestParam Map<String, String> allParams,
             HttpSession session,
             Model model) {
@@ -69,6 +71,10 @@ public class AddAssessmentTeacherController {
         if (idCourse == null) {
             // Récupérer l'ID du cours depuis la session
             idCourse = (Integer) session.getAttribute("idCourse");
+        }
+
+        if (idTeacher == null) {
+            idTeacher = (Integer) session.getAttribute("idTeacher");
         }
 
         // Récupérer le cours
@@ -85,6 +91,8 @@ public class AddAssessmentTeacherController {
             model.addAttribute("students", course.getStudentList());
             return "Teacher/AddAssessmentTeacher";
         }
+
+        model.addAttribute("idTeacher", idTeacher);
 
         // Créer une nouvelle évaluation
         assessmentService.createAssessment(course, nameAssessment);
@@ -135,6 +143,7 @@ public class AddAssessmentTeacherController {
 
         // Rediriger vers la page du cours
         session.setAttribute("idCourse", idCourse);
-        return "redirect:/CoursePageTeacherController?idCourse=" + idCourse;
+        session.setAttribute("idTeacher", idTeacher);
+        return "redirect:/CoursePageTeacherController?idCourse=" + idCourse + "&idTeacher=" + idTeacher;
     }
 }

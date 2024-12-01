@@ -128,7 +128,7 @@
 <div class="container">
     <h2>Liste des évaluations :</h2>
     <div class="right">
-        <button onclick="addAssessment(<%= course.getIdCourse() %>)">Ajouter évaluation</button>
+        <button onclick="addAssessment(<%= course.getIdCourse() %>, ${idTeacher})">Ajouter évaluation</button>
     </div>
 </div>
 
@@ -168,7 +168,7 @@
 %>
 <script>
     // Fonction pour rediriger vers la page de profil
-    function addAssessment(idCourse) {
+    function addAssessment(idCourse, idTeacher) {
         if (idCourse) {
             // Créez un formulaire HTML de manière dynamique
             const form = document.createElement("form");
@@ -176,11 +176,17 @@
             form.action = `${pageContext.request.contextPath}/AddAssessmentTeacherController`;
 
             // Ajoutez un champ caché contenant l'ID de l'enseignant
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "idCourse"; // Le nom doit correspondre à ce que le servlet attend
-            input.value = idCourse;
-            form.appendChild(input);
+            const inputCourse = document.createElement("input");
+            inputCourse.type = "hidden";
+            inputCourse.name = "idCourse"; // Le nom doit correspondre à ce que le servlet attend
+            inputCourse.value = idCourse;
+            form.appendChild(inputCourse);
+
+            const inputTeacher = document.createElement("input");
+            inputTeacher.type = "hidden";
+            inputTeacher.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
+            inputTeacher.value = idTeacher;
+            form.appendChild(inputTeacher);
 
             // Ajoutez le formulaire à la page et soumettez-le
             document.body.appendChild(form);

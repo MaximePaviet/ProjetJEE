@@ -123,6 +123,7 @@
 <% Course course = (Course) request.getAttribute("course"); %>
 <form class="hiddenForm" action="${pageContext.request.contextPath}/CoursePageTeacherController" method="GET">
   <input type="hidden" name="idCourse" value="<%= course.getIdCourse()%>">
+  <input type="hidden" name="idTeacher" value="${idTeacher}">
   <button class="returnButton" type="submit"><</button>
 </form>
 <h1>Ajouter une évaluation</h1>
@@ -145,7 +146,7 @@
 <%
 } else {
 %>
-<form action="${pageContext.request.contextPath}/AddAssessmentTeacherController?idCourse=${course.getIdCourse()}" method="POST">
+<form action="${pageContext.request.contextPath}/AddAssessmentTeacherController?idCourse=${course.getIdCourse()}&idTeacher=${idTeacher}" method="POST">
   <input type="hidden" name="idCourse" value="<%= course.getIdCourse()%>">
   <label><span class="assessmentName">Nom</span> :
     <input type="text" name="nameAssessment" placeholder="Nom de l'évaluation" required>
