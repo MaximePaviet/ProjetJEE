@@ -11,21 +11,21 @@ public class HomeController {
     // Méthode pour afficher la page d'accueil
     @GetMapping ("/")
     public String showHomePage() {
-        // Retourne le nom de la vue (le préfixe et suffixe sont ajoutés automatiquement par la configuration)
+        // Retourne le nom de la vue
         return "index";  // Correspondra à /WEB-INF/jsp/index.jsp
     }
     @GetMapping("/views/Administrator/ConnexionAdministrator")
     public String showAdminPage() {
-        return "Administrator/ConnexionAdministrator"; // Correspond au fichier JSP admin.jsp
+        return "Administrator/ConnexionAdministrator";
     }
     @GetMapping("/views/Student/ConnexionStudent")
     public String showStudentPage() {
-        return "Student/ConnexionStudent"; // Correspond au fichier JSP admin.jsp
+        return "Student/ConnexionStudent";
     }
 
     @GetMapping("/views/Teacher/ConnexionTeacher")
     public String showTeacherPage() {
-        return "Teacher/ConnexionTeacher"; // Correspond au fichier JSP admin.jsp
+        return "Teacher/ConnexionTeacher";
     }
 
 

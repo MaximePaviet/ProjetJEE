@@ -12,7 +12,7 @@ public class ProjectJeeSpringBootApplication {
         SpringApplication.run(ProjectJeeSpringBootApplication.class, args);
         //showHomePage();
     }
-    // Méthode de test simple à exécuter au démarrage
+
    @Bean
     public CommandLineRunner testRunner() {
         return args -> {

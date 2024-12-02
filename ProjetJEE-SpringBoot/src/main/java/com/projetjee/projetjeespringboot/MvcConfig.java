@@ -19,7 +19,7 @@ public class MvcConfig implements WebMvcConfigurer {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/WEB-INF/views/"); // Chemin où se trouvent vos JSP
         resolver.setSuffix(".jsp");           // Extension des fichiers
-        resolver.setOrder(1);                 // Priorité du résolveur (si plusieurs)
+        resolver.setOrder(1);
         return resolver;
     }
 

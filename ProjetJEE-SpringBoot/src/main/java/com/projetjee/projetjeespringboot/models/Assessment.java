@@ -21,8 +21,8 @@ public class Assessment {
     @Column(name = "average", nullable = true)
     private Double average = 0.0;
 
-    @ManyToOne(optional = false) // Relation obligatoire avec Course
-    @JoinColumn(name = "id_course", nullable = false) // Clé étrangère non nullable
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_course", nullable = false)
     private Course course;
 
     @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)

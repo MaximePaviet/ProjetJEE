@@ -74,14 +74,14 @@
 
     button {
       display: inline-flex;
-      justify-content: center; /* Centre horizontalement le contenu du bouton */
-      align-items: center; /* Centre verticalement le contenu du bouton */
+      justify-content: center;
+      align-items: center;
       background-color: transparent;
       border: none;
-      padding: 0; /* Supprime les marges internes */
+      padding: 0;
       cursor: pointer;
-      width: auto; /* Taille ajustée au contenu, ici le SVG */
-      height: auto; /* Taille ajustée au contenu */
+      width: auto;
+      height: auto;
     }
 
     .button {
@@ -102,7 +102,7 @@
       opacity: 90%;
     }
 
-    /* Style du tableau */
+
     table {
       color: #4F2BEC;
       width: 80%;
@@ -201,7 +201,7 @@
       // Ajoutez un champ caché contenant l'ID de l'enseignant
       const input = document.createElement("input");
       input.type = "hidden";
-      input.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
+      input.name = "idTeacher";
       input.value = idTeacher;
       form.appendChild(input);
 
@@ -224,7 +224,7 @@
       // Ajoutez un champ caché contenant l'ID de l'enseignant
       const input = document.createElement("input");
       input.type = "hidden";
-      input.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
+      input.name = "idTeacher";
       input.value = idTeacher;
       form.appendChild(input);
 

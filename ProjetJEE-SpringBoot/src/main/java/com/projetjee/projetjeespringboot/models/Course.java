@@ -1,14 +1,11 @@
 package com.projetjee.projetjeespringboot.models;
 
 
-
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 
 
 import java.util.List;
-
-
 
 @Entity
 @Table(name = "course")
@@ -26,7 +23,7 @@ public class Course {
     private List<Student> studentList;
 
     @ManyToOne
-    @JoinColumn(name = "idTeacher", nullable = true) // idTeacher peut être null
+    @JoinColumn(name = "idTeacher", nullable = true)
     private Teacher teacher;
 
     public Course(){}

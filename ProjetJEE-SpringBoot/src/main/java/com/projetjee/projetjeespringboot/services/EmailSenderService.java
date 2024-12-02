@@ -28,7 +28,7 @@ public class EmailSenderService {
             helper.setFrom("cyscolarite2024@gmail.com");
             helper.setTo(recipientEmail);
             helper.setSubject(subject);
-            helper.setText(htmlContent, true);  // true signifie contenu HTML
+            helper.setText(htmlContent, true);
 
             // Envoi de l'e-mail
             javaMailSender.send(message);

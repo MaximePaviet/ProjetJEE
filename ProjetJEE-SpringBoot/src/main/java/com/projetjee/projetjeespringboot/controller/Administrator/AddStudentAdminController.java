@@ -60,7 +60,7 @@ public class AddStudentAdminController {
         // Récupération des informations générées
         String login = generatedInfo.get("login");
         String password = generatedInfo.get("password");
-// Envoi de l'email avec les informations
+        // Envoi de l'email avec les informations
         String htmlContent = "<html>" +
                 "<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">" +
                 "<h2>Bonjour " + name + " " + surname + ",</h2>" +

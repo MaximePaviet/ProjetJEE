@@ -43,7 +43,7 @@ public class ProfileStudentController {
                 double courseAverage = courseService.calculateStudentAverageInCourse(course.getIdCourse(), student.getIdStudent());
 
                 // Si la moyenne est calculée, formatée à 2 décimales
-                if (courseAverage >= 0) {
+                if (courseAverage > 0) {
                     courseAverages.put(course.getIdCourse(), String.format("%.2f", courseAverage));
                 } else {
                     courseAverages.put(course.getIdCourse(), "Pas encore de notes");
@@ -51,13 +51,13 @@ public class ProfileStudentController {
             }
         }
 
-        // Passer les informations à la vue Thymeleaf
+        // Passer les informations à la vue
         model.addAttribute("student", student);
         model.addAttribute("courses", courses);
         model.addAttribute("courseAverages", courseAverages);
 
-        // Retourner le nom de la vue Thymeleaf
-        return "/Student/ProfileStudent";  // Nom de la vue Thymeleaf (student/profile.html)
+        // Retourner vers la page profil de l'étudiant
+        return "/Student/ProfileStudent";
     }
 }
 

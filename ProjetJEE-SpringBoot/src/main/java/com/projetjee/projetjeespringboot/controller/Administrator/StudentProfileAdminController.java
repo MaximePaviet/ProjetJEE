@@ -43,18 +43,27 @@ public class StudentProfileAdminController {
             Student student = studentService.readStudent(idStudent);
 
             if (student != null) {
-                // Récupérer les cours associés à l'étudiant
+                // Structure pour stocker les moyennes des cours
+                Map<Integer, String> courseAverages = new HashMap<>();
                 List<Course> courses = student.getCourseList();
-                // Calcul des moyennes par cours
-                Map<Course, Double> coursesWithAverages = new HashMap<>();
-                for (Course course : courses) {
-                    double average = courseService.calculateStudentAverageInCourse(course.getIdCourse(), idStudent);
-                    coursesWithAverages.put(course, average);
+
+                if (courses != null) {
+                    for (Course course : courses) {
+                        // Calcul de la moyenne pour chaque cours
+                        double courseAverage = courseService.calculateStudentAverageInCourse(course.getIdCourse(), student.getIdStudent());
+
+                        // Si la moyenne est calculée, formatée à 2 décimales
+                        if (courseAverage > 0) {
+                            courseAverages.put(course.getIdCourse(), String.format("%.2f", courseAverage));
+                        } else {
+                            courseAverages.put(course.getIdCourse(), "Pas encore de notes");
+                        }
+                    }
                 }
                     // Ajouter les données au modèle
                     model.addAttribute("student", student);
                     model.addAttribute("courses", courses);
-                    model.addAttribute("courseWithAverages", coursesWithAverages);
+                    model.addAttribute("courseAverages", courseAverages);
 
                     // Retourner la vue pour afficher les détails
                     return "Administrator/StudentProfileAdmin";
@@ -104,6 +113,6 @@ public class StudentProfileAdminController {
         }
 
         // Retourne la vue associée
-        return "Administrator/StudentPageAdmin"; // Vue située dans "src/main/resources/templates/Administrator/StudentPageAdmin.html"
+        return "Administrator/StudentPageAdmin";
     }
     }

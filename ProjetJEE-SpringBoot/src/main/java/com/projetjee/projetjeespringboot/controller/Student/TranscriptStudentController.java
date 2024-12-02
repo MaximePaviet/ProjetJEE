@@ -23,8 +23,6 @@ public class TranscriptStudentController {
     @Autowired
     private CourseService courseService;
 
-    private EntityManagerFactory entityManagerFactory;
-
     @Autowired
     private AssessmentService assessmentService;
 
@@ -64,7 +62,7 @@ public class TranscriptStudentController {
         model.addAttribute("coursesWithAverages", coursesWithAverages);
         model.addAttribute("assessmentsWithGradesByCourse", assessmentsWithGradesByCourse);
 
-        // Retourner le nom de la vue Thymeleaf
-        return "Student/TranscriptStudent";  // Vue Thymeleaf correspondante
+        // Retourner le bulletin de notes
+        return "Student/TranscriptStudent";
     }
 }

@@ -140,14 +140,20 @@
     .actionButton {
       all: unset;
       display: inline-flex;
-      justify-content: center; /* Centre horizontalement le contenu du bouton */
-      align-items: center; /* Centre verticalement le contenu du bouton */
+      justify-content: center;
+      align-items: center;
       background-color: transparent;
       border: none;
-      padding: 0; /* Supprime les marges internes */
+      padding: 0;
       cursor: pointer;
-      width: auto; /* Taille ajustée au contenu, ici le SVG */
-      height: auto; /* Taille ajustée au contenu */
+      width: auto;
+      height: auto;
+    }
+    .filter-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      position: relative;
     }
     /* Style du menu de filtre */
     #filterMenu {
@@ -176,33 +182,36 @@
 <h1>Page étudiants</h1>
 <div class="container">
   <form id="searchForm" action="${pageContext.request.contextPath}/StudentPageAdminController" method="GET">
-  <div class="searchBar">
-    <span>🔍︎</span>
-    <input
-    type="text"
-    name="search"
-    placeholder="Recherche"
-    oninput="performSearch(this.value)"
-    value="${search}" >
-  </div>
+    <div class="searchBar">
+      <span>🔍︎</span>
+      <input
+              type="text"
+              name="search"
+              placeholder="Recherche"
+              oninput="performSearch(this.value)"
+              value="${search}" >
+    </div>
   </form>
   <div class="right">
-    <button onclick="viewFilerMenu()" id="filterButton">Filtre</button>
+    <div class="filter-container">
+      <div id="filterMenu">
+        <div class="filter-option">
+          <label><input type="checkbox" name="promo" value="2025" onclick="applyFilter()"> Promo 2025</label>
+        </div>
+        <div class="filter-option">
+          <label><input type="checkbox" name="promo" value="2026" onclick="applyFilter()"> Promo 2026</label>
+        </div>
+        <div class="filter-option">
+          <label><input type="checkbox" name="promo" value="2027" onclick="applyFilter()"> Promo 2027</label>
+        </div>
+      </div>
+    </div>
+    <button onclick="viewFilterMenu()" id="filterButton">Filtre</button>
     <a href="${pageContext.request.contextPath}/views/Administrator/AddStudentAdmin" class="button">Ajouter Étudiant</a>
-</div>
-</div>
-<!-- Menu de filtre avec des checkboxes -->
-<div id="filterMenu" style="display:none;">
-  <div class="filter-option">
-    <label><input type="checkbox" name="promo" value="2025" onclick="applyFilter()"> Promo 2025</label>
-  </div>
-  <div class="filter-option">
-    <label><input type="checkbox" name="promo" value="2026" onclick="applyFilter()"> Promo 2026</label>
-  </div>
-  <div class="filter-option">
-    <label><input type="checkbox" name="promo" value="2027" onclick="applyFilter()"> Promo 2027</label>
   </div>
 </div>
+
+
 <%
   java.util.List<com.projetjee.projetjeespringboot.models.Student> students = (java.util.List<com.projetjee.projetjeespringboot.models.Student>) request.getAttribute("students");
 %>
@@ -247,17 +256,39 @@
   </tbody>
 </table>
 <script>
-  function viewFilerMenu() {
+  function viewFilterMenu() {
     const filterMenu = document.getElementById('filterMenu');
-    // Si le menu est déjà ouvert, il doit rester visible après rechargement
-    if (filterMenu.style.display === 'none' && document.querySelectorAll('#filterMenu input[type="checkbox"]:checked').length > 0) {
+    const isMenuVisible = filterMenu.style.display === 'block';
+
+    if (isMenuVisible) {
+      filterMenu.style.display = 'none';
+    } else {
       filterMenu.style.display = 'block';
-    } else if (filterMenu.style.display === 'none') {
+    }
+  }
+  // Initialization when loading the page
+  window.onload = function () {
+    const filterMenu = document.getElementById('filterMenu');
+    const promoParam = new URLSearchParams(window.location.search).get('promo');
+
+    // If checkboxes are checked via the URL, display the menu
+    if (promoParam) {
+      const selectedPromos = promoParam.split(',');
+      const checkboxes = document.querySelectorAll('#filterMenu input[type="checkbox"]');
+
+      checkboxes.forEach(checkbox => {
+        if (selectedPromos.includes(checkbox.value)) {
+          checkbox.checked = true;
+        }
+      });
+
+      // Display the menu if checkboxes are pre-selected
       filterMenu.style.display = 'block';
     } else {
       filterMenu.style.display = 'none';
     }
-  }
+  };
+
   // Appliquer le filtre en fonction des promotions sélectionnées
   function applyFilter() {
     // Récupérer les cases à cocher sélectionnées
@@ -275,18 +306,6 @@
     window.location.href = window.location.pathname + query;
   }
   // Fonction pour maintenir l'état des checkboxes sélectionnées
-  window.onload = function() {
-    const promoParam = new URLSearchParams(window.location.search).get('promo');
-    if (promoParam) {
-      const selectedPromos = promoParam.split(',');
-      const checkboxes = document.querySelectorAll('#filterMenu input[type="checkbox"]');
-      checkboxes.forEach(checkbox => {
-        if (selectedPromos.includes(checkbox.value)) {
-          checkbox.checked = true;
-        }
-      });
-    }
-  }
 
   // Fonction pour rediriger vers la page de profil
   function viewProfile(idStudent) {
@@ -299,7 +318,7 @@
       // Ajoutez un champ caché contenant l'ID de l'enseignant
       const input = document.createElement("input");
       input.type = "hidden";
-      input.name = "idStudent"; // Le nom doit correspondre à ce que le servlet attend
+      input.name = "idStudent";
       input.value = idStudent;
       form.appendChild(input);
 

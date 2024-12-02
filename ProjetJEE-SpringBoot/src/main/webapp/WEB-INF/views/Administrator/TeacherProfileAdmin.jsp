@@ -55,7 +55,7 @@
             margin-left: 150px;
         }
 
-        /* Style du tableau */
+
         table {
             color: #4F2BEC;
             width: 80%;
@@ -124,8 +124,8 @@
         for (com.projetjee.projetjeespringboot.models.Course course : courses) { %>
     <tr>
         <td><%= course.getName() %></td>
-        <td><%= course.getStudentList().size() %></td> <!-- Assurez-vous que `getStudentList()` retourne une liste -->
-        <td><%= courseAverages.get(course.getIdCourse()) %></td> <!-- Si vous avez une méthode pour calculer la moyenne -->
+        <td><%= course.getStudentList().size() %></td>
+        <td><%= courseAverages.get(course.getIdCourse()) %></td>
     </tr>
     <% } %>
     </tbody>

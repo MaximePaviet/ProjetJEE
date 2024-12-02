@@ -106,7 +106,7 @@
       opacity: 90%;
     }
 
-    /* Style du tableau */
+
     table {
       color: #4F2BEC;
       width: 80%;
@@ -137,14 +137,14 @@
     .actionButton {
       all: unset;
       display: inline-flex;
-      justify-content: center; /* Centre horizontalement le contenu du bouton */
-      align-items: center; /* Centre verticalement le contenu du bouton */
+      justify-content: center;
+      align-items: center;
       background-color: transparent;
       border: none;
-      padding: 0; /* Supprime les marges internes */
+      padding: 0;
       cursor: pointer;
-      width: auto; /* Taille ajustée au contenu, ici le SVG */
-      height: auto; /* Taille ajustée au contenu */
+      width: auto;
+      height: auto;
     }
 
   </style>

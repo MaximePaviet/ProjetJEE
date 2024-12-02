@@ -130,7 +130,7 @@
             const nameInput = document.querySelector('input[name="name"]');
             const contactInput = document.querySelector('input[name="contact"]');
             // Expression régulière pour valider les noms/prénoms
-            const nameRegex = /^[a-zA-Z\s-]+$/; // Lettres, espaces et tirets
+            const nameRegex = /^[a-zA-Z\s-]+$/;
             // Expression régulière pour valider un email
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             // Messages d'erreur

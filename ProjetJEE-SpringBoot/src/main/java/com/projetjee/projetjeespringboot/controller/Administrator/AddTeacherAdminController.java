@@ -20,7 +20,7 @@ public class AddTeacherAdminController {
     }
 
     // Méthode pour gérer l'ajout d'un enseignant
-    @PostMapping("/AddTeacherAdminController")  // Cela mappe la requête POST à l'URL "/admin/addTeacher"
+    @PostMapping("/AddTeacherAdminController")
     public String addTeacher(
             @RequestParam("name") String name,
             @RequestParam("surname") String surname,
@@ -36,7 +36,7 @@ public class AddTeacherAdminController {
         redirectAttributes.addFlashAttribute("message", "Enseignant ajouté avec succès!");
 
         // Rediriger vers la page des enseignants
-        return "redirect:/TeacherPageAdminController";  // Remplacer "/admin/teachers" par l'URL correcte pour afficher la liste des enseignants
+        return "redirect:/TeacherPageAdminController";
     }
 }
 

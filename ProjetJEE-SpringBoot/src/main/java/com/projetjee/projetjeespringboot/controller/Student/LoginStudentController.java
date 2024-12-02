@@ -23,7 +23,7 @@ public class LoginStudentController {
     @GetMapping
     public String showLoginPage() {
         // Retourne la vue de la page de connexion
-        return "Student/ConnexionStudent";  // Le nom du fichier JSP ou template Thymeleaf pour la page de connexion
+        return "Student/ConnexionStudent";  
     }
 
     @PostMapping
@@ -51,7 +51,7 @@ public class LoginStudentController {
             // Si les identifiants sont incorrects
             model.addAttribute("errorMessage", "Login ou mot de passe incorrect !");
             System.out.println(login+password);
-            return "Student/ConnexionStudent"; // Renvoie à la page de connexion avec un message d'erreur
+            return "Student/ConnexionStudent"; // Renvoie à la page de connexion
         }
     }
 }

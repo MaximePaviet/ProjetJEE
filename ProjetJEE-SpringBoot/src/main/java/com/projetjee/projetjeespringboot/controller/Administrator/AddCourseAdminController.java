@@ -17,10 +17,10 @@ public class AddCourseAdminController {
     // Affichage de la page pour ajouter un cours (Page des cours)
     @GetMapping("/AddCourseAdminController")
     public String showCoursePage() {
-        return "CoursePageAdmin";  // La page de gestion des cours (coursePage.html)
+        return "CoursePageAdmin";
     }
 
-    // Traitement de l'ajout d'un cours via le formulaire (POST)
+    //ajout d'un cours
     @PostMapping("/AddCourseAdminController")
     public String addCourse(@RequestParam("courseName") String courseName, RedirectAttributes redirectAttributes) {
         // Appel au service pour créer un cours

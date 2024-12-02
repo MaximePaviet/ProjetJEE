@@ -64,7 +64,7 @@
     }
 
     input{
-      flex-grow: 1; /* Permet à l'input de prendre tout l'espace restant */
+      flex-grow: 1;
       background-color: #FFFFFF;
       border: 3px solid #4F2BEC;
       border-radius: 16px;

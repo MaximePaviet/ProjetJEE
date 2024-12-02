@@ -107,7 +107,7 @@
             opacity: 90%;
         }
 
-        /* Style du tableau */
+
         table {
             color: #4F2BEC;
             width: 80%;
@@ -189,8 +189,8 @@
     %>
     <tr onclick="viewCourse(<%= course.getIdCourse() %>, <%= teacher.getIdTeacher() %>)" style="cursor: pointer;">
         <td><%= course.getName() %></td>
-        <td><%= course.getStudentList() != null ? course.getStudentList().size() : 0 %></td> <!-- Assurez-vous que `getStudentList()` est non null -->
-        <td><%= courseAverages != null ? courseAverages.get(course.getIdCourse()) : "Non disponible" %></td> <!-- Afficher moyenne ou un message -->
+        <td><%= course.getStudentList() != null ? course.getStudentList().size() : 0 %></td>
+        <td><%= courseAverages != null ? courseAverages.get(course.getIdCourse()) : "Non disponible" %></td>
     </tr>
     <%
         }
@@ -213,7 +213,7 @@
             // Ajoutez un champ caché contenant l'ID de l'enseignant
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = "idCourse"; // Le nom doit correspondre à ce que le servlet attend
+            input.name = "idCourse";
             input.value = idCourse;
             form.appendChild(input);
 
@@ -236,11 +236,11 @@
             // Ajoutez un champ caché contenant l'ID de l'enseignant
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
+            input.name = "idTeacher";
             input.value = idTeacher;
             form.appendChild(input);
 
-            // Ajoutez le formulaire à la page et soumettez-le
+
             document.body.appendChild(form);
             form.submit();
         } else {

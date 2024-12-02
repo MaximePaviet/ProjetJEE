@@ -27,10 +27,10 @@ public class UpdateTeacherAdminController {
 
         if (teacher != null) {
             model.addAttribute("teacher", teacher);
-            return "Administrator/UpdateTeacherAdmin"; // Vue HTML ou JSP
+            return "Administrator/UpdateTeacherAdmin";
         } else {
             model.addAttribute("error", "Enseignant introuvable");
-            return "Administrator/ErrorPage"; // Vue pour les erreurs
+            return "Administrator/TeacherPageAdminController";
         }
     }
 

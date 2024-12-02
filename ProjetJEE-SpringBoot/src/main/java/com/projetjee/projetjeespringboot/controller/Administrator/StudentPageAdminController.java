@@ -46,6 +46,6 @@ public class StudentPageAdminController {
         model.addAttribute("students", students);
 
         // Retourner la vue JSP
-        return "Administrator/StudentPageAdmin"; // "StudentPageAdmin.jsp" dans src/main/webapp/WEB-INF/views
+        return "Administrator/StudentPageAdmin";
     }
 }

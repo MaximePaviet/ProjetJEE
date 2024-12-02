@@ -178,17 +178,17 @@
             // Ajoutez un champ caché contenant l'ID de l'enseignant
             const inputCourse = document.createElement("input");
             inputCourse.type = "hidden";
-            inputCourse.name = "idCourse"; // Le nom doit correspondre à ce que le servlet attend
+            inputCourse.name = "idCourse";
             inputCourse.value = idCourse;
             form.appendChild(inputCourse);
 
             const inputTeacher = document.createElement("input");
             inputTeacher.type = "hidden";
-            inputTeacher.name = "idTeacher"; // Le nom doit correspondre à ce que le servlet attend
+            inputTeacher.name = "idTeacher";
             inputTeacher.value = idTeacher;
             form.appendChild(inputTeacher);
 
-            // Ajoutez le formulaire à la page et soumettez-le
+
             document.body.appendChild(form);
             form.submit();
         } else {

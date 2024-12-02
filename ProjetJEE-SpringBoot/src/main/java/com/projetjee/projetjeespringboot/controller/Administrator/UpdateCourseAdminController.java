@@ -27,7 +27,7 @@ public class UpdateCourseAdminController {
             Course course = courseService.readCourse(idCourse);
             if (course != null) {
                 model.addAttribute("course", course);
-                return "Administrator/UpdateCourseAdmin"; // Vue Thymeleaf pour afficher le formulaire de mise à jour
+                return "Administrator/UpdateCourseAdmin";
             } else {
                 redirectAttributes.addFlashAttribute("errorMessage", "Cours introuvable");
                 return "redirect:/CoursePageAdminController";

@@ -34,7 +34,7 @@ public class ProfileTeacherController {
         this.courseService = courseService;
     }
     @GetMapping("/ProfileTeacherController")
-    @Transactional // Assure que la session Hibernate reste active pendant l'exécution
+    @Transactional
     public String showTeacherProfile(@RequestParam("idTeacher") int idTeacher, Model model) {
         // Récupération de l'enseignant
         Teacher teacher = teacherService.readTeacher(idTeacher);
@@ -43,7 +43,7 @@ public class ProfileTeacherController {
             return "redirect:/LoginTeacherController";
         }
 
-        // Forcer le chargement de la liste des cours (lazy loading)
+        // Forcer le chargement de la liste des cours
         Hibernate.initialize(teacher.getCourseList());
         List<Course> courses = teacher.getCourseList();
 

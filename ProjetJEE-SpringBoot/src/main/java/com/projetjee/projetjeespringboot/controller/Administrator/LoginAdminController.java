@@ -20,7 +20,7 @@ public class LoginAdminController {
     @GetMapping("/LoginAdminController")
     public String showLoginPage() {
         // Préparation du message d'erreur (vide par défaut)
-        return "Administrator/ConnexionAdministrator"; // Nom de la page HTML Thymeleaf
+        return "Administrator/ConnexionAdministrator";
     }
 
     @PostMapping("/LoginAdminController")
@@ -34,7 +34,7 @@ public class LoginAdminController {
             return "redirect:views/Administrator/HomeAdministrator"; // Redirection si succès
         } else {
             model.addAttribute("errorMessage", "Login ou mot de passe incorrect !");
-            return "/views/Administrator/ConnexionAdministrator"; // Recharge la page avec un message d'erreur
+            return "/views/Administrator/ConnexionAdministrator";
         }
     }
 }

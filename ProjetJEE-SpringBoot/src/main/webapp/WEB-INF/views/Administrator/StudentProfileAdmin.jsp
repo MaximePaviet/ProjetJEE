@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="com.projetjee.projetjeespringboot.models.Course" %>
+<%@ page import="java.util.List" %>
 
 <html>
 <head>
@@ -55,7 +57,7 @@
             margin-left: 150px;
         }
 
-        /* Style du tableau */
+
         table {
             color: #4F2BEC;
             width: 80%;
@@ -86,6 +88,7 @@
 
 <%
     com.projetjee.projetjeespringboot.models.Student student = (com.projetjee.projetjeespringboot.models.Student) request.getAttribute("student");
+    List<Course> courses = student.getCourseList();
     if (student != null) {
 %>
 <div class="profileInfo">
@@ -103,9 +106,7 @@
 %>
 <h2>Liste des cours :</h2>
 <%
-    // Récupération des moyennes par cours
-    Map<com.projetjee.projetjeespringboot.models.Course, Double> coursesWithAverages = (Map<com.projetjee.projetjeespringboot.models.Course, Double>) request.getAttribute("coursesWithAverages");
-    if (coursesWithAverages == null || coursesWithAverages.isEmpty()) {
+    if (courses == null || courses.isEmpty()) {
 %>
 <p style="text-align: center;">Aucun cours trouvé pour cet étudiant.</p>
 <%
@@ -120,32 +121,18 @@
     </tr>
     </thead>
     <tbody>
-    <% for (Map.Entry<com.projetjee.projetjeespringboot.models.Course, Double> entry : coursesWithAverages.entrySet()) {
-        com.projetjee.projetjeespringboot.models.Course course = entry.getKey();
-        Double average = entry.getValue();
-        com.projetjee.projetjeespringboot.models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
+    <%  Map<Integer, String> courseAverages = (Map<Integer, String>) request.getAttribute("courseAverages");
+        for (com.projetjee.projetjeespringboot.models.Course course : courses) {
+            com.projetjee.projetjeespringboot.models.Teacher courseTeacher = course.getTeacher(); // Obtenez l'objet Teacher associé au cours
     %>
     <tr>
         <td><%= course.getName() %></td>
         <td><%= courseTeacher != null ? courseTeacher.getName() + " " + courseTeacher.getSurname() : "Aucun professeur" %></td>
-        <td>
-            <%
-                // Vérification de la validité de la moyenne
-                if (average == null || average < 0) {
-            %>
-            Pas encore de notes
-            <%
-            } else {
-            %>
-            <%= String.format("%.2f", average) %>
-            <%
-                }
-            %>
-        </td>
+        <td><%= courseAverages.get(course.getIdCourse()) %></td>
     </tr>
     <% } %>
     </tbody>
-    <!-- Générer la case moyenne générale avec du JavaScript -->
+
 </table>
 <%
     }

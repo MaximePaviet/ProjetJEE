@@ -64,7 +64,7 @@
     }
 
     input{
-      flex-grow: 1; /* Permet à l'input de prendre tout l'espace restant */
+      flex-grow: 1;
       background-color: #FFFFFF;
       border: 3px solid #4F2BEC;
       border-radius: 16px;
@@ -114,7 +114,7 @@
       const surnameInput = document.querySelector('input[name="surname"]');
       const nameInput = document.querySelector('input[name="name"]');
       // Expression régulière pour valider les noms/prénoms
-      const nameRegex = /^[a-zA-Z\s-]+$/; // Lettres, espaces et tirets
+      const nameRegex = /^[a-zA-Z\s-]+$/;
       // Messages d'erreur
       let errorMessage = "";
       // Validation du nom

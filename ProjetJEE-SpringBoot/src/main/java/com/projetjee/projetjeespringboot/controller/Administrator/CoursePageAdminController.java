@@ -35,12 +35,10 @@ public class CoursePageAdminController {
             courses = courseService.readCourseList();
         }
 
-
-        // Ajouter les cours en tant qu'attribut du modèle
         model.addAttribute("courses", courses);
 
         // Retourner la vue JSP
-        return "Administrator/CoursePageAdmin";  // Nom de la vue, sans l'extension .jsp
+        return "Administrator/CoursePageAdmin";
     }
 }
 

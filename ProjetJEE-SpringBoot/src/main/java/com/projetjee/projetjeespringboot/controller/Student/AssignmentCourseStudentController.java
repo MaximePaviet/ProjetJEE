@@ -44,7 +44,7 @@ public class AssignmentCourseStudentController {
         model.addAttribute("idStudent", studentId);
         model.addAttribute("student", student);
         model.addAttribute("courses", courses);
-        return "Student/AssignmentCourseStudent"; // Vue Thymeleaf
+        return "Student/AssignmentCourseStudent"; // Vue Jsp
     }
 
     @PostMapping

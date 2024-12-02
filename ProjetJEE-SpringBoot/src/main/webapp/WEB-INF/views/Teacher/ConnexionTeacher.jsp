@@ -110,7 +110,7 @@
         }
 
         .toggle-password:hover {
-            color: #4F2BEC; /* Couleur en hover */
+            color: #4F2BEC;
         }
 
         button{
